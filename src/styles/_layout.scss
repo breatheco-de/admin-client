@@ -1,0 +1,12 @@
+.layout{
+    height: 100vh;
+    .app-view{
+        overflow: auto;
+        height: 100%;
+    	/* gradients - second red border, first red border, top white space, blue lines */
+        @include notebook-background;
+    }
+}
+.white-resizer .Resizer{
+    background: white;
+}
