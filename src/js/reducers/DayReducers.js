@@ -1,4 +1,4 @@
-import StudentStore from '../stores/StudentStore';
+import UserStore from '../stores/UserStore';
 import BCStore from '../stores/BCStore';
 
 export default {
@@ -79,12 +79,12 @@ export default {
     day.opened = false;
     day.totalDone = 0;
     
-    const todos = StudentStore.getTodos();
+    const todos = UserStore.getTodos();
     if(!todos) return day;
 
     day.replits = (function(){
         return day.replits.map(function(repl){
-            const todo = StudentStore.getSingleTodo(repl);
+            const todo = UserStore.getSingleTodo(repl);
             if(todo){
                 day.opened = true;
                 repl.status = todo.status;
@@ -96,7 +96,7 @@ export default {
 
     day.lessons = (function(){
         return day.lessons.map(function(less){
-            const todo = StudentStore.getSingleTodo(less);
+            const todo = UserStore.getSingleTodo(less);
             if(todo){
                 day.opened = true;
                 less.status = todo.status;
@@ -108,7 +108,7 @@ export default {
 
     day.quizzes = (function(){
         return day.quizzes.map(function(quiz){
-            const todo = StudentStore.getSingleTodo(quiz);
+            const todo = UserStore.getSingleTodo(quiz);
             if(todo){
                 day.opened = true;
                 quiz.status = todo.status;
@@ -120,7 +120,7 @@ export default {
     
     day.assignments = (function(){
         return day.assignments.map(function(ass){
-            const todo = StudentStore.getSingleTodo(ass);
+            const todo = UserStore.getSingleTodo(ass);
             if(todo){
                 day.opened = true;
                 ass.status = todo.status;

@@ -4,8 +4,8 @@ import {withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Sidebar from './Sidebar';
 import DropLink from '../components/DropLink';
-import StudentActions from '../actions/StudentActions';
-import StudentStore from '../stores/StudentStore';
+import UserActions from '../actions/UserActions';
+import UserStore from '../stores/UserStore';
 
 class SplitLayout extends React.Component{
     
@@ -24,7 +24,7 @@ class SplitLayout extends React.Component{
     
     componentWillMount(){
         this.setState({
-           student: StudentStore.getStudent() 
+           student: UserStore.getStudent() 
         });
     }
     
@@ -77,7 +77,7 @@ class SplitLayout extends React.Component{
     
     onSettingsSelect(item){
         switch(item.slug){
-            case "logout": StudentActions.logoutUser(); break;
+            case "logout": UserActions.logoutUser(); break;
             case "profile": this.props.history.push('/profile'); break;
         }
     }

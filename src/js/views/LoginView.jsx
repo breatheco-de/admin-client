@@ -3,8 +3,8 @@ import Flux from "@4geeksacademy/react-flux-dash";
 import {Link} from "react-router-dom";
 import Validator from 'validator';
 import bcLogo from '../../img/bc-icon.png';
-import StudentActions from '../actions/StudentActions';
-import StudentStore from '../stores/StudentStore';
+import UserActions from '../actions/UserActions';
+import UserStore from '../stores/UserStore';
 
 export default class Login extends Flux.View {
 
@@ -12,20 +12,20 @@ export default class Login extends Flux.View {
     super();
     this.state = {
       errorMsg: []
-    }
+    };
     this.username = '';
     this.password = '';
   }
   
   componentWillMount(){
-    const session = StudentStore.getAutentication();
+    const session = UserStore.getAutentication();
     if(session.autenticated) this.props.history.push('/home');
   }
 
   login(e){
     const errors = this.validateForm();
     if(!errors){
-      StudentActions.loginUser(this.username, this.password, this.props.history)
+      UserActions.loginUser(this.username, this.password, this.props.history)
       .catch((errorMsg) => {
         this.setState({ errorMsg: [errorMsg.msg] || [errorMsg] });
       });

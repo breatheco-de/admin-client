@@ -1,7 +1,7 @@
 /* global localStorage */
 import Flux from '@4geeksacademy/react-flux-dash';
 
-class StudentStore extends Flux.Store{
+class UserStore extends Flux.Store{
     constructor(){
         super();
         
@@ -13,7 +13,7 @@ class StudentStore extends Flux.Store{
                 githubToken: null,
                 history: null,
                 user: null,
-                autenticated: false,
+                autenticated: false
             };
         }
         this.state.todos = null;
@@ -109,5 +109,5 @@ class StudentStore extends Flux.Store{
     
 }
 
-var userStore = new StudentStore();
+var userStore = new UserStore();
 export default userStore;

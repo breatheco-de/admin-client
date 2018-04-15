@@ -3,12 +3,10 @@ import Flux from '@4geeksacademy/react-flux-dash';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import {PrivateRoute} from './libraries/react-router-dash/index';
 
-import CourseView from './views/CourseView';
 import HomeView from './views/HomeView';
 import LoginView from './views/LoginView';
 import ForgotView from './views/ForgotView';
-import ProfileView from './views/ProfileView';
-import StudentStore from './stores/StudentStore';
+import UserStore from './stores/UserStore';
 
 import NotificationStore from './stores/NotificationStore';
 import Notifier from './components/Notifier';
@@ -18,12 +16,12 @@ class Layout extends Flux.View{
     constructor(){
         super();
         this.state = {
-            loggedIn: StudentStore.getAutentication(),
+            loggedIn: UserStore.getAutentication(),
             history: null,
             errors: null,
             redirection: null
-        }
-        this.bindStore(StudentStore, 'session', this.sessionChange.bind(this));
+        };
+        this.bindStore(UserStore, 'session', this.sessionChange.bind(this));
         this.bindStore(NotificationStore, 'notifications', this.notificationsUpdated.bind(this));
     }
     
@@ -32,7 +30,7 @@ class Layout extends Flux.View{
     }
     
     sessionChange(){
-        const session = StudentStore.getAutentication();
+        const session = UserStore.getAutentication();
         let needsRedirection = false;
         if(session.history !== null)
         {
@@ -70,8 +68,7 @@ class Layout extends Flux.View{
                             <Route exact path='/forgot' component={ForgotView} />
                             <PrivateRoute exact path='/' loggedIn={this.state.loggedIn} component={HomeView} />
                             <PrivateRoute exact path='/home' loggedIn={this.state.loggedIn} component={HomeView} />
-                            <PrivateRoute exact path='/profile' loggedIn={this.state.loggedIn} component={ProfileView} />
-                            <PrivateRoute path='/course/:course_slug' loggedIn={this.state.loggedIn} component={CourseView} />
+                            <PrivateRoute path='/student/' loggedIn={this.state.loggedIn} component={HomeView} />
                             <PrivateRoute render={() => (<p className="text-center mt-5">Not found</p>)} />
                         </Switch>
                     </div>

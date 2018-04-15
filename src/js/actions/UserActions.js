@@ -1,12 +1,12 @@
 import Flux from '@4geeksacademy/react-flux-dash';
 import WP from 'wordpress-rest-api';
-import BC from '../utils/BreatheCodeWrapper';
+import BC from '../utils/api/BreatheCodeWrapper';
 
-import StudentStore from '../stores/StudentStore';
+import UserStore from '../stores/UserStore';
 import BCStore from '../stores/BCStore';
 import NotificationStore from '../stores/NotificationStore';
 
-class StudentActions extends Flux.Action{
+class UserActions extends Flux.Action{
     
     constructor(){
         super();
@@ -45,12 +45,12 @@ class StudentActions extends Flux.Action{
         return BC.credentials().autenticate(username, password)
         .then((data) => {
             data.history = history;
-            this.dispatch('StudentStore.login', data);
+            this.dispatch('UserStore.login', data);
         });
     }
     
     logoutUser(history){
-        this.dispatch('StudentStore.logout');
+        this.dispatch('UserStore.logout');
     }
     
     remindUser(email){
@@ -63,10 +63,10 @@ class StudentActions extends Flux.Action{
     
     startDay(day){
         const todos = BCStore.getDayTodos(day);
-        const student = StudentStore.getStudent();
+        const student = UserStore.getStudent();
         return BC.todos().add(student.bc_id,todos)
                 .then((data) => {
-                    this.dispatch('StudentStore.appendTodos', data.data || data);
+                    this.dispatch('UserStore.appendTodos', data.data || data);
                 })
                 .catch(()=>{
                     this.dispatch('NotificationStore.notify', 'update_todos_error');
@@ -74,10 +74,10 @@ class StudentActions extends Flux.Action{
     }
     
     updateTask(task){
-        const student = StudentStore.getStudent();
+        const student = UserStore.getStudent();
         return BC.todos().update(task)
                 .then((data) => {
-                    this.dispatch('StudentStore.updateSingleTodo', data.data || data);
+                    this.dispatch('UserStore.updateSingleTodo', data.data || data);
                 });
     }
     
@@ -87,7 +87,7 @@ class StudentActions extends Flux.Action{
                 BC.todos().getByStudent(studentId)
                 .then((data) => {
                     if(typeof data.code === 'undefined' || data.code==200)
-                        this.dispatch('StudentStore.setTodos', data.data || data);
+                        this.dispatch('UserStore.setTodos', data.data || data);
                     else console.error(data);
                 })
                 .catch((data) => {
@@ -99,4 +99,4 @@ class StudentActions extends Flux.Action{
     }
     
 }
-export default new StudentActions();
+export default new UserActions();

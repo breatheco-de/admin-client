@@ -1,5 +1,5 @@
 import Flux from '@4geeksacademy/react-flux-dash';
-import StudentStore from './StudentStore';
+import UserStore from './UserStore';
 import dayReducers from '../reducers/DayReducers';
 
 class BCStore extends Flux.Store{
@@ -10,7 +10,7 @@ class BCStore extends Flux.Store{
             projects: null,
             days: []
         }
-        StudentStore.on('todos', this._reduceSyllabus.bind(this));
+        UserStore.on('todos', this._reduceSyllabus.bind(this));
     }
     __reduce(entity){
         return {

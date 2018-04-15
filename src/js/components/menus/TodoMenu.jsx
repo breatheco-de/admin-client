@@ -1,29 +1,29 @@
 import React from "react";
 import Flux from "@4geeksacademy/react-flux-dash";
 import CheckBox from '../CheckBox.jsx';
-import StudentStore from "../../stores/StudentStore";
-import StudentActions from "../../actions/StudentActions";
+import UserStore from "../../stores/UserStore";
+import UserActions from "../../actions/UserActions";
 
 export default class TodoView extends Flux.View {
   
   constructor(){
     super();
     this.state = {
-      todos: StudentStore.getTodos(),
+      todos: UserStore.getTodos(),
       includeDone: false
     };
-    this.bindStore(StudentStore, 'todos', this.tasksUpdated.bind(this));
+    this.bindStore(UserStore, 'todos', this.tasksUpdated.bind(this));
   }
   
   tasksUpdated(){
     this.setState({
-      todos: StudentStore.getTodos()
+      todos: UserStore.getTodos()
     });
   }
   
   updateTask(task, newValue){
     task.status = (newValue) ? "done":"pending";
-    StudentActions.updateTask(task);
+    UserActions.updateTask(task);
   }
   
   getTaskDescription(td){

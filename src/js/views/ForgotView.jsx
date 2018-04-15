@@ -2,7 +2,7 @@ import React from "react";
 import Flux from "@4geeksacademy/react-flux-dash";
 import Validator from 'validator';
 import bcLogo from '../../img/bc-icon.png';
-import StudentActions from '../actions/StudentActions';
+import UserActions from '../actions/UserActions';
 
 export default class Forgot extends Flux.View {
 
@@ -16,14 +16,14 @@ export default class Forgot extends Flux.View {
   }
   
   componentWillMount(){
-//    const session = StudentStore.getAutentication();
+//    const session = UserStore.getAutentication();
   }
 
   formSubmit(e){
     const errors = this.validateForm();
     if(!errors){
       this.setState({ errorMsg: [], successMsg: null });
-      StudentActions.remindUser(this.email)
+      UserActions.remindUser(this.email)
       .then(() => {
         this.setState({ 
           successMsg: `Check your email for instructions, if you don't receive th email check your spam folder`
