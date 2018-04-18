@@ -1,15 +1,14 @@
 import React from 'react';
 import Flux from '@4geeksacademy/react-flux-dash';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import {PrivateRoute} from './libraries/react-router-dash/index';
 
-import HomeView from './views/HomeView';
+import PrivateLayout from './PrivateLayout';
 import LoginView from './views/LoginView';
 import ForgotView from './views/ForgotView';
 import UserStore from './stores/UserStore';
 
 import NotificationStore from './stores/NotificationStore';
-import Notifier from './components/Notifier';
+import { Notifier, PrivateRoute } from './utils/bc-components/index';
 
 class Layout extends Flux.View{
     
@@ -66,9 +65,8 @@ class Layout extends Flux.View{
                         <Switch>
                             <Route exact path='/login' component={LoginView} />
                             <Route exact path='/forgot' component={ForgotView} />
-                            <PrivateRoute exact path='/' loggedIn={this.state.loggedIn} component={HomeView} />
-                            <PrivateRoute exact path='/home' loggedIn={this.state.loggedIn} component={HomeView} />
-                            <PrivateRoute path='/student/' loggedIn={this.state.loggedIn} component={HomeView} />
+                            <PrivateRoute exact path='/' loggedIn={this.state.loggedIn} component={PrivateLayout} />
+                            <PrivateRoute path='/in' loggedIn={this.state.loggedIn} component={PrivateLayout} />
                             <PrivateRoute render={() => (<p className="text-center mt-5">Not found</p>)} />
                         </Switch>
                     </div>

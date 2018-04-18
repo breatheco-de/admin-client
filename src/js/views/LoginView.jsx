@@ -19,7 +19,7 @@ export default class Login extends Flux.View {
   
   componentWillMount(){
     const session = UserStore.getAutentication();
-    if(session.autenticated) this.props.history.push('/home');
+    if(session.autenticated) this.props.history.push('/in/home');
   }
 
   login(e){

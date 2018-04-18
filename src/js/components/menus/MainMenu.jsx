@@ -1,18 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withRouter} from 'react-router-dom';
-import MenuItem from '../MenuItem';
+import { MenuItem } from '../../utils/bc-components/index';
 
 class MainMenu extends React.Component{
     
     render(){
         return(
-            <div className="main-menu">
-            {
-                    // <MenuItem icon="fas fa-graduation-cap" label="My Journey" slug="journey" mobile={this.props.mobile}
-                    //         onClick={() => this.props.onClick('syllabus')} to="/home" />
-            }
-            </div>
+            <ul className="nav flex-column">
+                <MenuItem icon="fas fa-users" label="Dashboard" slug="dashboard" to="/dashboard" />
+                <MenuItem icon="fas fa-users" label="Users" slug="users" to="/users" />
+            </ul>
         )
     }
 }
