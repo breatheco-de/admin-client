@@ -1,5 +1,4 @@
 import UserStore from '../stores/UserStore';
-import BCStore from '../stores/BCStore';
 
 export default {
     getDay(day){

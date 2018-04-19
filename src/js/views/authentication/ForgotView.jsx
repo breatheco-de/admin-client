@@ -1,8 +1,8 @@
 import React from "react";
 import Flux from "@4geeksacademy/react-flux-dash";
 import Validator from 'validator';
-import bcLogo from '../../img/bc-icon.png';
-import UserActions from '../actions/UserActions';
+import bcLogo from '../../../img/bc-icon.png';
+import UserActions from '../../actions/UserActions';
 
 export default class Forgot extends Flux.View {
 
