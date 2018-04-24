@@ -17,7 +17,7 @@ module.exports = merge(common, {
         //     }
         // }),
         new Dotenv({
-            path: './.prod.env'
+            path: './.env.prod'
         })
     ]
 })
