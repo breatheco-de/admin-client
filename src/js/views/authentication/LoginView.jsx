@@ -2,9 +2,9 @@ import React from "react";
 import Flux from "@4geeksacademy/react-flux-dash";
 import {Link} from "react-router-dom";
 import Validator from 'validator';
-import bcLogo from '../../img/bc-icon.png';
-import UserActions from '../actions/UserActions';
-import UserStore from '../stores/UserStore';
+import bcLogo from '../../../img/bc-icon.png';
+import UserActions from '../../actions/UserActions';
+import UserStore from '../../stores/UserStore';
 
 export default class Login extends Flux.View {
 
