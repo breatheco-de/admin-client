@@ -1,36 +1,20 @@
-import Flux from '@4geeksacademy/react-flux-dash';
-import WP from 'wordpress-rest-api';
+import { dispatchEvent } from '@4geeksacademy/react-flux-dash';
 import BC from '../utils/api/index';
 
-import UserStore from '../stores/UserStore';
-import NotificationStore from '../stores/NotificationStore';
-
-class UserActions extends Flux.Action{
+export const loginUser = (username, password) =>{
+    return BC.credentials().autenticate(username, password)
+    .then((data) => {
+        dispatchEvent("login", data);
+    });
+};
     
-    constructor(){
-        super();
-    }
+export const logoutUser = (history) => {
+    dispatchEvent("logout", null);
+};
     
-    loginUser(username, password, history){
-     
-        return BC.credentials().autenticate(username, password)
-        .then((data) => {
-            data.history = history;
-            this.dispatch('UserStore.login', data);
-        });
-    }
-    
-    logoutUser(history){
-        this.dispatch('UserStore.logout');
-    }
-    
-    remindUser(email){
-     
+export const remindUser = (email) =>{
         return BC.credentials().remind(email)
         .then((data) => {
             return data;
         });
-    }
-    
 }
-export default new UserActions();

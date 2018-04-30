@@ -9,7 +9,7 @@ class MainMenu extends React.Component{
         return(
             <ul className="nav flex-column">
                 <MenuItem icon="fas fa-users" label="Dashboard" slug="dashboard" to="/dashboard" />
-                <MenuItem icon="fas fa-users" label="Users" slug="users" to="/users" />
+                <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" />
             </ul>
         )
     }

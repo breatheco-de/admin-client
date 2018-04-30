@@ -15,21 +15,22 @@ class Layout extends Flux.View{
     constructor(){
         super();
         this.state = {
-            loggedIn: UserStore.getAutentication(),
+            loggedIn: null,
             history: null,
             errors: null,
             redirection: null
         };
-        this.bindStore(UserStore, 'session', this.sessionChange.bind(this));
-        this.bindStore(NotificationStore, 'notifications', this.notificationsUpdated.bind(this));
+        
     }
     
-    componentWillMount(){
-        this.sessionChange();
+    componentDidMount(){
+        this.notiSubs = NotificationStore.subscribe("notifications", 
+            (notifications) => this.setState({ notifications })
+        );
+        this.loginSubscription = UserStore.subscribe("login", this.sessionChange.bind(this));
     }
     
-    sessionChange(){
-        const session = UserStore.getAutentication();
+    sessionChange(session){
         let needsRedirection = false;
         if(session.history !== null)
         {
@@ -48,12 +49,6 @@ class Layout extends Flux.View{
         this.state.history.push(path);
     }
     
-    notificationsUpdated(){
-        this.setState({
-           notifications: NotificationStore.getAllNotifications()
-        });
-    }
-    
     render() {
         if(this.state.redirection && this.state.history) this.redirect('/in/home');
 
@@ -65,10 +60,10 @@ class Layout extends Flux.View{
                         <Switch>
                             <Route exact path='/login' component={LoginView} />
                             <Route exact path='/forgot' component={ForgotView} />
-                            <PrivateRoute exact path='/' loggedIn={this.state.loggedIn} component={PrivateLayout} />
-                            <PrivateRoute path='/users' loggedIn={this.state.loggedIn} component={PrivateLayout} />
-                            <PrivateRoute path='/home' loggedIn={this.state.loggedIn} component={PrivateLayout} />
-                            <PrivateRoute render={() => (<p className="text-center mt-5">Not found</p>)} />
+                            <Route exact path='/' loggedIn={this.state.loggedIn} component={PrivateLayout} />
+                            <Route path='/manage' loggedIn={this.state.loggedIn} component={PrivateLayout} />
+                            <Route path='/dashboard' loggedIn={this.state.loggedIn} component={PrivateLayout} />
+                            <Route render={() => (<p className="text-center mt-5">Not found</p>)} />
                         </Switch>
                     </div>
                 </BrowserRouter>

@@ -4,7 +4,11 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { Sidebar } from './utils/bc-components/index';
 import HomeView from './views/HomeView';
-import UsersView from './views/UsersView';
+
+import ManageView from './views/ManageView';
+import EditView from './views/EditView';
+
+import * as AdminActions from './actions/AdminActions';
 
 import MainMenu from './components/menus/MainMenu';
 
@@ -19,8 +23,11 @@ class Layout extends Flux.View{
         };
     }
     
+    componentWillMount(){
+        AdminActions.get('user');
+    }
+    
     menuClicked(){
-        
     }
     
     render() {
@@ -35,8 +42,10 @@ class Layout extends Flux.View{
                 <div className="col-8 col-sm-9 col-lg-10">
                     <Switch>
                         <Route exact path='/home' component={HomeView} />
-                        <Route exact path='/dashboard' component={UsersView} />
-                        <Route exact path='/users' component={UsersView} />
+                        <Route exact path='/dashboard' component={HomeView} />
+                        <Route exact path='/manage/:entity_slug/:entity_id/edit' component={EditView} />
+                        <Route exact path='/manage/:entity_slug/add' component={EditView} />
+                        <Route exact path='/manage/:entity_slug' component={ManageView} />
                         <Route render={() => (<p className="text-center mt-5">Not found</p>)} />
                     </Switch>
                 </div>

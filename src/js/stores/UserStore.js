@@ -1,7 +1,7 @@
 /* global localStorage */
 import Flux from '@4geeksacademy/react-flux-dash';
 
-class UserStore extends Flux.Store{
+class UserStore extends Flux.DashStore{
     constructor(){
         super();
         
@@ -17,19 +17,24 @@ class UserStore extends Flux.Store{
             };
         }
         this.state.todos = null;
+        
+        // Or Declare an event with some transformation logic
+        this.addEvent("login", this._login.bind(this));
+        this.addEvent("logout", this._logout.bind(this));
     }
     
     setPersistedState(data){
-        localStorage.setItem('state:'+this.constructor.name, JSON.stringify(Object.assign(this.state, data)));
-        return this.setStoreState(data);
+        const newState = Object.assign(this.state, data);
+        localStorage.setItem('user_store', JSON.stringify(newState));
+        return newState;
     }
     getPersistedState(data){
-        let persistedState = JSON.parse(localStorage.getItem('state:'+this.constructor.name));
+        let persistedState = JSON.parse(localStorage.getItem('user_store'));
         return persistedState;
     }
     
     _login(data){
-        this.setPersistedState({
+        return this.setPersistedState({
             githubToken: null,
             autenticated: true,
             history: data.history,
@@ -51,14 +56,14 @@ class UserStore extends Flux.Store{
                 full_name: data.full_name,
                 type: data.type || 'student'
             }
-        }).emit('session');
+        });
     }
     _logout(data){
-        this.setPersistedState({ 
+        return this.setPersistedState({ 
             autenticated: false,
             breathecodeToken: null,
             user: null
-        }).emit('session');
+        });
     }
     
     getAutentication(){
@@ -68,42 +73,7 @@ class UserStore extends Flux.Store{
         };
     }
     
-    _setTodos(todos){
-        this.setStoreState({ todos }).emit('todos');
-    }
-    getTodos(){
-        return this.state.todos;
-    }
-    
-    _updateSingleTodo(task){
-        for(let i = 0; i<this.state.todos.length;i++)
-            if(this.state.todos[i].id === task.id){
-                this.state.todos[i].status = task.status;
-                this.emit('todos');
-                return this.state.todos[i];
-            }
-        
-        throw new Error(`Task ${task.id} not found`);
-        
-        return false;
-    }
-    _appendTodos(newTodos){
-        this.setStoreState({ 
-            todos: this.state.todos.concat(newTodos) 
-        }).emit('todos');
-    }
-    getSingleTodo(actionable){
-        
-        if(!this.state.todos) return false;
-        
-        let present = this.state.todos.find((item) => {
-            return (item.type === actionable.type && item.associated_slug === actionable.associated_slug);
-        });
-        if(typeof present === 'undefined') return false;
-        else return present;
-    }
-    
-    getStudent(){
+    getUser(){
         return this.state.user;
     }
     
