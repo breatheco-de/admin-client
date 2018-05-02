@@ -6,25 +6,30 @@ class AdminStore extends Flux.DashStore{
         super();
         
         this.state = {
-            entities: null
+            user: []
         };
         
         // Or Declare an event with some transformation logic
-        this.addEvent("fetch_entity", this._fetchEntity.bind(this));
+        this.addEvent("manage_user", this._transformUsers.bind(this));
+        this.addEvent("manage_student", this._transformStudents.bind(this));
+        this.addEvent("manage_cohort", this._transformCohorts.bind(this));
     }
     
-    _fetchEntity(results){ 
-        return Object.assign(this.state, {
-            entities: results
-        }); 
-    }
+    _transformUsers(users){ return users; }
+    _transformStudents(students){ return students; }
+    _transformCohorts(cohorts){ return cohorts; }
+    
     getSingle(type, id){ 
-        if(!this.state.entities || typeof this.state.entities[type] === 'undefined') return null;
-        
-        let results = this.state.entities[type].filter((ent) => ent.id == id); 
+        let entities = this.getAll(type);
+        let results = entities.filter((ent) => ent.id == id); 
         if(results.length === 1) return results[0];
         else if(results.length === 0) return null;
-        else if(results.length >1) throw new Error('There seems to be more than one entity with the id '+id);
+        else if(results.length >1) throw new Error(`There seems to be more than one ${type} with the id: ${id}`);
+    }
+    getAll(type){ 
+        let result = this.getState();
+        if(typeof result[`manage_${type}`] === 'undefined') return [];
+        else return result[`manage_${type}`];
     }
     
 }

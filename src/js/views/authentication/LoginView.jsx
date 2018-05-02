@@ -3,7 +3,7 @@ import Flux from "@4geeksacademy/react-flux-dash";
 import {Link} from "react-router-dom";
 import Validator from 'validator';
 import bcLogo from '../../../img/bc-icon.png';
-import UserActions from '../../actions/UserActions';
+import * as UserActions from '../../actions/UserActions';
 import UserStore from '../../stores/UserStore';
 
 export default class Login extends Flux.View {
@@ -18,14 +18,14 @@ export default class Login extends Flux.View {
   }
   
   componentWillMount(){
-    const session = UserStore.getAutentication();
-    if(session.autenticated) this.props.history.push('/in/home');
+    const session = UserStore.getSession();
+    if(session && session.autenticated) this.props.history.push('/dashboard');
   }
 
   login(e){
     const errors = this.validateForm();
     if(!errors){
-      UserActions.loginUser(this.username, this.password, this.props.history)
+      UserActions.loginUser(this.username, this.password)
       .catch((errorMsg) => {
         this.setState({ errorMsg: [errorMsg.msg] || [errorMsg] });
       });

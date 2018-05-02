@@ -23,10 +23,6 @@ class Layout extends Flux.View{
         };
     }
     
-    componentWillMount(){
-        AdminActions.get('user');
-    }
-    
     menuClicked(){
     }
     

@@ -6,6 +6,7 @@ import PrivateLayout from './PrivateLayout';
 import LoginView from './views/authentication/LoginView';
 import ForgotView from './views/authentication/ForgotView';
 import UserStore from './stores/UserStore';
+import * as AdminActions from './actions/AdminActions';
 
 import NotificationStore from './stores/NotificationStore';
 import { Notifier, PrivateRoute } from './utils/bc-components/index';
@@ -14,33 +15,30 @@ class Layout extends Flux.View{
     
     constructor(){
         super();
-        this.state = {
-            loggedIn: null,
-            history: null,
-            errors: null,
-            redirection: null
-        };
+        const session = UserStore.getSession();
         
+        this.state = {
+            loggedIn: (session && session.autenticated),
+            notifications: [],
+            errors: null
+        };
+        AdminActions.get("cohort");
     }
     
     componentDidMount(){
         this.notiSubs = NotificationStore.subscribe("notifications", 
             (notifications) => this.setState({ notifications })
         );
-        this.loginSubscription = UserStore.subscribe("login", this.sessionChange.bind(this));
+        const session = UserStore.getSession();
+        this.setState({
+            loggedIn: (session && session.autenticated)
+        });
+        this.sessionSubscription = UserStore.subscribe("session", this.sessionChange.bind(this));
     }
     
     sessionChange(session){
-        let needsRedirection = false;
-        if(session.history !== null)
-        {
-            if(typeof session.history.push !== 'undefined' && (session.autenticated && !this.state.loggedIn))
-                needsRedirection = true;
-        }
         this.setState({ 
             loggedIn: session.autenticated, 
-            redirection: needsRedirection,
-            history: session.history
         });
     }
     
@@ -50,8 +48,6 @@ class Layout extends Flux.View{
     }
     
     render() {
-        if(this.state.redirection && this.state.history) this.redirect('/in/home');
-
         return (
             <div className="layout">
                 <BrowserRouter>
@@ -61,8 +57,9 @@ class Layout extends Flux.View{
                             <Route exact path='/login' component={LoginView} />
                             <Route exact path='/forgot' component={ForgotView} />
                             <Route exact path='/' loggedIn={this.state.loggedIn} component={PrivateLayout} />
-                            <Route path='/manage' loggedIn={this.state.loggedIn} component={PrivateLayout} />
-                            <Route path='/dashboard' loggedIn={this.state.loggedIn} component={PrivateLayout} />
+                            <PrivateRoute path='/student/:student_id' loggedIn={this.state.loggedIn} component={PrivateLayout} />
+                            <PrivateRoute path='/manage' loggedIn={this.state.loggedIn} component={PrivateLayout} />
+                            <PrivateRoute path='/dashboard' loggedIn={this.state.loggedIn} component={PrivateLayout} />
                             <Route render={() => (<p className="text-center mt-5">Not found</p>)} />
                         </Switch>
                     </div>

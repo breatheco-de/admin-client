@@ -3,7 +3,7 @@ import Flux from '@4geeksacademy/react-flux-dash';
 import { Panel, List, DropLink } from '../utils/bc-components/index';
 
 import AdminStore from '../stores/AdminStore';
-import AdminActions from '../actions/AdminActions';
+import * as AdminActions from '../actions/AdminActions';
 
 export default class ManageView extends Flux.View {
   
@@ -13,7 +13,7 @@ export default class ManageView extends Flux.View {
             entity: null,
             entitySlug: null,
             mode: null
-        }
+        };
         
     }
     
@@ -38,7 +38,11 @@ export default class ManageView extends Flux.View {
     }
     
     onSave(data){
-        AdminActions.add(this.state.entitySlug, data);
+        if(this.state.mode==='add') AdminActions.add(this.state.entitySlug, data);
+        else if(this.state.mode==='edit') AdminActions.update(this.state.entitySlug, data);
+        else console.error('Uknown method '+this.state.mode);
+        
+        this.props.history.push(`/manage/${this.state.entitySlug}/`);
     }
   
   render() {

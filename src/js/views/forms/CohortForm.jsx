@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-class UserForm extends React.Component{
+class Form extends React.Component{
     
     constructor(){
         super();
@@ -49,7 +49,11 @@ class UserForm extends React.Component{
                         onChange={(e) => this.formUpdated({ username: e.target.value})}
                         readOnly={(this.props.mode !== 'add')}
                     />
-                    <small id="emailHelp" className="form-text text-muted">The email cannot be changed</small>
+                    {
+                        (this.props.mode !== 'add') ?
+                            <small id="emailHelp" className="form-text text-muted">The email cannot be changed</small>
+                        :''
+                    }
                 </div>
                 <div className="form-group">
                     <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Full Name"
@@ -58,12 +62,9 @@ class UserForm extends React.Component{
                     />
                 </div>
                 <div className="form-group">
-                    <label>User Role</label>
                     <select className="form-control"
                         onChange={(e) => this.formUpdated({ type: e.target.value})}>
-                        <option value="admin">admin</option>
-                        <option value="admin">admissions</option>
-                        <option value="career_support">carreer support</option>
+                        <option value={null}>select a cohort</option>
                     </select>
                 </div>
                 <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
@@ -72,4 +73,4 @@ class UserForm extends React.Component{
         )
     }
 }
-export default withRouter(UserForm);
+export default withRouter(Form);
