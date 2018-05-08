@@ -21,10 +21,16 @@ class MainMenu extends React.Component{
     }
     
     render(){
+        if(!this.state.session.user) return (
+            <ul className="nav flex-column">
+                <MenuItem icon="fas fa-tachometer-alt" label="Log In" slug="login" to="/login" />
+            </ul>
+        );
+        
         const role = this.state.session.user.type;
         return(
             <ul className="nav flex-column">
-                <MenuItem icon="fas fa-users" label="Dashboard" slug="dashboard" to="/dashboard" />
+                <MenuItem icon="fas fa-tachometer-alt" label="Dashboard" slug="dashboard" to="/dashboard" />
                 { (role == 'admin') ? 
                     <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" /> :''
                 }
@@ -34,7 +40,7 @@ class MainMenu extends React.Component{
                 { (role == 'admin' || role == 'admission') ? 
                     <MenuItem icon="fas fa-users" label="Cohorts" slug="student" to="/manage/cohort/" />:''
                 }
-                <MenuItem icon="fas fa-users" label="Close Session" slug="close_session"
+                <MenuItem icon="fas fa-sign-out-alt" label="Close Session" slug="close_session"
                     onClick={() => UserActions.logoutUser()}
                 />
             </ul>

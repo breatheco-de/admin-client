@@ -51,6 +51,7 @@ export default class Login extends Flux.View {
       <div className="container">
         <div className="form-signin text-center">
           <img src={process.env.STATIC_PATH+bcLogo} />
+          <small className="text-center d-block">[admin]</small>
           <h2 className="form-signin-heading mt-5">Please sign in</h2>
           <form action="#" onSubmit={(e) => this.login(e)}>
           { 

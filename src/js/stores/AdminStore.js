@@ -15,7 +15,10 @@ class AdminStore extends Flux.DashStore{
         this.addEvent("manage_cohort", this._transformCohorts.bind(this));
     }
     
-    _transformUsers(users){ return users; }
+    _transformUsers(users){ 
+        if(!Array.isArray(users)) return users;
+        return users.filter(user => user.type !== 'student'); 
+    }
     _transformStudents(students){ return students; }
     _transformCohorts(cohorts){ return cohorts; }
     

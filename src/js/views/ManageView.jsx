@@ -82,7 +82,7 @@ export default class ManageView extends Flux.View {
     
     filterEntity(entity){
         let seatchFunction = SearchFunctions[this.state.entitySlug];
-        return (typeof seatchFunction === 'function') ? seatchFunction(entity) : true;
+        return (typeof seatchFunction === 'function') ? seatchFunction(entity, this.state.searchToken) : true;
     }
   
   render() {

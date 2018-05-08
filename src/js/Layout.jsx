@@ -56,7 +56,7 @@ class Layout extends Flux.View{
                         <Switch>
                             <Route exact path='/login' component={LoginView} />
                             <Route exact path='/forgot' component={ForgotView} />
-                            <Route exact path='/' loggedIn={this.state.loggedIn} component={PrivateLayout} />
+                            <PrivateRoute exact path='/' loggedIn={this.state.loggedIn} component={PrivateLayout} />
                             <PrivateRoute path='/student/:student_id' loggedIn={this.state.loggedIn} component={PrivateLayout} />
                             <PrivateRoute path='/manage' loggedIn={this.state.loggedIn} component={PrivateLayout} />
                             <PrivateRoute path='/dashboard' loggedIn={this.state.loggedIn} component={PrivateLayout} />
