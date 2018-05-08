@@ -53,7 +53,6 @@ node_modules/
 
 # ignore the dist directory were our bundle files are going to be
 dist/
-public/
 
 # ignore the testing server
 server.js
