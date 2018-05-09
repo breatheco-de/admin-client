@@ -8,7 +8,7 @@ export default class _BaseForm extends React.Component{
         this._errors = [];
         this.state = {
             _hasUserErrors: false
-        }
+        };
     }
     throwError(msg){
         this._errors.push(msg);
@@ -30,5 +30,13 @@ export default class _BaseForm extends React.Component{
                 this.props.onError(this._errors);
             } 
         } 
+    }
+    onSubmit(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if(!this.validate || typeof this.validate === 'undefined') throw new Error('there is way of validating the form');
+        else if(this.validate(this.state.data)) this.props.onSave(this.state.data);
+
+        return false;
     }
 }

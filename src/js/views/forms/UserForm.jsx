@@ -36,13 +36,6 @@ class UserForm extends _BaseForm{
         this.setState({ data });
     }
     
-    onSubmit(e){
-        e.preventDefault();
-        e.stopPropagation();
-        if(this.validate(this.state.data)) this.props.onSave(this.state.data);
-        return false;
-    }
-    
     validate(){
         const d = this.state.data;
         if(validator.isEmpty(d.full_name)) return this.throwError('Missing the Full Name');

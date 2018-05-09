@@ -3,8 +3,10 @@ import { withRouter, Link } from 'react-router-dom';
 import AdminStore from '../../stores/AdminStore';
 import { Modal } from '../../utils/bc-components/index';
 import * as StudentActions from '../../actions/StudentActions';
+import _BaseForm from './_BaseForm';
+import validator from 'validator';
 
-class Form extends React.Component{
+class Form extends _BaseForm{
     
     constructor(){
         super();
@@ -24,6 +26,8 @@ class Form extends React.Component{
                     email: '',
                     id: null,
                     type: 'student',
+                    phone: '',
+                    github: '',
                     cohort_slug: ''
                 },
                 mode: this.props.mode
@@ -47,11 +51,13 @@ class Form extends React.Component{
         }
     }
     
-    onSubmit(e){
-        e.preventDefault();
-        e.stopPropagation();
-        this.props.onSave(this.state.data);
-        return false;
+    validate(){
+        const d = this.state.data;
+        if(validator.isEmpty(d.full_name)) return this.throwError('Missing the Full Name');
+        if(!validator.isEmail(d.email)) return this.throwError('Missing the Email');
+        if(validator.isEmpty(d.phone || '')) return this.throwError('Missing phone number');
+        
+        return true;
     }
     
     addToCohort(){
@@ -109,6 +115,18 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
                 <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Full Name"
                     value={data.full_name} 
                     onChange={(e) => formUpdated({ full_name: e.target.value})}
+                />
+            </div>
+            <div className="form-group">
+                <input type="url" className="form-control" placeholder="Github URL"
+                    value={data.github} 
+                    onChange={(e) => formUpdated({ github: e.target.value})}
+                />
+            </div>
+            <div className="form-group">
+                <input type="text" className="form-control" placeholder="Phone Number"
+                    value={data.phone} 
+                    onChange={(e) => formUpdated({ phone: e.target.value})}
                 />
             </div>
             <div className="form-group">

@@ -32,7 +32,8 @@ export const add = (type, data) => {
     
 export const update = (type, data) => {
     if(typeof BC[type] === 'function') {
-        BC[type]().update(data.id)
+        delete data.email;
+        BC[type]().update(data.id, data)
             .then((result) => {
                 Notify.success(`The ${type} was successfully updated`);
                 

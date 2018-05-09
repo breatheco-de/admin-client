@@ -7,9 +7,6 @@ import HomeView from './views/HomeView';
 
 import ManageView from './views/ManageView';
 import EditView from './views/EditView';
-
-import * as AdminActions from './actions/AdminActions';
-
 import MainMenu from './components/menus/MainMenu';
 
 class Layout extends Flux.View{
@@ -37,6 +34,7 @@ class Layout extends Flux.View{
                 </div>
                 <div className="col-8 col-sm-9 col-lg-10">
                     <Switch>
+                        <Route exact path='/' component={HomeView} />
                         <Route exact path='/home' component={HomeView} />
                         <Route exact path='/dashboard' component={HomeView} />
                         <Route exact path='/manage/:entity_slug/:entity_id/edit' component={EditView} />
