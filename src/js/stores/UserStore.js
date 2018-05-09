@@ -22,7 +22,9 @@ class UserStore extends Flux.DashStore{
     
     _sessionTransformer(data){
         let session = this.getPersistedState();
-        return this.setPersistedState(Object.assign(session, data));
+        
+        if(!session) return this.setPersistedState(data);
+        else return this.setPersistedState(Object.assign(session, data));
     }
     
     getSession(){
