@@ -1,6 +1,8 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import AdminStore from '../../stores/AdminStore';
+import { Modal } from '../../utils/bc-components/index';
+import * as StudentActions from '../../actions/StudentActions';
 
 class Form extends React.Component{
     
@@ -8,6 +10,8 @@ class Form extends React.Component{
         super();
         this.state = {
             data: null,
+            addCohort: null,
+            newCohort: null,
             allCohorts: AdminStore.getAll('cohort')
         };
     }
@@ -18,6 +22,7 @@ class Form extends React.Component{
                 data: {
                     username: '',
                     email: '',
+                    id: null,
                     type: 'student',
                     cohort_slug: ''
                 },
@@ -33,8 +38,13 @@ class Form extends React.Component{
     }
     
     formUpdated(newFormData){
-        let data = Object.assign(this.state.data, newFormData);
-        this.setState({ data });
+        if(typeof newFormData.addCohort !== 'undefined'){
+            this.setState({ addCohort: newFormData.addCohort });
+        }
+        else{
+            let data = Object.assign(this.state.data, newFormData);
+            this.setState({ data });
+        }
     }
     
     onSubmit(e){
@@ -44,9 +54,29 @@ class Form extends React.Component{
         return false;
     }
     
+    addToCohort(){
+        StudentActions.addStudentsToCohort(this.state.newCohort, [this.state.data.id]);
+        this.setState({
+            addCohort: null,
+            newCohort: null
+        });
+    }
+    
     render(){
+        const cohorts = this.state.allCohorts.map((c,i) => (<option key={i} value={c.slug}>{c.name}</option>));
         return (
             <form onSubmit={this.onSubmit.bind(this)}>
+                <Modal show={this.state.addCohort} title="Add student to cohort"
+                    onSave={this.addToCohort.bind(this)}
+                    onCancel={() => this.setState({
+                        addCohort: null,
+                        newCohort: null
+                    })}
+                >
+                    <select onChange={(e) => this.setState({ newCohort: e.target.value })}>
+                        {cohorts}
+                    </select>
+                </Modal>
                 {
                     (this.state.mode === 'add') ?
                         <Add data={this.state.data} studentCohorts={this.state.allCohorts || []} 
@@ -84,6 +114,13 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
             <div className="form-group">
                 <ul className="nav">
                     {cohorts}
+                    <li className="nav-item">
+                        <button type="button" className="btn btn-light"
+                            onClick={() => formUpdated({ addCohort: true })}
+                        >
+                            <i className="fas fa-plus-circle"></i> Add cohort
+                        </button>
+                    </li>
                 </ul>
                 <small id="emailHelp" className="form-text text-muted">Student cohorts can be managed thru the cohort itself</small>
             </div>

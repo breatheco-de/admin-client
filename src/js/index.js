@@ -5,6 +5,11 @@ import ReactDOM from 'react-dom';
 import '../styles/index.scss';
 import './utils/icons';
 
+var packg = require('../../package.json');
+console.info("BreatheCode Platform",packg.version, process.env.ENVIRONMENT);
+
+
+
 //import your own components
 import Layout from './Layout.jsx';
 

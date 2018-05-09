@@ -11,10 +11,11 @@ import faGithub from '@fortawesome/fontawesome-free-brands/faGithub';
 import faEllipsisV from '@fortawesome/fontawesome-free-solid/faEllipsisV';
 import faSignOutAlt from '@fortawesome/fontawesome-free-solid/faSignOutAlt';
 import faTachometerAlt from '@fortawesome/fontawesome-free-solid/faTachometerAlt';
+import faPlusCircle from '@fortawesome/fontawesome-free-solid/faPlusCircle';
 fontawesome.config = {
   autoReplaceSvg: 'nest'
 };
 fontawesome.library.add(
     faCheck, faGraduationCap, faPlay, faSpinner, faSearch, faGithub,
-    faCog, faUsers, faEllipsisV, faSignOutAlt, faTachometerAlt
+    faCog, faUsers, faEllipsisV, faSignOutAlt, faTachometerAlt, faPlusCircle
 );
