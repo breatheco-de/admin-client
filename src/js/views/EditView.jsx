@@ -4,6 +4,7 @@ import { Panel, List, DropLink } from '../utils/bc-components/index';
 
 import AdminStore from '../stores/AdminStore';
 import * as AdminActions from '../actions/AdminActions';
+import * as Notify from '../actions/NotifyActions';
 
 export default class ManageView extends Flux.View {
   
@@ -44,6 +45,10 @@ export default class ManageView extends Flux.View {
         
         this.props.history.push(`/manage/${this.state.entitySlug}/`);
     }
+    
+    onError(errors){
+        Notify.error(errors.split(','));
+    }
   
   render() {
       
@@ -59,7 +64,9 @@ export default class ManageView extends Flux.View {
                 }
                 <div>
                     <this.state.entityComponent 
-                        data={this.state.entity} onSave={this.onSave.bind(this)} 
+                        data={this.state.entity}
+                        onSave={this.onSave.bind(this)} 
+                        onError={this.onError.bind(this)} 
                         mode={this.state.mode}
                     />
                 </div>

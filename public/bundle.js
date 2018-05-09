@@ -35663,7 +35663,7 @@ var Wrapper = function () {
 
                 _this.fetch(path, opts).then(function (resp) {
                     _this.pending[method][path] = false;
-                    if (resp.status == 200) return resp.json();else if (resp.status == 403) reject({ msg: 'Invalid username or password', code: 403 });else if (resp.status == 401) reject({ msg: 'Unauthorized', code: 401 });else if (resp.status == 400) reject({ msg: 'Invalid Argument', code: 400 });else reject({ msg: 'Invalid username or password', code: 500 });
+                    if (resp.status == 200) return resp.json();else if (resp.status == 403) reject({ msg: 'Invalid username or password', code: 403 });else if (resp.status == 401) reject({ msg: 'Unauthorized', code: 401 });else if (resp.status == 400) reject({ msg: 'Invalid Argument', code: 400 });else reject({ msg: 'There was an error, try again later', code: 500 });
                     return false;
                 }).then(function (json) {
                     if (!json) throw new Error('There was a problem processing the request');
@@ -35884,9 +35884,15 @@ module.exports = new Wrapper();
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Modal = exports.MenuItem = exports.PrivateRoute = exports.ProgressKPI = exports.Sidebar = exports.Panel = exports.Notifier = exports.Loading = exports.List = exports.DropLink = exports.CheckBox = exports.Button = exports.BreadCrumb = exports.ActionableItem = undefined;
+exports.UserError = exports.Modal = exports.MenuItem = exports.PrivateRoute = exports.ProgressKPI = exports.Sidebar = exports.Panel = exports.Notifier = exports.Loading = exports.List = exports.DropLink = exports.CheckBox = exports.Button = exports.BreadCrumb = exports.ActionableItem = undefined;
 
 __webpack_require__(/*! ./styles/index.scss */ "./src/js/utils/bc-components/styles/index.scss");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var ActionableItem = exports.ActionableItem = __webpack_require__(/*! ./js/ActionableItem */ "./src/js/utils/bc-components/js/ActionableItem.jsx").default;
 var BreadCrumb = exports.BreadCrumb = __webpack_require__(/*! ./js/BreadCrumb */ "./src/js/utils/bc-components/js/BreadCrumb.jsx").default;
@@ -35902,6 +35908,18 @@ var ProgressKPI = exports.ProgressKPI = __webpack_require__(/*! ./js/ProgressKPI
 var PrivateRoute = exports.PrivateRoute = __webpack_require__(/*! ./js/PrivateRoute */ "./src/js/utils/bc-components/js/PrivateRoute.jsx").default;
 var MenuItem = exports.MenuItem = __webpack_require__(/*! ./js/MenuItem */ "./src/js/utils/bc-components/js/MenuItem.jsx").default;
 var Modal = exports.Modal = __webpack_require__(/*! ./js/Modal */ "./src/js/utils/bc-components/js/Modal.jsx").default;
+
+var UserError = exports.UserError = function (_Error) {
+  _inherits(UserError, _Error);
+
+  function UserError() {
+    _classCallCheck(this, UserError);
+
+    return _possibleConstructorReturn(this, (UserError.__proto__ || Object.getPrototypeOf(UserError)).apply(this, arguments));
+  }
+
+  return UserError;
+}(Error);
 
 /***/ }),
 
@@ -37441,6 +37459,10 @@ var _AdminActions = __webpack_require__(/*! ../actions/AdminActions */ "./src/js
 
 var AdminActions = _interopRequireWildcard(_AdminActions);
 
+var _NotifyActions = __webpack_require__(/*! ../actions/NotifyActions */ "./src/js/actions/NotifyActions.js");
+
+var Notify = _interopRequireWildcard(_NotifyActions);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -37496,6 +37518,11 @@ var ManageView = function (_Flux$View) {
             this.props.history.push('/manage/' + this.state.entitySlug + '/');
         }
     }, {
+        key: 'onError',
+        value: function onError(errors) {
+            Notify.error(errors.split(','));
+        }
+    }, {
         key: 'render',
         value: function render() {
 
@@ -37527,7 +37554,9 @@ var ManageView = function (_Flux$View) {
                         'div',
                         null,
                         _react2.default.createElement(this.state.entityComponent, {
-                            data: this.state.entity, onSave: this.onSave.bind(this),
+                            data: this.state.entity,
+                            onSave: this.onSave.bind(this),
+                            onError: this.onError.bind(this),
                             mode: this.state.mode
                         })
                     )
@@ -38005,7 +38034,9 @@ var _bcIcon2 = _interopRequireDefault(_bcIcon);
 
 var _UserActions = __webpack_require__(/*! ../../actions/UserActions */ "./src/js/actions/UserActions.js");
 
-var _UserActions2 = _interopRequireDefault(_UserActions);
+var UserActions = _interopRequireWildcard(_UserActions);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38044,7 +38075,7 @@ var Forgot = function (_Flux$View) {
       var errors = this.validateForm();
       if (!errors) {
         this.setState({ errorMsg: [], successMsg: null });
-        _UserActions2.default.remindUser(this.email).then(function () {
+        UserActions.remindUser(this.email).then(function () {
           _this2.setState({
             successMsg: "Check your email for instructions, if you don't receive th email check your spam folder"
           });
@@ -38340,7 +38371,9 @@ var map = {
 	"./StudentForm": "./src/js/views/forms/StudentForm.jsx",
 	"./StudentForm.jsx": "./src/js/views/forms/StudentForm.jsx",
 	"./UserForm": "./src/js/views/forms/UserForm.jsx",
-	"./UserForm.jsx": "./src/js/views/forms/UserForm.jsx"
+	"./UserForm.jsx": "./src/js/views/forms/UserForm.jsx",
+	"./_BaseForm": "./src/js/views/forms/_BaseForm.jsx",
+	"./_BaseForm.jsx": "./src/js/views/forms/_BaseForm.jsx"
 };
 
 
@@ -38836,6 +38869,14 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 
+var _BaseForm3 = __webpack_require__(/*! ./_BaseForm */ "./src/js/views/forms/_BaseForm.jsx");
+
+var _BaseForm4 = _interopRequireDefault(_BaseForm3);
+
+var _validator = __webpack_require__(/*! validator */ "./node_modules/validator/index.js");
+
+var _validator2 = _interopRequireDefault(_validator);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -38844,8 +38885,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var UserForm = function (_React$Component) {
-    _inherits(UserForm, _React$Component);
+var UserForm = function (_BaseForm2) {
+    _inherits(UserForm, _BaseForm2);
 
     function UserForm() {
         _classCallCheck(this, UserForm);
@@ -38888,8 +38929,18 @@ var UserForm = function (_React$Component) {
         value: function onSubmit(e) {
             e.preventDefault();
             e.stopPropagation();
-            this.props.onSave(this.state.data);
+            if (this.validate(this.state.data)) this.props.onSave(this.state.data);
             return false;
+        }
+    }, {
+        key: 'validate',
+        value: function validate() {
+            var d = this.state.data;
+            if (_validator2.default.isEmpty(d.full_name)) return this.throwError('Missing the Full Name');
+            if (!_validator2.default.isEmail(d.username)) return this.throwError('Missing the Full Name');
+            if (_validator2.default.isEmpty(d.type) || d.type == 'select') return this.throwError('Missing the type of user');
+
+            return true;
         }
     }, {
         key: 'render',
@@ -38897,85 +38948,168 @@ var UserForm = function (_React$Component) {
             var _this2 = this;
 
             return _react2.default.createElement(
-                'form',
-                { onSubmit: this.onSubmit.bind(this) },
+                'div',
+                null,
                 _react2.default.createElement(
-                    'div',
-                    { className: 'form-group' },
-                    _react2.default.createElement('input', { type: 'email', className: 'form-control', 'aria-describedby': 'emailHelp', placeholder: 'Email',
-                        value: this.state.data.username,
-                        onChange: function onChange(e) {
-                            return _this2.formUpdated({ username: e.target.value });
-                        },
-                        readOnly: this.props.mode !== 'add'
-                    }),
+                    'form',
+                    { onSubmit: this.onSubmit.bind(this) },
                     _react2.default.createElement(
-                        'small',
-                        { id: 'emailHelp', className: 'form-text text-muted' },
-                        'The email cannot be changed'
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'form-group' },
-                    _react2.default.createElement('input', { type: 'text', className: 'form-control', 'aria-describedby': 'emailHelp', placeholder: 'Full Name',
-                        value: this.state.data.full_name,
-                        onChange: function onChange(e) {
-                            return _this2.formUpdated({ full_name: e.target.value });
-                        }
-                    })
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'form-group' },
-                    _react2.default.createElement(
-                        'label',
-                        null,
-                        'User Role'
+                        'div',
+                        { className: 'form-group' },
+                        _react2.default.createElement('input', { type: 'email', className: 'form-control', 'aria-describedby': 'emailHelp', placeholder: 'Email',
+                            value: this.state.data.username,
+                            onChange: function onChange(e) {
+                                return _this2.formUpdated({ username: e.target.value });
+                            },
+                            readOnly: this.props.mode !== 'add'
+                        }),
+                        _react2.default.createElement(
+                            'small',
+                            { id: 'emailHelp', className: 'form-text text-muted' },
+                            'The email cannot be changed'
+                        )
                     ),
                     _react2.default.createElement(
-                        'select',
-                        { className: 'form-control',
+                        'div',
+                        { className: 'form-group' },
+                        _react2.default.createElement('input', { type: 'text', className: 'form-control', 'aria-describedby': 'emailHelp', placeholder: 'Full Name',
+                            value: this.state.data.full_name,
                             onChange: function onChange(e) {
-                                return _this2.formUpdated({ type: e.target.value });
-                            } },
+                                return _this2.formUpdated({ full_name: e.target.value });
+                            }
+                        })
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'form-group' },
                         _react2.default.createElement(
-                            'option',
-                            { value: 'admin' },
-                            'admin'
+                            'label',
+                            null,
+                            'User Role'
                         ),
                         _react2.default.createElement(
-                            'option',
-                            { value: 'admin' },
-                            'admissions'
-                        ),
-                        _react2.default.createElement(
-                            'option',
-                            { value: 'career_support' },
-                            'carreer support'
+                            'select',
+                            { className: 'form-control',
+                                onChange: function onChange(e) {
+                                    return _this2.formUpdated({ type: e.target.value });
+                                } },
+                            _react2.default.createElement(
+                                'option',
+                                { value: 'select' },
+                                'Select the type of user'
+                            ),
+                            _react2.default.createElement(
+                                'option',
+                                { value: 'admin' },
+                                'admin'
+                            ),
+                            _react2.default.createElement(
+                                'option',
+                                { value: 'admin' },
+                                'admissions'
+                            ),
+                            _react2.default.createElement(
+                                'option',
+                                { value: 'career_support' },
+                                'carreer support'
+                            )
                         )
+                    ),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'button', className: 'btn btn-light', onClick: function onClick() {
+                                return _this2.props.history.goBack();
+                            } },
+                        'Back'
+                    ),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit', className: 'btn btn-primary' },
+                        'Save'
                     )
-                ),
-                _react2.default.createElement(
-                    'button',
-                    { type: 'button', className: 'btn btn-light', onClick: function onClick() {
-                            return _this2.props.history.goBack();
-                        } },
-                    'Back'
-                ),
-                _react2.default.createElement(
-                    'button',
-                    { type: 'submit', className: 'btn btn-primary' },
-                    'Save'
                 )
             );
         }
     }]);
 
     return UserForm;
-}(_react2.default.Component);
+}(_BaseForm4.default);
 
 exports.default = (0, _reactRouterDom.withRouter)(UserForm);
+
+/***/ }),
+
+/***/ "./src/js/views/forms/_BaseForm.jsx":
+/*!******************************************!*\
+  !*** ./src/js/views/forms/_BaseForm.jsx ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _index = __webpack_require__(/*! ../../utils/bc-components/index */ "./src/js/utils/bc-components/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _BaseForm = function (_React$Component) {
+    _inherits(_BaseForm, _React$Component);
+
+    function _BaseForm() {
+        _classCallCheck(this, _BaseForm);
+
+        var _this = _possibleConstructorReturn(this, (_BaseForm.__proto__ || Object.getPrototypeOf(_BaseForm)).call(this));
+
+        _this._errors = [];
+        _this.state = {
+            _hasUserErrors: false
+        };
+        return _this;
+    }
+
+    _createClass(_BaseForm, [{
+        key: 'throwError',
+        value: function throwError(msg) {
+            this._errors.push(msg);
+            this.setState({ _hasUserErrors: true });
+            if (!this.props.onError || typeof this.props.onError === 'undefined') throw new Error('there is no prop onError');else {
+                if (this._errors.length > 0) this.props.onError(msg);
+            }
+            return false;
+        }
+    }, {
+        key: 'submit',
+        value: function submit() {
+            if (!this.props.onSave || typeof this.props.onSave === 'undefined') throw new Error('there is no prop onSave');else {
+                if (this._errors.length === 0) this.props.onSave(this.state.data);else {
+                    this._errors = [];
+                    this.props.onError(this._errors);
+                }
+            }
+        }
+    }]);
+
+    return _BaseForm;
+}(_react2.default.Component);
+
+exports.default = _BaseForm;
 
 /***/ }),
 
