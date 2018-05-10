@@ -53,9 +53,10 @@ class UserForm extends _BaseForm{
                             onChange={(e) => this.formUpdated({ type: e.target.value})}>
                             <option value="select">Select the type of user</option>
                             <option value="admin">admin</option>
-                            <option value="admissions">Admissions</option>
-                            <option value="student_support">Student Support</option>
-                            <option value="partnerships">Partnerships</option>
+                            <option value="teacher">teacher</option>
+                            <option value="admissions">admissions</option>
+                            <option value="student_support">student_support</option>
+                            <option value="partnerships">partnerships</option>
                         </select>
                     </div>
                     <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
