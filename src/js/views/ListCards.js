@@ -10,16 +10,22 @@ let cards = {
     userCard: (data, key, onEntitySelect) => (
         <li key={key}>
             <DropLink
-            dropdown={dropdownOptions}
-            onSelect={(opt) => onEntitySelect(opt, data)}>
-            {data.full_name}, {data.email} 
+                className='list_card'
+                dropdown={dropdownOptions}
+                onSelect={(opt) => onEntitySelect(opt, data)}
+            >
+                {data.full_name}
+                <p className='subrow'>
+                    <small className="text-info">{data.type}</small>
+                    <small className="ml-4 text-secondary">{data.username}</small>
+                </p>
             </DropLink>
         </li>
     ),
     studentCard: (data, key, onEntitySelect) => (
         <li key={key}>
             <DropLink
-                className='studentCard'
+                className='list_card'
                 dropdown={[
                     // { 
                     //     label: 'internal profile', 
@@ -40,6 +46,7 @@ let cards = {
     cohortCard: (data, key, onEntitySelect) => (
         <li key={key}>
             <DropLink
+            className='list_card'
             dropdown={dropdownOptions.concat([
                 { 
                     label: 'review students', 
@@ -48,7 +55,14 @@ let cards = {
                 }
             ])}
             onSelect={(opt) => onEntitySelect(opt, data)}>
-            {data.name} <small className="text-info">{data.profile_slug}</small>
+            {data.name}
+            <h5 className="m-0">{data.full_name}</h5>
+            <p className='subrow'>
+                <small className="text-info">{data.profile_slug}</small>
+                {(data.kickoff_date) ? 
+                    <small className="ml-4 text-secondary">{`Started on ${data.kickoff_date}`}</small> : ''
+                }
+            </p>
             </DropLink>
         </li>
     )

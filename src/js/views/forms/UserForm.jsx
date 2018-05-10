@@ -49,12 +49,13 @@ class UserForm extends _BaseForm{
                     </div>
                     <div className="form-group">
                         <label>User Role</label>
-                        <select className="form-control"
+                        <select className="form-control" defaultValue={this.state.data.type} 
                             onChange={(e) => this.formUpdated({ type: e.target.value})}>
                             <option value="select">Select the type of user</option>
                             <option value="admin">admin</option>
-                            <option value="admin">admissions</option>
-                            <option value="career_support">carreer support</option>
+                            <option value="admissions">Admissions</option>
+                            <option value="student_support">Student Support</option>
+                            <option value="partnerships">Partnerships</option>
                         </select>
                     </div>
                     <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>

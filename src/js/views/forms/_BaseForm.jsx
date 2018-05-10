@@ -45,7 +45,7 @@ export default class _BaseForm extends React.Component{
     componentWillMount(){
         if(this.props.mode=='add'){
             this.setState({
-                data: this.defaultFormState(),
+                data: this.setDefaultState(),
                 mode: this.props.mode
             });
         }

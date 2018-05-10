@@ -20,7 +20,7 @@ class Form extends _BaseForm{
         return {
             slug: '',
             profile_slug: '',
-            slack_url: '',
+            slack_url: 'https://4geeksacademy.slack.com',
             kickoff_date: ''
         };
     }

@@ -24,6 +24,8 @@ class Form extends _BaseForm{
             email: '',
             id: null,
             type: 'student',
+            first_name: '',
+            last_name: '',
             phone: '',
             github: '',
             cohort_slug: ''
@@ -42,9 +44,15 @@ class Form extends _BaseForm{
     
     validate(){
         const d = this.state.data;
-        if(validator.isEmpty(d.full_name)) return this.throwError('Missing the Full Name');
         if(!validator.isEmail(d.email)) return this.throwError('Missing the Email');
-        if(validator.isEmpty(d.phone || '')) return this.throwError('Missing phone number');
+        if(validator.isEmpty(d.phone)) return this.throwError('Missing phone number');
+        if(this.props.mode !== 'add'){
+            if(validator.isEmpty(d.full_name)) return this.throwError('Missing the Full Name');
+        } 
+        else{
+            if(validator.isEmpty(d.first_name)) return this.throwError('Missing the First Name');
+            if(validator.isEmpty(d.last_name)) return this.throwError('Missing the Last Name');
+        }
         
         return true;
     }
@@ -94,14 +102,14 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
     return (
         <div>
             <div className="form-group">
-                <input type="email" className="form-control" aria-describedby="emailHelp" placeholder="Email"
+                <input type="email" className="form-control" placeholder="Email"
                     value={data.email} 
                     readOnly={true}
                 />
                 <small className="form-text text-muted">The email cannot be changed</small>
             </div>
             <div className="form-group">
-                <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Full Name"
+                <input type="text" className="form-control" placeholder="Full Name"
                     value={data.full_name} 
                     onChange={(e) => formUpdated({ full_name: e.target.value})}
                 />
@@ -139,21 +147,40 @@ const Add = ({data, studentCohorts, formUpdated}) => {
     return (
         <div>
             <div className="form-group">
-                <input type="email" className="form-control"  aria-describedby="emailHelp" placeholder="Email"
+                <input type="email" className="form-control"  placeholder="Email"
                     value={data.email} 
                     onChange={(e) => formUpdated({ email: e.target.value})}
                 />
             </div>
             <div className="form-group">
-                <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Full Name"
-                    value={data.full_name} 
-                    onChange={(e) => formUpdated({ full_name: e.target.value})}
+                <input type="text" className="form-control" placeholder="First Name"
+                    value={data.first_name} 
+                    onChange={(e) => formUpdated({ first_name: e.target.value})}
+                />
+            </div>
+            <div className="form-group">
+                <input type="text" className="form-control" placeholder="Last Name"
+                    value={data.last_name} 
+                    onChange={(e) => formUpdated({ last_name: e.target.value})}
+                />
+            </div>
+            <div className="form-group">
+                <input type="url" className="form-control" placeholder="Github URL"
+                    value={data.github} 
+                    onChange={(e) => formUpdated({ github: e.target.value})}
+                />
+            </div>
+            <div className="form-group">
+                <input type="text" className="form-control" placeholder="Phone Number"
+                    value={data.phone} 
+                    onChange={(e) => formUpdated({ phone: e.target.value})}
                 />
             </div>
             <div className="form-group">
                 <select className="form-control"
                     onChange={(e) => formUpdated({ cohort_slug: e.target.value})}
                 >
+                    <option value={null}>Select a cohort</option>
                     {cohorts}
                 </select>
                 <small className="form-text text-muted">Initial cohort for the student</small>
