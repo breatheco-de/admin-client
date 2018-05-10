@@ -39400,18 +39400,23 @@ var UserForm = function (_BaseForm2) {
                             ),
                             _react2.default.createElement(
                                 'option',
+                                { value: 'teacher' },
+                                'teacher'
+                            ),
+                            _react2.default.createElement(
+                                'option',
                                 { value: 'admissions' },
-                                'Admissions'
+                                'admissions'
                             ),
                             _react2.default.createElement(
                                 'option',
                                 { value: 'student_support' },
-                                'Student Support'
+                                'student_support'
                             ),
                             _react2.default.createElement(
                                 'option',
                                 { value: 'partnerships' },
-                                'Partnerships'
+                                'partnerships'
                             )
                         )
                     ),
