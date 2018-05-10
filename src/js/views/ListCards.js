@@ -59,8 +59,18 @@ let cards = {
             <h5 className="m-0">{data.full_name}</h5>
             <p className='subrow'>
                 <small className="text-info">{data.profile_slug}</small>
-                {(data.kickoff_date) ? 
-                    <small className="ml-4 text-secondary">{`Started on ${data.kickoff_date}`}</small> : ''
+                { (data.kickoff_date && data.kickoff_date !== '' && data.kickoff_date !== '0000-00-00') ? 
+                    <small className="ml-4 text-secondary">
+                        Start: {data.kickoff_date}
+                        { 
+                            ((new Date(data.kickoff_date).getTime()) <= (new Date()).getTime()) ?
+                                <small className="text-success"> (started)</small>
+                                :
+                                <small className="text-primary"> (upcoming)</small>
+                        }
+                    </small>
+                    :
+                    <small className="ml-4 text-danger">missing kickoff date</small>
                 }
             </p>
             </DropLink>

@@ -34710,7 +34710,7 @@ var Layout = function (_Flux$View) {
             notifications: [],
             errors: null
         };
-        AdminActions.get("cohort");
+        AdminActions.get(["cohort", "location", 'profile']);
         return _this;
     }
 
@@ -34939,12 +34939,13 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var get = exports.get = function get(type) {
-    if (typeof _index2.default[type] === 'function') {
-        _index2.default[type]().all().then(function (result) {
+var get = exports.get = function get(types) {
+    if (!Array.isArray(types)) types = [].concat([types]);
+    types.forEach(function (type) {
+        if (typeof _index2.default[type] === 'function') _index2.default[type]().all().then(function (result) {
             _reactFluxDash2.default.dispatchEvent('manage_' + type, result.data || result);
-        });
-    } else throw new Error('Invalid fetch type: ' + type);
+        });else throw new Error('Invalid fetch type: ' + type);
+    });
 };
 
 var add = exports.add = function add(type, data) {
@@ -34953,7 +34954,7 @@ var add = exports.add = function add(type, data) {
             Notify.success('The ' + type + ' was successfully added');
 
             var state = _AdminStore2.default.getState();
-            var entities = state['manage_' + type].concat([data]);
+            var entities = state['manage_' + type].concat([result.data]);
             _reactFluxDash2.default.dispatchEvent('manage_' + type, entities);
         }).catch(function (error) {
             Notify.error('Error: ' + (error.msg || error));
@@ -34969,7 +34970,7 @@ var update = exports.update = function update(type, data) {
 
             var state = _AdminStore2.default.getState();
             var entities = state['manage_' + type].map(function (ent) {
-                if (ent.id !== data.id) return ent;else return data;
+                if (ent.id !== result.data.id) return ent;else return result.data;
             });
 
             _reactFluxDash2.default.dispatchEvent('manage_' + type, entities);
@@ -35388,6 +35389,8 @@ var AdminStore = function (_Flux$DashStore) {
         _this.addEvent("manage_user", _this._transformUsers.bind(_this));
         _this.addEvent("manage_student", _this._transformStudents.bind(_this));
         _this.addEvent("manage_cohort", _this._transformCohorts.bind(_this));
+        _this.addEvent("manage_location", _this._transformLocation.bind(_this));
+        _this.addEvent("manage_profile", _this._transformProfile.bind(_this));
         return _this;
     }
 
@@ -35401,13 +35404,23 @@ var AdminStore = function (_Flux$DashStore) {
         }
     }, {
         key: "_transformStudents",
-        value: function _transformStudents(students) {
-            return students;
+        value: function _transformStudents(results) {
+            return results;
+        }
+    }, {
+        key: "_transformLocation",
+        value: function _transformLocation(results) {
+            return results;
         }
     }, {
         key: "_transformCohorts",
-        value: function _transformCohorts(cohorts) {
-            return cohorts;
+        value: function _transformCohorts(results) {
+            return results;
+        }
+    }, {
+        key: "_transformProfile",
+        value: function _transformProfile(results) {
+            return results;
         }
     }, {
         key: "getSingle",
@@ -35881,6 +35894,54 @@ var Wrapper = function () {
                 },
                 delete: function _delete(id) {
                     return _this8.delete(url + '/cohort/' + id);
+                }
+            };
+        }
+    }, {
+        key: 'location',
+        value: function location() {
+            var _this9 = this;
+
+            var url = this.apiPath;
+            return {
+                all: function all() {
+                    return _this9.get(url + '/locations/');
+                },
+                get: function get(id) {
+                    return _this9.get(url + '/location/' + id);
+                },
+                add: function add(args) {
+                    return _this9.put(url + '/location/', args);
+                },
+                update: function update(id, args) {
+                    return _this9.post(url + '/location/' + id, args);
+                },
+                delete: function _delete(id) {
+                    return _this9.delete(url + '/location/' + id);
+                }
+            };
+        }
+    }, {
+        key: 'profile',
+        value: function profile() {
+            var _this10 = this;
+
+            var url = this.apiPath;
+            return {
+                all: function all() {
+                    return _this10.get(url + '/profiles/');
+                },
+                get: function get(id) {
+                    return _this10.get(url + '/profile/' + id);
+                },
+                add: function add(args) {
+                    return _this10.put(url + '/profile/', args);
+                },
+                update: function update(id, args) {
+                    return _this10.post(url + '/profile/' + id, args);
+                },
+                delete: function _delete(id) {
+                    return _this10.delete(url + '/profile/' + id);
                 }
             };
         }
@@ -37794,11 +37855,25 @@ var cards = {
                         { className: 'text-info' },
                         data.profile_slug
                     ),
-                    data.kickoff_date ? _react2.default.createElement(
+                    data.kickoff_date && data.kickoff_date !== '' && data.kickoff_date !== '0000-00-00' ? _react2.default.createElement(
                         'small',
                         { className: 'ml-4 text-secondary' },
-                        'Started on ' + data.kickoff_date
-                    ) : ''
+                        'Start: ',
+                        data.kickoff_date,
+                        new Date(data.kickoff_date).getTime() <= new Date().getTime() ? _react2.default.createElement(
+                            'small',
+                            { className: 'text-success' },
+                            ' (started)'
+                        ) : _react2.default.createElement(
+                            'small',
+                            { className: 'text-primary' },
+                            ' (upcoming)'
+                        )
+                    ) : _react2.default.createElement(
+                        'small',
+                        { className: 'ml-4 text-danger' },
+                        'missing kickoff date'
+                    )
                 )
             )
         );
@@ -38504,6 +38579,10 @@ var _validator = __webpack_require__(/*! validator */ "./node_modules/validator/
 
 var _validator2 = _interopRequireDefault(_validator);
 
+var _AdminStore = __webpack_require__(/*! ../../stores/AdminStore */ "./src/js/stores/AdminStore.js");
+
+var _AdminStore2 = _interopRequireDefault(_AdminStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -38522,7 +38601,10 @@ var Form = function (_BaseForm2) {
 
         _this.state = {
             data: _this.setDefaultState(),
-            profiles: [{ label: 'Full Stack', slug: 'full-stack' }, { label: 'Web Development', slug: 'web-development' }]
+            dependencies: {
+                location: _AdminStore2.default.getAll('location'),
+                profile: _AdminStore2.default.getAll('profile')
+            }
         };
         return _this;
     }
@@ -38541,27 +38623,53 @@ var Form = function (_BaseForm2) {
         key: 'validate',
         value: function validate(data) {
             if (_validator2.default.isEmpty(data.kickoff_date)) return this.throwError('Empty kickoff date');
-            if (_validator2.default.isEmpty(data.slug)) return this.throwError('Empty slug date');
-            if (_validator2.default.isEmpty(data.slack_url)) return this.throwError('Empty slack_url date');
-            if (_validator2.default.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug date');
+            if (_validator2.default.isEmpty(data.name)) return this.throwError('Empty slug');
+            if (_validator2.default.isEmpty(data.language)) return this.throwError('Empty slug language');
+            if (_validator2.default.isEmpty(data.slack_url)) return this.throwError('Empty slack_url');
+            if (_validator2.default.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug');
 
             return true;
+        }
+    }, {
+        key: 'sanitizeData',
+        value: function sanitizeData(data) {
+            if (typeof data.slug !== 'undefined' && (!data.slug || data.slug == '')) {
+                data.slug = data.name.replace(/\s+/g, '-').toLowerCase();
+            }
+            return data;
         }
     }, {
         key: 'render',
         value: function render() {
             var _this2 = this;
 
-            var profiles = this.state.profiles.map(function (p, i) {
+            var profiles = this.state.dependencies.profile.map(function (p, i) {
                 return _react2.default.createElement(
                     'option',
                     { key: i, value: p.slug },
-                    p.label
+                    p.name
+                );
+            });
+            var locations = this.state.dependencies.location.map(function (p, i) {
+                return _react2.default.createElement(
+                    'option',
+                    { key: i, value: p.slug },
+                    p.name
                 );
             });
             return _react2.default.createElement(
                 'form',
                 { onSubmit: this.onSubmit.bind(this) },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: 'Cohort Name',
+                        value: this.state.data.name,
+                        onChange: function onChange(e) {
+                            return _this2.formUpdated({ name: e.target.value });
+                        }
+                    })
+                ),
                 _react2.default.createElement(
                     'div',
                     { className: 'form-group' },
@@ -38576,7 +38684,11 @@ var Form = function (_BaseForm2) {
                         'small',
                         { id: 'emailHelp', className: 'form-text text-muted' },
                         'The slug cannot be changed'
-                    ) : ''
+                    ) : _react2.default.createElement(
+                        'small',
+                        { id: 'emailHelp', className: 'form-text text-info' },
+                        'Leave slug empty for automatic generation'
+                    )
                 ),
                 _react2.default.createElement(
                     'div',
@@ -38597,6 +38709,51 @@ var Form = function (_BaseForm2) {
                             return _this2.formUpdated({ kickoff_date: e.target.value });
                         }
                     })
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement(
+                        'select',
+                        { className: 'form-control',
+                            defaultValue: this.state.data.language,
+                            onChange: function onChange(e) {
+                                return _this2.formUpdated({ language: e.target.value });
+                            } },
+                        _react2.default.createElement(
+                            'option',
+                            { value: null },
+                            'select a language'
+                        ),
+                        _react2.default.createElement(
+                            'option',
+                            { value: 'en' },
+                            'English'
+                        ),
+                        _react2.default.createElement(
+                            'option',
+                            { value: 'es' },
+                            'Espa\xF1ol'
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement(
+                        'select',
+                        { className: 'form-control',
+                            defaultValue: this.state.data.location_slug,
+                            onChange: function onChange(e) {
+                                return _this2.formUpdated({ location_slug: e.target.value });
+                            } },
+                        _react2.default.createElement(
+                            'option',
+                            { value: null },
+                            'select a location'
+                        ),
+                        locations
+                    )
                 ),
                 _react2.default.createElement(
                     'div',
@@ -39195,6 +39352,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _index = __webpack_require__(/*! ../../utils/bc-components/index */ "./src/js/utils/bc-components/index.js");
 
+var _AdminStore = __webpack_require__(/*! ../../stores/AdminStore */ "./src/js/stores/AdminStore.js");
+
+var _AdminStore2 = _interopRequireDefault(_AdminStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39212,6 +39373,8 @@ var _BaseForm = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (_BaseForm.__proto__ || Object.getPrototypeOf(_BaseForm)).call(this));
 
         _this._errors = [];
+        _this._dependencyListeners = [];
+        _this._dependencyTransformers = [];
         _this.state = {
             _hasUserErrors: false
         };
@@ -39234,7 +39397,7 @@ var _BaseForm = function (_React$Component) {
         key: 'submit',
         value: function submit() {
             if (!this.props.onSave || typeof this.props.onSave === 'undefined') throw new Error('there is no prop onSave');else {
-                if (this._errors.length === 0) this.props.onSave(this.state.data);else {
+                if (this._errors.length === 0) this.props.onSave(this.sanitizeData(this.state.data));else {
                     this._errors = [];
                     this.props.onError(this._errors);
                 }
@@ -39245,13 +39408,34 @@ var _BaseForm = function (_React$Component) {
         value: function onSubmit(e) {
             e.preventDefault();
             e.stopPropagation();
-            if (!this.validate || typeof this.validate === 'undefined') throw new Error('there is way of validating the form');else if (this.validate(this.state.data)) this.props.onSave(this.state.data);
+            if (!this.validate || typeof this.validate === 'undefined') throw new Error('there is no way of validating the form');else if (this.validate(this.state.data)) this.submit();
 
             return false;
         }
     }, {
+        key: 'sanitizeData',
+        value: function sanitizeData(data) {
+            return data;
+        }
+    }, {
         key: 'componentWillMount',
         value: function componentWillMount() {
+            var _this2 = this;
+
+            var _loop = function _loop(entity) {
+                _this2._dependencyTransformers[entity] = function (state) {
+                    var updatedDependency = {};
+                    updatedDependency[entity] = state;
+                    _this2.setState({
+                        dependencies: Object.assign(_this2.state.dependencies, updatedDependency)
+                    });
+                };
+                _this2._dependencyListeners.push(_AdminStore2.default.subscribe('manage_' + entity, _this2._dependencyTransformers[entity].bind(_this2)));
+            };
+
+            for (var entity in this.state.dependencies) {
+                _loop(entity);
+            }
             if (this.props.mode == 'add') {
                 this.setState({
                     data: this.setDefaultState(),
@@ -39263,6 +39447,14 @@ var _BaseForm = function (_React$Component) {
                     mode: this.props.mode
                 });
             }
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            this._dependencyListeners.forEach(function (listener) {
+                return listener.unsubscribe();
+            });
+            this._dependencyListeners = [];
         }
     }, {
         key: 'formUpdated',

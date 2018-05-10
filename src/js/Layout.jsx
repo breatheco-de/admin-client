@@ -22,7 +22,7 @@ class Layout extends Flux.View{
             notifications: [],
             errors: null
         };
-        AdminActions.get("cohort");
+        AdminActions.get(["cohort","location",'profile']);
     }
     
     componentDidMount(){

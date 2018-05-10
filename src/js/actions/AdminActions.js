@@ -3,14 +3,14 @@ import Flux from '@4geeksacademy/react-flux-dash';
 import AdminStore from '../stores/AdminStore';
 import * as Notify from '../actions/NotifyActions';
 
-export const get = (type) => {
-    if(typeof BC[type] === 'function') {
-        BC[type]().all()
-            .then((result) => {
-                Flux.dispatchEvent(`manage_${type}`, result.data || result);
-            });
-    }
-    else throw new Error('Invalid fetch type: '+type);
+export const get = (types) => {
+    if(!Array.isArray(types)) types = [].concat([types]);
+    types.forEach(function(type){
+        if(typeof BC[type] === 'function') BC[type]().all().then((result) => {
+            Flux.dispatchEvent(`manage_${type}`, result.data || result);
+        });
+        else throw new Error('Invalid fetch type: '+type);
+    })
 };
     
 export const add = (type, data) => {
@@ -20,7 +20,7 @@ export const add = (type, data) => {
                 Notify.success(`The ${type} was successfully added`);
                 
                 let state = AdminStore.getState();
-                let entities = state[`manage_${type}`].concat([data]);
+                let entities = state[`manage_${type}`].concat([result.data]);
                 Flux.dispatchEvent(`manage_${type}`, entities);
             })
             .catch((error) => {
@@ -39,8 +39,8 @@ export const update = (type, data) => {
                 
                 let state = AdminStore.getState();
                 let entities = state[`manage_${type}`].map(ent => {
-                    if(ent.id !== data.id) return ent;
-                    else return data;
+                    if(ent.id !== result.data.id) return ent;
+                    else return result.data;
                 });
                 
                 Flux.dispatchEvent(`manage_${type}`, entities);

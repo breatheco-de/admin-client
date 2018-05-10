@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import _BaseForm from './_BaseForm';
 import validator from 'validator';
+import AdminStore from '../../stores/AdminStore';
 
 class Form extends _BaseForm{
     
@@ -9,10 +10,10 @@ class Form extends _BaseForm{
         super();
         this.state = {
             data: this.setDefaultState(),
-            profiles: [
-                { label: 'Full Stack', slug: 'full-stack' },
-                { label: 'Web Development', slug: 'web-development' }
-            ]
+            dependencies: {
+                location: AdminStore.getAll('location'),
+                profile: AdminStore.getAll('profile')
+            },
         };
     }
     
@@ -27,27 +28,43 @@ class Form extends _BaseForm{
     
     validate(data){
         if(validator.isEmpty(data.kickoff_date)) return this.throwError('Empty kickoff date');
-        if(validator.isEmpty(data.slug)) return this.throwError('Empty slug date');
-        if(validator.isEmpty(data.slack_url)) return this.throwError('Empty slack_url date');
-        if(validator.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug date');
+        if(validator.isEmpty(data.name)) return this.throwError('Empty slug');
+        if(validator.isEmpty(data.language)) return this.throwError('Empty slug language');
+        if(validator.isEmpty(data.slack_url)) return this.throwError('Empty slack_url');
+        if(validator.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug');
         
         return true;
     }
     
+    sanitizeData(data){
+        if(typeof data.slug !== 'undefined' && (!data.slug || data.slug=='')){
+            data.slug = data.name.replace(/\s+/g, '-').toLowerCase();
+        }
+        return data;
+    }
+    
     render(){
-        const profiles = this.state.profiles.map((p,i) => (<option key={i} value={p.slug}>{p.label}</option>));
+        const profiles = this.state.dependencies.profile.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
+        const locations = this.state.dependencies.location.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
         return (
             <form onSubmit={this.onSubmit.bind(this)}>
                 <div className="form-group">
+                    <input type="text" className="form-control" placeholder="Cohort Name"
+                        value={this.state.data.name}
+                        onChange={(e) => this.formUpdated({ name: e.target.value })}
+                    />
+                </div>
+                <div className="form-group">
                     <input type="text" className="form-control" placeholder="slug"
                         value={this.state.data.slug} 
-                        onChange={(e) => this.formUpdated({ slug: e.target.value})}
+                        onChange={(e) => this.formUpdated({ slug: e.target.value })}
                         readOnly={(this.props.mode !== 'add')}
                     />
                     {
                         (this.props.mode !== 'add') ?
                             <small id="emailHelp" className="form-text text-muted">The slug cannot be changed</small>
-                        :''
+                        :
+                        <small id="emailHelp" className="form-text text-info">Leave slug empty for automatic generation</small>
                     }
                 </div>
                 <div className="form-group">
@@ -61,6 +78,23 @@ class Form extends _BaseForm{
                         value={this.state.data.kickoff_date} 
                         onChange={(e) => this.formUpdated({ kickoff_date: e.target.value})}
                     />
+                </div>
+                <div className="form-group">
+                    <select className="form-control"
+                        defaultValue={this.state.data.language}
+                        onChange={(e) => this.formUpdated({ language: e.target.value})}>
+                        <option value={null}>select a language</option>
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                    </select>
+                </div>
+                <div className="form-group">
+                    <select className="form-control"
+                        defaultValue={this.state.data.location_slug}
+                        onChange={(e) => this.formUpdated({ location_slug: e.target.value})}>
+                        <option value={null}>select a location</option>
+                        {locations}
+                    </select>
                 </div>
                 <div className="form-group">
                     <select className="form-control"

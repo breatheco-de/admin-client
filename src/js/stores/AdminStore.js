@@ -13,14 +13,18 @@ class AdminStore extends Flux.DashStore{
         this.addEvent("manage_user", this._transformUsers.bind(this));
         this.addEvent("manage_student", this._transformStudents.bind(this));
         this.addEvent("manage_cohort", this._transformCohorts.bind(this));
+        this.addEvent("manage_location", this._transformLocation.bind(this));
+        this.addEvent("manage_profile", this._transformProfile.bind(this));
     }
     
     _transformUsers(users){ 
         if(!Array.isArray(users)) return users;
         return users.filter(user => user.type !== 'student'); 
     }
-    _transformStudents(students){ return students; }
-    _transformCohorts(cohorts){ return cohorts; }
+    _transformStudents(results){ return results; }
+    _transformLocation(results){ return results; }
+    _transformCohorts(results){ return results; }
+    _transformProfile(results){ return results; }
     
     getSingle(type, id){ 
         let entities = this.getAll(type);
