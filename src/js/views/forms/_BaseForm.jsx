@@ -9,6 +9,9 @@ export default class _BaseForm extends React.Component{
         this.state = {
             _hasUserErrors: false
         };
+        
+        if(typeof this.setDefaultState !== 'function') 
+            throw new Error('You need to specify the setDefaultState function');
     }
     throwError(msg){
         this._errors.push(msg);
@@ -38,5 +41,27 @@ export default class _BaseForm extends React.Component{
         else if(this.validate(this.state.data)) this.props.onSave(this.state.data);
 
         return false;
+    }
+    componentWillMount(){
+        if(this.props.mode=='add'){
+            this.setState({
+                data: this.defaultFormState(),
+                mode: this.props.mode
+            });
+        }
+        else{
+            this.setState({
+                data: this._removeNulls(this.props.data),
+                mode: this.props.mode
+            });
+        }
+    }
+    formUpdated(newFormData){
+        let data = Object.assign(this.state.data, newFormData);
+        this.setState({ data });
+    }
+    _removeNulls(data){
+        for(let key in data) if(!data[key]) data[key] = '';
+        return data;
     }
 }

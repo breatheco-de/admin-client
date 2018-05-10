@@ -11,34 +11,23 @@ class Form extends _BaseForm{
     constructor(){
         super();
         this.state = {
-            data: null,
+            data: this.setDefaultState(),
             addCohort: null,
             newCohort: null,
             allCohorts: AdminStore.getAll('cohort')
         };
     }
     
-    componentWillMount(){
-        if(this.props.mode=='add'){
-            this.setState({
-                data: {
-                    username: '',
-                    email: '',
-                    id: null,
-                    type: 'student',
-                    phone: '',
-                    github: '',
-                    cohort_slug: ''
-                },
-                mode: this.props.mode
-            });
-        }
-        else{
-            this.setState({
-                data: this.props.data,
-                mode: this.props.mode
-            });
-        }
+    setDefaultState(){
+        return {
+            username: '',
+            email: '',
+            id: null,
+            type: 'student',
+            phone: '',
+            github: '',
+            cohort_slug: ''
+        };
     }
     
     formUpdated(newFormData){

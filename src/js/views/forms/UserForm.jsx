@@ -8,32 +8,16 @@ class UserForm extends _BaseForm{
     constructor(){
         super();
         this.state = {
-            data: null
+            data: this.setDefaultState()
         };
     }
     
-    componentWillMount(){
-        if(this.props.mode=='add'){
-            this.setState({
-                data: {
-                    username: '',
-                    full_name: '',
-                    type: ''
-                },
-                mode: this.props.mode
-            });
-        }
-        else{
-            this.setState({
-                data: this.props.data,
-                mode: this.props.mode
-            });
-        }
-    }
-    
-    formUpdated(newFormData){
-        let data = Object.assign(this.state.data, newFormData);
-        this.setState({ data });
+    setDefaultState(){
+        return {
+            username: '',
+            full_name: '',
+            type: ''
+        };
     }
     
     validate(){

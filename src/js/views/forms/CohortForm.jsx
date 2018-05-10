@@ -1,70 +1,73 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-class Form extends React.Component{
+import _BaseForm from './_BaseForm';
+import validator from 'validator';
+
+class Form extends _BaseForm{
     
     constructor(){
         super();
         this.state = {
-            data: null
+            data: this.setDefaultState(),
+            profiles: [
+                { label: 'Full Stack', slug: 'full-stack' },
+                { label: 'Web Development', slug: 'web-development' }
+            ]
         };
     }
     
-    componentWillMount(){
-        if(this.props.mode=='add'){
-            this.setState({
-                data: {
-                    username: '',
-                    full_name: '',
-                    type: ''
-                },
-                mode: this.props.mode
-            });
-        }
-        else{
-            this.setState({
-                data: this.props.data,
-                mode: this.props.mode
-            });
-        }
+    setDefaultState(){
+        return {
+            slug: '',
+            profile_slug: '',
+            slack_url: '',
+            kickoff_date: ''
+        };
     }
     
-    formUpdated(newFormData){
-        let data = Object.assign(this.state.data, newFormData);
-        this.setState({ data });
-    }
-    
-    onSubmit(e){
-        e.preventDefault();
-        e.stopPropagation();
-        this.props.onSave(this.state.data);
-        return false;
+    validate(data){
+        if(validator.isEmpty(data.kickoff_date)) return this.throwError('Empty kickoff date');
+        if(validator.isEmpty(data.slug)) return this.throwError('Empty slug date');
+        if(validator.isEmpty(data.slack_url)) return this.throwError('Empty slack_url date');
+        if(validator.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug date');
+        
+        return true;
     }
     
     render(){
+        const profiles = this.state.profiles.map((p,i) => (<option key={i} value={p.slug}>{p.label}</option>));
         return (
             <form onSubmit={this.onSubmit.bind(this)}>
                 <div className="form-group">
-                    <input type="email" className="form-control"  aria-describedby="emailHelp" placeholder="Email"
-                        value={this.state.data.username} 
-                        onChange={(e) => this.formUpdated({ username: e.target.value})}
+                    <input type="text" className="form-control" placeholder="slug"
+                        value={this.state.data.slug} 
+                        onChange={(e) => this.formUpdated({ slug: e.target.value})}
                         readOnly={(this.props.mode !== 'add')}
                     />
                     {
                         (this.props.mode !== 'add') ?
-                            <small id="emailHelp" className="form-text text-muted">The email cannot be changed</small>
+                            <small id="emailHelp" className="form-text text-muted">The slug cannot be changed</small>
                         :''
                     }
                 </div>
                 <div className="form-group">
-                    <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Full Name"
-                        value={this.state.data.full_name} 
-                        onChange={(e) => this.formUpdated({ full_name: e.target.value})}
+                    <input type="url" className="form-control" placeholder="slack url"
+                        value={this.state.data.slack_url} 
+                        onChange={(e) => this.formUpdated({ slack_url: e.target.value})}
+                    />
+                </div>
+                <div className="form-group">
+                    <input type="date" className="form-control" placeholder="kickoff_date"
+                        value={this.state.data.kickoff_date} 
+                        onChange={(e) => this.formUpdated({ kickoff_date: e.target.value})}
                     />
                 </div>
                 <div className="form-group">
                     <select className="form-control"
-                        onChange={(e) => this.formUpdated({ type: e.target.value})}>
-                        <option value={null}>select a cohort</option>
+                        defaultValue={this.state.data.profile_slug}
+                        onChange={(e) => this.formUpdated({ profile_slug: e.target.value})}>
+                        <option value={null}>select a profile</option>
+                        {profiles}
                     </select>
                 </div>
                 <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>

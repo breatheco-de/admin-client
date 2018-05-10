@@ -35675,6 +35675,30 @@ var Wrapper = function () {
             });
         }
     }, {
+        key: '_encodeKeys',
+        value: function _encodeKeys(obj) {
+            for (var key in obj) {
+                var newkey = key.replace('-', '_');
+
+                var temp = obj[key];
+                delete obj[key];
+                obj[newkey] = temp;
+            }
+            return obj;
+        }
+    }, {
+        key: '_decodeKeys',
+        value: function _decodeKeys(obj) {
+            for (var key in obj) {
+                var newkey = key.replace('_', '-');
+
+                var temp = obj[key];
+                delete obj[key];
+                obj[newkey] = temp;
+            }
+            return obj;
+        }
+    }, {
         key: 'post',
         value: function post() {
             for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -38443,6 +38467,14 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 
+var _BaseForm3 = __webpack_require__(/*! ./_BaseForm */ "./src/js/views/forms/_BaseForm.jsx");
+
+var _BaseForm4 = _interopRequireDefault(_BaseForm3);
+
+var _validator = __webpack_require__(/*! validator */ "./node_modules/validator/index.js");
+
+var _validator2 = _interopRequireDefault(_validator);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -38451,8 +38483,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Form = function (_React$Component) {
-    _inherits(Form, _React$Component);
+var Form = function (_BaseForm2) {
+    _inherits(Form, _BaseForm2);
 
     function Form() {
         _classCallCheck(this, Form);
@@ -38460,75 +38492,80 @@ var Form = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).call(this));
 
         _this.state = {
-            data: null
+            data: _this.setDefaultState(),
+            profiles: [{ label: 'Full Stack', slug: 'full-stack' }, { label: 'Web Development', slug: 'web-development' }]
         };
         return _this;
     }
 
     _createClass(Form, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
-            if (this.props.mode == 'add') {
-                this.setState({
-                    data: {
-                        username: '',
-                        full_name: '',
-                        type: ''
-                    },
-                    mode: this.props.mode
-                });
-            } else {
-                this.setState({
-                    data: this.props.data,
-                    mode: this.props.mode
-                });
-            }
+        key: 'setDefaultState',
+        value: function setDefaultState() {
+            return {
+                slug: '',
+                profile_slug: '',
+                slack_url: '',
+                kickoff_date: ''
+            };
         }
     }, {
-        key: 'formUpdated',
-        value: function formUpdated(newFormData) {
-            var data = Object.assign(this.state.data, newFormData);
-            this.setState({ data: data });
-        }
-    }, {
-        key: 'onSubmit',
-        value: function onSubmit(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.props.onSave(this.state.data);
-            return false;
+        key: 'validate',
+        value: function validate(data) {
+            if (_validator2.default.isEmpty(data.kickoff_date)) return this.throwError('Empty kickoff date');
+            if (_validator2.default.isEmpty(data.slug)) return this.throwError('Empty slug date');
+            if (_validator2.default.isEmpty(data.slack_url)) return this.throwError('Empty slack_url date');
+            if (_validator2.default.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug date');
+
+            return true;
         }
     }, {
         key: 'render',
         value: function render() {
             var _this2 = this;
 
+            var profiles = this.state.profiles.map(function (p, i) {
+                return _react2.default.createElement(
+                    'option',
+                    { key: i, value: p.slug },
+                    p.label
+                );
+            });
             return _react2.default.createElement(
                 'form',
                 { onSubmit: this.onSubmit.bind(this) },
                 _react2.default.createElement(
                     'div',
                     { className: 'form-group' },
-                    _react2.default.createElement('input', { type: 'email', className: 'form-control', 'aria-describedby': 'emailHelp', placeholder: 'Email',
-                        value: this.state.data.username,
+                    _react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: 'slug',
+                        value: this.state.data.slug,
                         onChange: function onChange(e) {
-                            return _this2.formUpdated({ username: e.target.value });
+                            return _this2.formUpdated({ slug: e.target.value });
                         },
                         readOnly: this.props.mode !== 'add'
                     }),
                     this.props.mode !== 'add' ? _react2.default.createElement(
                         'small',
                         { id: 'emailHelp', className: 'form-text text-muted' },
-                        'The email cannot be changed'
+                        'The slug cannot be changed'
                     ) : ''
                 ),
                 _react2.default.createElement(
                     'div',
                     { className: 'form-group' },
-                    _react2.default.createElement('input', { type: 'text', className: 'form-control', 'aria-describedby': 'emailHelp', placeholder: 'Full Name',
-                        value: this.state.data.full_name,
+                    _react2.default.createElement('input', { type: 'url', className: 'form-control', placeholder: 'slack url',
+                        value: this.state.data.slack_url,
                         onChange: function onChange(e) {
-                            return _this2.formUpdated({ full_name: e.target.value });
+                            return _this2.formUpdated({ slack_url: e.target.value });
+                        }
+                    })
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement('input', { type: 'date', className: 'form-control', placeholder: 'kickoff_date',
+                        value: this.state.data.kickoff_date,
+                        onChange: function onChange(e) {
+                            return _this2.formUpdated({ kickoff_date: e.target.value });
                         }
                     })
                 ),
@@ -38538,14 +38575,16 @@ var Form = function (_React$Component) {
                     _react2.default.createElement(
                         'select',
                         { className: 'form-control',
+                            defaultValue: this.state.data.profile_slug,
                             onChange: function onChange(e) {
-                                return _this2.formUpdated({ type: e.target.value });
+                                return _this2.formUpdated({ profile_slug: e.target.value });
                             } },
                         _react2.default.createElement(
                             'option',
                             { value: null },
-                            'select a cohort'
-                        )
+                            'select a profile'
+                        ),
+                        profiles
                     )
                 ),
                 _react2.default.createElement(
@@ -38565,7 +38604,7 @@ var Form = function (_React$Component) {
     }]);
 
     return Form;
-}(_react2.default.Component);
+}(_BaseForm4.default);
 
 exports.default = (0, _reactRouterDom.withRouter)(Form);
 
@@ -38630,7 +38669,7 @@ var Form = function (_BaseForm2) {
         var _this = _possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).call(this));
 
         _this.state = {
-            data: null,
+            data: _this.setDefaultState(),
             addCohort: null,
             newCohort: null,
             allCohorts: _AdminStore2.default.getAll('cohort')
@@ -38639,27 +38678,17 @@ var Form = function (_BaseForm2) {
     }
 
     _createClass(Form, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
-            if (this.props.mode == 'add') {
-                this.setState({
-                    data: {
-                        username: '',
-                        email: '',
-                        id: null,
-                        type: 'student',
-                        phone: '',
-                        github: '',
-                        cohort_slug: ''
-                    },
-                    mode: this.props.mode
-                });
-            } else {
-                this.setState({
-                    data: this.props.data,
-                    mode: this.props.mode
-                });
-            }
+        key: 'setDefaultState',
+        value: function setDefaultState() {
+            return {
+                username: '',
+                email: '',
+                id: null,
+                type: 'student',
+                phone: '',
+                github: '',
+                cohort_slug: ''
+            };
         }
     }, {
         key: 'formUpdated',
@@ -38947,35 +38976,19 @@ var UserForm = function (_BaseForm2) {
         var _this = _possibleConstructorReturn(this, (UserForm.__proto__ || Object.getPrototypeOf(UserForm)).call(this));
 
         _this.state = {
-            data: null
+            data: _this.setDefaultState()
         };
         return _this;
     }
 
     _createClass(UserForm, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
-            if (this.props.mode == 'add') {
-                this.setState({
-                    data: {
-                        username: '',
-                        full_name: '',
-                        type: ''
-                    },
-                    mode: this.props.mode
-                });
-            } else {
-                this.setState({
-                    data: this.props.data,
-                    mode: this.props.mode
-                });
-            }
-        }
-    }, {
-        key: 'formUpdated',
-        value: function formUpdated(newFormData) {
-            var data = Object.assign(this.state.data, newFormData);
-            this.setState({ data: data });
+        key: 'setDefaultState',
+        value: function setDefaultState() {
+            return {
+                username: '',
+                full_name: '',
+                type: ''
+            };
         }
     }, {
         key: 'validate',
@@ -39126,6 +39139,8 @@ var _BaseForm = function (_React$Component) {
         _this.state = {
             _hasUserErrors: false
         };
+
+        if (typeof _this.setDefaultState !== 'function') throw new Error('You need to specify the setDefaultState function');
         return _this;
     }
 
@@ -39157,6 +39172,34 @@ var _BaseForm = function (_React$Component) {
             if (!this.validate || typeof this.validate === 'undefined') throw new Error('there is way of validating the form');else if (this.validate(this.state.data)) this.props.onSave(this.state.data);
 
             return false;
+        }
+    }, {
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            if (this.props.mode == 'add') {
+                this.setState({
+                    data: this.defaultFormState(),
+                    mode: this.props.mode
+                });
+            } else {
+                this.setState({
+                    data: this._removeNulls(this.props.data),
+                    mode: this.props.mode
+                });
+            }
+        }
+    }, {
+        key: 'formUpdated',
+        value: function formUpdated(newFormData) {
+            var data = Object.assign(this.state.data, newFormData);
+            this.setState({ data: data });
+        }
+    }, {
+        key: '_removeNulls',
+        value: function _removeNulls(data) {
+            for (var key in data) {
+                if (!data[key]) data[key] = '';
+            }return data;
         }
     }]);
 
