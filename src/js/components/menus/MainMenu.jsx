@@ -34,10 +34,10 @@ class MainMenu extends React.Component{
                 { (role == 'admin') ? 
                     <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" /> :''
                 }
-                { (role == 'admin' || role == 'admission') ? 
+                { (role == 'admin' || role == 'admissions') ? 
                     <MenuItem icon="fas fa-users" label="Students" slug="student" to="/manage/student/" />:''
                 }
-                { (role == 'admin' || role == 'admission') ? 
+                { (role == 'admin' || role == 'admissions') ? 
                     <MenuItem icon="fas fa-users" label="Cohorts" slug="student" to="/manage/cohort/" />:''
                 }
                 <MenuItem icon="fas fa-sign-out-alt" label="Close Session" slug="close_session"

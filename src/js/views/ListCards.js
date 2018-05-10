@@ -5,7 +5,6 @@ const dropdownOptions = [
     { label: 'edit', slug: 'edit' },
     { label: 'delete (from breathecode only)', slug: 'delete' }
 ];
-
 let cards = {
     userCard: (data, key, onEntitySelect) => (
         <li key={key}>
@@ -52,13 +51,21 @@ let cards = {
                     label: 'review students', 
                     slug: 'cohort_students', 
                     to: `/manage/student/?cohort=${data.slug}`
+                },
+                { 
+                    label: 'change cohort stage', 
+                    slug: 'change_stage',
+                    data: { cohort: data } //
                 }
             ])}
             onSelect={(opt) => onEntitySelect(opt, data)}>
             {data.name}
             <h5 className="m-0">{data.full_name}</h5>
             <p className='subrow'>
-                <small className="text-info">{data.profile_slug}</small>
+                <small className="mr-1 text-info">{data.profile_slug}</small>
+                { 
+                    <small className={(data.stage === 'not-started') ? 'text-success' : 'text-secondary'}> {data.stage}</small>
+                }
                 { (data.kickoff_date && data.kickoff_date !== '' && data.kickoff_date !== '0000-00-00') ? 
                     <small className="ml-4 text-secondary">
                         Start: {data.kickoff_date}

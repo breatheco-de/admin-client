@@ -76,6 +76,11 @@ export default class ManageView extends Flux.View {
                 case "delete":
                     AdminActions.remove(this.state.entitySlug, ent);
                 break;
+                default:
+                    if(typeof AdminActions.custom[this.state.entitySlug][opt.slug] === 'undefined')
+                        throw new Error(`Undefined custom action ${this.state.entitySlug}.${opt.slug}()`);
+                    else AdminActions.custom[this.state.entitySlug][opt.slug](opt.data);
+                break;
             }
         }
     }

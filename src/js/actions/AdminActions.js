@@ -2,6 +2,7 @@ import BC from '../utils/api/index';
 import Flux from '@4geeksacademy/react-flux-dash';
 import AdminStore from '../stores/AdminStore';
 import * as Notify from '../actions/NotifyActions';
+import {cohortActions} from '../actions/CustomActions';
 
 export const get = (types) => {
     if(!Array.isArray(types)) types = [].concat([types]);
@@ -53,29 +54,29 @@ export const update = (type, data) => {
     
 export const remove = (type, data) => {
     
-    Flux.dispatchEvent("notifications", [{
-        msg: "Are you sure?",
-        type: 'info',
-        onConfirm: (answer) => {
-            if(answer){
-                if(typeof BC[type] === 'function') {
-                    BC[type]().delete(data.id)
-                        .then((result) => {
-                            Notify.success(`The ${type} was successfully deleted`);
-                            
-                            let state = AdminStore.getState();
-                            let entities = state[`manage_${type}`].filter(ent => ent.id !== data.id);
-                            
-                            Flux.dispatchEvent(`manage_${type}`, entities);
-                        });
-                }
-                else throw new Error('Invalid fetch type: '+type);
+    Notify.info("Are you sure?", (answer) => {
+        if(answer){
+            if(typeof BC[type] === 'function') {
+                BC[type]().delete(data.id)
+                    .then((result) => {
+                        Notify.success(`The ${type} was successfully deleted`);
+                        
+                        let state = AdminStore.getState();
+                        let entities = state[`manage_${type}`].filter(ent => ent.id !== data.id);
+                        
+                        Flux.dispatchEvent(`manage_${type}`, entities);
+                    });
             }
-            
-            Flux.dispatchEvent("notifications", []);
+            else throw new Error('Invalid fetch type: '+type);
         }
-    }]);
+        
+        Flux.dispatchEvent("notifications", []);
+    });
     
 };
 
 export const firstUpperCase = (input) => { return input[0].toUpperCase()+input.substr(1); };
+
+export const custom = {
+    cohort: cohortActions
+};

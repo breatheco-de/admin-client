@@ -38,6 +38,11 @@ class AdminStore extends Flux.DashStore{
         if(typeof result[`manage_${type}`] === 'undefined') return [];
         else return result[`manage_${type}`];
     }
+    replace(type, newEntity){
+        if(!newEntity || typeof newEntity.id == 'undefined') throw new Error(`Invalid ${type} to replate`);
+        let entities = this.getAll(type);
+        return entities.map((ent) => (ent.id !== newEntity.id) ? ent : newEntity); 
+    }
     
 }
 export default new AdminStore();

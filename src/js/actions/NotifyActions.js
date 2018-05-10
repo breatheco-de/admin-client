@@ -30,3 +30,4 @@ export const add = (type, message, confirm=null) =>{
 export const success = (msg, conf) => add('success', msg, conf);
 export const error = (msg, conf) => add('error', msg, conf);
 export const info = (msg, conf) => add('info', msg, conf);
+export const clean = () => Flux.dispatchEvent("notifications", []);

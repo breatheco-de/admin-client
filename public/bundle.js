@@ -34917,7 +34917,7 @@ exports.default = Layout;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.firstUpperCase = exports.remove = exports.update = exports.add = exports.get = undefined;
+exports.custom = exports.firstUpperCase = exports.remove = exports.update = exports.add = exports.get = undefined;
 
 var _index = __webpack_require__(/*! ../utils/api/index */ "./src/js/utils/api/index.js");
 
@@ -34934,6 +34934,8 @@ var _AdminStore2 = _interopRequireDefault(_AdminStore);
 var _NotifyActions = __webpack_require__(/*! ../actions/NotifyActions */ "./src/js/actions/NotifyActions.js");
 
 var Notify = _interopRequireWildcard(_NotifyActions);
+
+var _CustomActions = __webpack_require__(/*! ../actions/CustomActions */ "./src/js/actions/CustomActions.js");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -34982,32 +34984,114 @@ var update = exports.update = function update(type, data) {
 
 var remove = exports.remove = function remove(type, data) {
 
-    _reactFluxDash2.default.dispatchEvent("notifications", [{
-        msg: "Are you sure?",
-        type: 'info',
-        onConfirm: function onConfirm(answer) {
-            if (answer) {
-                if (typeof _index2.default[type] === 'function') {
-                    _index2.default[type]().delete(data.id).then(function (result) {
-                        Notify.success('The ' + type + ' was successfully deleted');
+    Notify.info("Are you sure?", function (answer) {
+        if (answer) {
+            if (typeof _index2.default[type] === 'function') {
+                _index2.default[type]().delete(data.id).then(function (result) {
+                    Notify.success('The ' + type + ' was successfully deleted');
 
-                        var state = _AdminStore2.default.getState();
-                        var entities = state['manage_' + type].filter(function (ent) {
-                            return ent.id !== data.id;
-                        });
-
-                        _reactFluxDash2.default.dispatchEvent('manage_' + type, entities);
+                    var state = _AdminStore2.default.getState();
+                    var entities = state['manage_' + type].filter(function (ent) {
+                        return ent.id !== data.id;
                     });
-                } else throw new Error('Invalid fetch type: ' + type);
-            }
 
-            _reactFluxDash2.default.dispatchEvent("notifications", []);
+                    _reactFluxDash2.default.dispatchEvent('manage_' + type, entities);
+                });
+            } else throw new Error('Invalid fetch type: ' + type);
         }
-    }]);
+
+        _reactFluxDash2.default.dispatchEvent("notifications", []);
+    });
 };
 
 var firstUpperCase = exports.firstUpperCase = function firstUpperCase(input) {
     return input[0].toUpperCase() + input.substr(1);
+};
+
+var custom = exports.custom = {
+    cohort: _CustomActions.cohortActions
+};
+
+/***/ }),
+
+/***/ "./src/js/actions/CustomActions.js":
+/*!*****************************************!*\
+  !*** ./src/js/actions/CustomActions.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.cohortActions = undefined;
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _index = __webpack_require__(/*! ../utils/api/index */ "./src/js/utils/api/index.js");
+
+var _index2 = _interopRequireDefault(_index);
+
+var _reactFluxDash = __webpack_require__(/*! @4geeksacademy/react-flux-dash */ "./node_modules/@4geeksacademy/react-flux-dash/dist/react-flux-dash.js");
+
+var _reactFluxDash2 = _interopRequireDefault(_reactFluxDash);
+
+var _AdminStore = __webpack_require__(/*! ../stores/AdminStore */ "./src/js/stores/AdminStore.js");
+
+var _AdminStore2 = _interopRequireDefault(_AdminStore);
+
+var _NotifyActions = __webpack_require__(/*! ../actions/NotifyActions */ "./src/js/actions/NotifyActions.js");
+
+var Notify = _interopRequireWildcard(_NotifyActions);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var sync = function sync(type) {
+    return function (result) {
+        Notify.success('The ' + type + ' was updated');
+        _reactFluxDash2.default.dispatchEvent('manage_' + type, _AdminStore2.default.replace(type, result.data || result));
+    };
+};
+
+var _StatusChooser = function _StatusChooser(_ref) {
+    var onConfirm = _ref.onConfirm;
+    return _react2.default.createElement(
+        'div',
+        null,
+        'Choose your new stage',
+        ['not-started', 'on-prework', 'on-course', 'on-final-project', 'finished'].map(function (stage) {
+            return _react2.default.createElement(
+                'a',
+                { key: stage, className: 'btn btn-light',
+                    onClick: function onClick() {
+                        return onConfirm(stage);
+                    } },
+                stage
+            );
+        })
+    );
+};
+var cohortActions = exports.cohortActions = {
+    _type: 'cohort',
+    change_stage: function change_stage(data) {
+        var _this = this;
+
+        Notify.info(_StatusChooser, function (newStage) {
+            return Notify.info("Are you sure? The new stage is: " + newStage, function (answer) {
+                Notify.clean();
+                if (answer) {
+                    _index2.default.cohort().update(data.cohort.id, { stage: newStage }).then(sync(_this._type));
+                }
+            });
+        });
+    }
 };
 
 /***/ }),
@@ -35025,7 +35109,7 @@ var firstUpperCase = exports.firstUpperCase = function firstUpperCase(input) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.info = exports.error = exports.success = exports.add = exports.remove = undefined;
+exports.clean = exports.info = exports.error = exports.success = exports.add = exports.remove = undefined;
 
 var _reactFluxDash = __webpack_require__(/*! @4geeksacademy/react-flux-dash */ "./node_modules/@4geeksacademy/react-flux-dash/dist/react-flux-dash.js");
 
@@ -35078,6 +35162,9 @@ var error = exports.error = function error(msg, conf) {
 };
 var info = exports.info = function info(msg, conf) {
     return add('info', msg, conf);
+};
+var clean = exports.clean = function clean() {
+    return _reactFluxDash2.default.dispatchEvent("notifications", []);
 };
 
 /***/ }),
@@ -35277,8 +35364,8 @@ var MainMenu = function (_React$Component) {
                 { className: 'nav flex-column' },
                 _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-tachometer-alt', label: 'Dashboard', slug: 'dashboard', to: '/dashboard' }),
                 role == 'admin' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Users', slug: 'user', to: '/manage/user/' }) : '',
-                role == 'admin' || role == 'admission' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Students', slug: 'student', to: '/manage/student/' }) : '',
-                role == 'admin' || role == 'admission' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Cohorts', slug: 'student', to: '/manage/cohort/' }) : '',
+                role == 'admin' || role == 'admissions' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Students', slug: 'student', to: '/manage/student/' }) : '',
+                role == 'admin' || role == 'admissions' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Cohorts', slug: 'student', to: '/manage/cohort/' }) : '',
                 _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-sign-out-alt', label: 'Close Session', slug: 'close_session',
                     onClick: function onClick() {
                         return UserActions.logoutUser();
@@ -35436,6 +35523,15 @@ var AdminStore = function (_Flux$DashStore) {
         value: function getAll(type) {
             var result = this.getState();
             if (typeof result["manage_" + type] === 'undefined') return [];else return result["manage_" + type];
+        }
+    }, {
+        key: "replace",
+        value: function replace(type, newEntity) {
+            if (!newEntity || typeof newEntity.id == 'undefined') throw new Error("Invalid " + type + " to replate");
+            var entities = this.getAll(type);
+            return entities.map(function (ent) {
+                return ent.id !== newEntity.id ? ent : newEntity;
+            });
         }
     }]);
 
@@ -36954,6 +37050,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Message = function Message(props) {
+  var Msg = props.noti.msg;
   return _react2.default.createElement(
     'li',
     { className: 'alert ' + props.typeClass,
@@ -36961,8 +37058,8 @@ var Message = function Message(props) {
         height: confirm ? 'inherit' : '0'
       }
     },
-    props.noti.msg,
-    props.confirm ? _react2.default.createElement(
+    typeof Msg !== 'string' ? _react2.default.createElement(Msg, { onConfirm: props.noti.onConfirm }) : props.noti.msg,
+    props.confirm && typeof Msg === 'string' ? _react2.default.createElement(
       'p',
       null,
       _react2.default.createElement(
@@ -37747,7 +37844,6 @@ var _index = __webpack_require__(/*! ../utils/bc-components/index */ "./src/js/u
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var dropdownOptions = [{ label: 'edit', slug: 'edit' }, { label: 'delete (from breathecode only)', slug: 'delete' }];
-
 var cards = {
     userCard: function userCard(data, key, onEntitySelect) {
         return _react2.default.createElement(
@@ -37837,7 +37933,11 @@ var cards = {
                         label: 'review students',
                         slug: 'cohort_students',
                         to: '/manage/student/?cohort=' + data.slug
-                    }]),
+                    }, {
+                        label: 'change cohort stage',
+                        slug: 'change_stage',
+                        data: { cohort: data //
+                        } }]),
                     onSelect: function onSelect(opt) {
                         return onEntitySelect(opt, data);
                     } },
@@ -37852,8 +37952,14 @@ var cards = {
                     { className: 'subrow' },
                     _react2.default.createElement(
                         'small',
-                        { className: 'text-info' },
+                        { className: 'mr-1 text-info' },
                         data.profile_slug
+                    ),
+                    _react2.default.createElement(
+                        'small',
+                        { className: data.stage === 'not-started' ? 'text-success' : 'text-secondary' },
+                        ' ',
+                        data.stage
                     ),
                     data.kickoff_date && data.kickoff_date !== '' && data.kickoff_date !== '0000-00-00' ? _react2.default.createElement(
                         'small',
@@ -38004,6 +38110,9 @@ var ManageView = function (_Flux$View) {
                         break;
                     case "delete":
                         AdminActions.remove(this.state.entitySlug, ent);
+                        break;
+                    default:
+                        if (typeof AdminActions.custom[this.state.entitySlug][opt.slug] === 'undefined') throw new Error('Undefined custom action ' + this.state.entitySlug + '.' + opt.slug + '()');else AdminActions.custom[this.state.entitySlug][opt.slug](opt.data);
                         break;
                 }
             }
