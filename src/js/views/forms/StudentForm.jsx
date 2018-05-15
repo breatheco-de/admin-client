@@ -14,7 +14,9 @@ class Form extends _BaseForm{
             data: this.setDefaultState(),
             addCohort: null,
             newCohort: null,
-            allCohorts: AdminStore.getAll('cohort')
+            dependencies: {
+                cohorts: AdminStore.getAll('cohort').sort(),
+            }
         };
     }
     
@@ -66,7 +68,7 @@ class Form extends _BaseForm{
     }
     
     render(){
-        const cohorts = this.state.allCohorts.map((c,i) => (<option key={i} value={c.slug}>{c.name}</option>));
+        const cohorts = this.state.dependencies.cohorts.map((c,i) => (<option key={i} value={c.slug}>{c.name}</option>));
         return (
             <form onSubmit={this.onSubmit.bind(this)}>
                 <Modal show={this.state.addCohort} title="Add student to cohort"
@@ -82,7 +84,7 @@ class Form extends _BaseForm{
                 </Modal>
                 {
                     (this.state.mode === 'add') ?
-                        <Add data={this.state.data} studentCohorts={this.state.allCohorts || []} 
+                        <Add data={this.state.data} studentCohorts={this.state.dependencies.cohorts || []} 
                             formUpdated={this.formUpdated.bind(this)}
                         />
                     :

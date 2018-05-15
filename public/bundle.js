@@ -38971,7 +38971,9 @@ var Form = function (_BaseForm2) {
             data: _this.setDefaultState(),
             addCohort: null,
             newCohort: null,
-            allCohorts: _AdminStore2.default.getAll('cohort')
+            dependencies: {
+                cohorts: _AdminStore2.default.getAll('cohort').sort()
+            }
         };
         return _this;
     }
@@ -39030,7 +39032,7 @@ var Form = function (_BaseForm2) {
         value: function render() {
             var _this2 = this;
 
-            var cohorts = this.state.allCohorts.map(function (c, i) {
+            var cohorts = this.state.dependencies.cohorts.map(function (c, i) {
                 return _react2.default.createElement(
                     'option',
                     { key: i, value: c.slug },
@@ -39059,7 +39061,7 @@ var Form = function (_BaseForm2) {
                         cohorts
                     )
                 ),
-                this.state.mode === 'add' ? _react2.default.createElement(Add, { data: this.state.data, studentCohorts: this.state.allCohorts || [],
+                this.state.mode === 'add' ? _react2.default.createElement(Add, { data: this.state.data, studentCohorts: this.state.dependencies.cohorts || [],
                     formUpdated: this.formUpdated.bind(this)
                 }) : _react2.default.createElement(Edit, { data: this.state.data, studentCohorts: this.state.data.cohorts || [],
                     formUpdated: this.formUpdated.bind(this)
