@@ -33,6 +33,13 @@ class AdminStore extends Flux.DashStore{
         else if(results.length === 0) return null;
         else if(results.length >1) throw new Error(`There seems to be more than one ${type} with the id: ${id}`);
     }
+    getSingleBy(type, key, value){ 
+        let entities = this.getAll(type);
+        let results = entities.filter((ent) => ent[key] == value); 
+        if(results.length === 1) return results[0];
+        else if(results.length === 0) return null;
+        else if(results.length >1) throw new Error(`There seems to be more than one ${type} with the ${key}: ${value}`);
+    }
     getAll(type){ 
         let result = this.getState();
         if(typeof result[`manage_${type}`] === 'undefined') return [];

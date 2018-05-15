@@ -15,7 +15,7 @@ class Form extends _BaseForm{
             addCohort: null,
             newCohort: null,
             dependencies: {
-                cohort: AdminStore.getAll('cohort').sort(),
+                cohort: AdminStore.getAll('cohort'),
             }
         };
     }
@@ -57,6 +57,12 @@ class Form extends _BaseForm{
         }
         
         return true;
+    }
+    
+    sanitizeData(data){
+        const cohort = AdminStore.getSingleBy('cohort', 'slug', this.state.data.cohort_slug);
+        data.profile_slug = cohort.profile_slug;
+        return data;
     }
     
     addToCohort(){
@@ -145,7 +151,7 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
     );
 };
 const Add = ({data, studentCohorts, formUpdated}) => {
-    const cohorts = studentCohorts.map((c,i) => (<option key={i} value={c.slug}>{c.name}</option>));
+    const cohorts = studentCohorts.concat().sort().map((c,i) => (<option key={i} value={c.slug}>{c.name}</option>));
     return (
         <div>
             <div className="form-group">

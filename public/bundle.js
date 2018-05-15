@@ -35523,6 +35523,15 @@ var AdminStore = function (_Flux$DashStore) {
             if (results.length === 1) return results[0];else if (results.length === 0) return null;else if (results.length > 1) throw new Error("There seems to be more than one " + type + " with the id: " + id);
         }
     }, {
+        key: "getSingleBy",
+        value: function getSingleBy(type, key, value) {
+            var entities = this.getAll(type);
+            var results = entities.filter(function (ent) {
+                return ent[key] == value;
+            });
+            if (results.length === 1) return results[0];else if (results.length === 0) return null;else if (results.length > 1) throw new Error("There seems to be more than one " + type + " with the " + key + ": " + value);
+        }
+    }, {
         key: "getAll",
         value: function getAll(type) {
             var result = this.getState();
@@ -38972,7 +38981,7 @@ var Form = function (_BaseForm2) {
             addCohort: null,
             newCohort: null,
             dependencies: {
-                cohort: _AdminStore2.default.getAll('cohort').sort()
+                cohort: _AdminStore2.default.getAll('cohort')
             }
         };
         return _this;
@@ -39017,6 +39026,13 @@ var Form = function (_BaseForm2) {
             }
 
             return true;
+        }
+    }, {
+        key: 'sanitizeData',
+        value: function sanitizeData(data) {
+            var cohort = _AdminStore2.default.getSingleBy('cohort', 'slug', this.state.data.cohort_slug);
+            data.profile_slug = cohort.profile_slug;
+            return data;
         }
     }, {
         key: 'addToCohort',
@@ -39182,7 +39198,7 @@ var Add = function Add(_ref2) {
         studentCohorts = _ref2.studentCohorts,
         formUpdated = _ref2.formUpdated;
 
-    var cohorts = studentCohorts.map(function (c, i) {
+    var cohorts = studentCohorts.concat().sort().map(function (c, i) {
         return _react2.default.createElement(
             'option',
             { key: i, value: c.slug },
