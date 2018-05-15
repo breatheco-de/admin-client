@@ -21,7 +21,8 @@ export const add = (type, data) => {
                 Notify.success(`The ${type} was successfully added`);
                 
                 let state = AdminStore.getState();
-                let entities = state[`manage_${type}`].concat([result.data]);
+                const data = (typeof result.data !== 'undefined') ? result.data : result;
+                let entities = state[`manage_${type}`].concat([data]);
                 Flux.dispatchEvent(`manage_${type}`, entities);
             })
             .catch((error) => {
@@ -39,9 +40,10 @@ export const update = (type, data) => {
                 Notify.success(`The ${type} was successfully updated`);
                 
                 let state = AdminStore.getState();
+                const data = (typeof result.data !== 'undefined') ? result.data : result;
                 let entities = state[`manage_${type}`].map(ent => {
-                    if(ent.id !== result.data.id) return ent;
-                    else return result.data;
+                    if(ent.id !== data.id) return ent;
+                    else return data;
                 });
                 
                 Flux.dispatchEvent(`manage_${type}`, entities);
@@ -65,7 +67,8 @@ export const remove = (type, data) => {
                         let entities = state[`manage_${type}`].filter(ent => ent.id !== data.id);
                         
                         Flux.dispatchEvent(`manage_${type}`, entities);
-                    });
+                    })
+                    .catch((error) => Notify.error(`There was an error on the deletion`));
             }
             else throw new Error('Invalid fetch type: '+type);
         }
