@@ -39030,8 +39030,10 @@ var Form = function (_BaseForm2) {
     }, {
         key: 'sanitizeData',
         value: function sanitizeData(data) {
-            var cohort = _AdminStore2.default.getSingleBy('cohort', 'slug', this.state.data.cohort_slug);
-            data.profile_slug = cohort.profile_slug;
+            if (this.state.mode === 'add') {
+                var cohort = _AdminStore2.default.getSingleBy('cohort', 'slug', this.state.data.cohort_slug);
+                data.profile_slug = cohort.profile_slug;
+            }
             return data;
         }
     }, {

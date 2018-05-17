@@ -60,8 +60,10 @@ class Form extends _BaseForm{
     }
     
     sanitizeData(data){
-        const cohort = AdminStore.getSingleBy('cohort', 'slug', this.state.data.cohort_slug);
-        data.profile_slug = cohort.profile_slug;
+        if(this.state.mode === 'add'){
+            const cohort = AdminStore.getSingleBy('cohort', 'slug', this.state.data.cohort_slug);
+            data.profile_slug = cohort.profile_slug;
+        }
         return data;
     }
     
