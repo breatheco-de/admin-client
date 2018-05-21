@@ -35715,6 +35715,7 @@ var Wrapper = function () {
 
         this.assetsPath = "https://assets.breatheco.de/apis";
         this.apiPath = "https://api.breatheco.de";
+        this._debug = false;
         this.token = null;
         this.pending = {
             get: {}, post: {}, put: {}, delete: {}
@@ -35722,10 +35723,17 @@ var Wrapper = function () {
     }
 
     _createClass(Wrapper, [{
+        key: '_logError',
+        value: function _logError(error) {
+            if (this._debug) console.error(error);
+        }
+    }, {
         key: 'setOptions',
         value: function setOptions(options) {
             this.assetsPath = typeof options.assetsPath !== 'undefined' ? options.assetsPath : this.assetsPath;
             this.apiPath = typeof options.apiPath !== 'undefined' ? options.apiPath : this.apiPath;
+            this._debug = typeof options.debug !== 'undefined' ? options.debug : this._debug;
+            if (typeof options.token !== 'undefined') this.setToken(options.token);
         }
     }, {
         key: 'setToken',
@@ -35782,7 +35790,10 @@ var Wrapper = function () {
 
                 _this.fetch(path, opts).then(function (resp) {
                     _this.pending[method][path] = false;
-                    if (resp.status == 200) return resp.json();else if (resp.status == 403) reject({ msg: 'Invalid username or password', code: 403 });else if (resp.status == 401) reject({ msg: 'Unauthorized', code: 401 });else if (resp.status == 400) reject({ msg: 'Invalid Argument', code: 400 });else reject({ msg: 'There was an error, try again later', code: 500 });
+                    if (resp.status == 200) return resp.json();else {
+                        _this._logError(resp);
+                        if (resp.status == 403) reject({ msg: 'Invalid username or password', code: 403 });else if (resp.status == 401) reject({ msg: 'Unauthorized', code: 401 });else if (resp.status == 400) reject({ msg: 'Invalid Argument', code: 400 });else reject({ msg: 'There was an error, try again later', code: 500 });
+                    }
                     return false;
                 }).then(function (json) {
                     if (!json) throw new Error('There was a problem processing the request');
@@ -35904,8 +35915,8 @@ var Wrapper = function () {
             };
         }
     }, {
-        key: 'todos',
-        value: function todos() {
+        key: 'todo',
+        value: function todo() {
             var _this4 = this;
 
             var url = this.apiPath;
@@ -35922,14 +35933,14 @@ var Wrapper = function () {
             };
         }
     }, {
-        key: 'projects',
-        value: function projects() {
+        key: 'project',
+        value: function project() {
             var _this5 = this;
 
             var url = this.assetsPath;
             return {
                 all: function all(syllabus_slug) {
-                    return _this5.get(url + '/projects/');
+                    return _this5.get(url + '/project/all');
                 }
             };
         }
@@ -36522,9 +36533,9 @@ var CheckBox = function (_React$Component) {
 }(_react2.default.Component);
 
 CheckBox.propTypes = {
-    // You can declare that a prop is a specific JS primitive. By default, these
-    // are all optional.
+    //you can pass your own component to render the to-do
     render: _propTypes2.default.func,
+    //what happends on click
     onClick: _propTypes2.default.func,
     checked: _propTypes2.default.bool,
     label: _propTypes2.default.string
@@ -37064,6 +37075,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Message = function Message(props) {
   var Msg = props.noti.msg;
+  if (Array.isArray(Msg)) Msg = Msg.join(', ');
   return _react2.default.createElement(
     'li',
     { className: 'alert ' + props.typeClass,
@@ -37071,7 +37083,7 @@ var Message = function Message(props) {
         height: confirm ? 'inherit' : '0'
       }
     },
-    typeof Msg !== 'string' ? _react2.default.createElement(Msg, { onConfirm: props.noti.onConfirm }) : props.noti.msg,
+    typeof Msg !== 'string' ? _react2.default.createElement(Msg, { onConfirm: props.noti.onConfirm }) : Msg,
     props.confirm && typeof Msg === 'string' ? _react2.default.createElement(
       'p',
       null,
