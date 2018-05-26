@@ -34,6 +34,9 @@ class MainMenu extends React.Component{
                 { (role == 'admin') ? 
                     <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" /> :''
                 }
+                { (role == 'admin') ? 
+                    <MenuItem icon="fas fa-users" label="Profiles" slug="profile" to="/manage/profile/" /> :''
+                }
                 { (role == 'admin' || role == 'admissions') ? 
                     <MenuItem icon="fas fa-users" label="Students" slug="student" to="/manage/student/" />:''
                 }

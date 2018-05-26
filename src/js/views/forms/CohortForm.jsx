@@ -57,7 +57,7 @@ class Form extends _BaseForm{
                 <div className="form-group">
                     <input type="text" className="form-control" placeholder="slug"
                         value={this.state.data.slug} 
-                        onChange={(e) => this.formUpdated({ slug: e.target.value })}
+                        onChange={(e) => this.formUpdated({ slug: this.slugify(e.target.value)})}
                         readOnly={(this.props.mode !== 'add')}
                     />
                     {

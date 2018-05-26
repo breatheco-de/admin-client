@@ -82,6 +82,20 @@ let cards = {
             </p>
             </DropLink>
         </li>
+    ),
+    profileCard: (data, key, onEntitySelect) => (
+        <li key={key}>
+            <DropLink
+                className='list_card'
+                dropdown={dropdownOptions}
+                onSelect={(opt) => onEntitySelect(opt, data)}
+            >
+                {data.name}
+                <p className='subrow'>
+                    <small className="text-info">{data.description}</small>
+                </p>
+            </DropLink>
+        </li>
     )
 };
 export default cards;

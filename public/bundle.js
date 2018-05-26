@@ -35368,6 +35368,7 @@ var MainMenu = function (_React$Component) {
                 { className: 'nav flex-column' },
                 _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-tachometer-alt', label: 'Dashboard', slug: 'dashboard', to: '/dashboard' }),
                 role == 'admin' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Users', slug: 'user', to: '/manage/user/' }) : '',
+                role == 'admin' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Profiles', slug: 'profile', to: '/manage/profile/' }) : '',
                 role == 'admin' || role == 'admissions' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Students', slug: 'student', to: '/manage/student/' }) : '',
                 role == 'admin' || role == 'admissions' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Cohorts', slug: 'student', to: '/manage/cohort/' }) : '',
                 _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-sign-out-alt', label: 'Close Session', slug: 'close_session',
@@ -38008,6 +38009,32 @@ var cards = {
                 )
             )
         );
+    },
+    profileCard: function profileCard(data, key, onEntitySelect) {
+        return _react2.default.createElement(
+            'li',
+            { key: key },
+            _react2.default.createElement(
+                _index.DropLink,
+                {
+                    className: 'list_card',
+                    dropdown: dropdownOptions,
+                    onSelect: function onSelect(opt) {
+                        return onEntitySelect(opt, data);
+                    }
+                },
+                data.name,
+                _react2.default.createElement(
+                    'p',
+                    { className: 'subrow' },
+                    _react2.default.createElement(
+                        'small',
+                        { className: 'text-info' },
+                        data.description
+                    )
+                )
+            )
+        );
     }
 };
 exports.default = cards;
@@ -38651,6 +38678,8 @@ exports.default = Login;
 var map = {
 	"./CohortForm": "./src/js/views/forms/CohortForm.jsx",
 	"./CohortForm.jsx": "./src/js/views/forms/CohortForm.jsx",
+	"./ProfileForm": "./src/js/views/forms/ProfileForm.jsx",
+	"./ProfileForm.jsx": "./src/js/views/forms/ProfileForm.jsx",
 	"./StudentForm": "./src/js/views/forms/StudentForm.jsx",
 	"./StudentForm.jsx": "./src/js/views/forms/StudentForm.jsx",
 	"./UserForm": "./src/js/views/forms/UserForm.jsx",
@@ -38810,7 +38839,7 @@ var Form = function (_BaseForm2) {
                     _react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: 'slug',
                         value: this.state.data.slug,
                         onChange: function onChange(e) {
-                            return _this2.formUpdated({ slug: e.target.value });
+                            return _this2.formUpdated({ slug: _this2.slugify(e.target.value) });
                         },
                         readOnly: this.props.mode !== 'add'
                     }),
@@ -38927,6 +38956,148 @@ var Form = function (_BaseForm2) {
 }(_BaseForm4.default);
 
 exports.default = (0, _reactRouterDom.withRouter)(Form);
+
+/***/ }),
+
+/***/ "./src/js/views/forms/ProfileForm.jsx":
+/*!********************************************!*\
+  !*** ./src/js/views/forms/ProfileForm.jsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
+
+var _BaseForm3 = __webpack_require__(/*! ./_BaseForm */ "./src/js/views/forms/_BaseForm.jsx");
+
+var _BaseForm4 = _interopRequireDefault(_BaseForm3);
+
+var _validator = __webpack_require__(/*! validator */ "./node_modules/validator/index.js");
+
+var _validator2 = _interopRequireDefault(_validator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ProfileForm = function (_BaseForm2) {
+    _inherits(ProfileForm, _BaseForm2);
+
+    function ProfileForm() {
+        _classCallCheck(this, ProfileForm);
+
+        var _this = _possibleConstructorReturn(this, (ProfileForm.__proto__ || Object.getPrototypeOf(ProfileForm)).call(this));
+
+        _this.state = {
+            data: _this.setDefaultState()
+        };
+        return _this;
+    }
+
+    _createClass(ProfileForm, [{
+        key: 'setDefaultState',
+        value: function setDefaultState() {
+            return {
+                name: '',
+                description: '',
+                slug: ''
+            };
+        }
+    }, {
+        key: 'validate',
+        value: function validate() {
+            var d = this.state.data;
+            if (_validator2.default.isEmpty(d.name)) return this.throwError('Missing name');
+            if (_validator2.default.isEmpty(d.description)) return this.throwError('Missing description');
+            if (_validator2.default.isEmpty(d.slug)) return this.throwError('Missing the type of user');
+
+            return true;
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.onSubmit.bind(this) },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'form-group' },
+                        _react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: 'slug',
+                            value: this.state.data.slug,
+                            onChange: function onChange(e) {
+                                return _this2.formUpdated({ slug: _this2.slugify(e.target.value) });
+                            },
+                            readOnly: this.props.mode !== 'add'
+                        }),
+                        _react2.default.createElement(
+                            'small',
+                            { id: 'emailHelp', className: 'form-text text-muted' },
+                            'The email cannot be changed'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'form-group' },
+                        _react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: 'Name',
+                            value: this.state.data.name,
+                            onChange: function onChange(e) {
+                                return _this2.formUpdated({ name: e.target.value });
+                            }
+                        })
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'form-group' },
+                        _react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: 'Description',
+                            value: this.state.data.description,
+                            onChange: function onChange(e) {
+                                return _this2.formUpdated({ description: e.target.value });
+                            }
+                        })
+                    ),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'button', className: 'btn btn-light', onClick: function onClick() {
+                                return _this2.props.history.goBack();
+                            } },
+                        'Back'
+                    ),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit', className: 'btn btn-primary' },
+                        'Save'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return ProfileForm;
+}(_BaseForm4.default);
+
+exports.default = (0, _reactRouterDom.withRouter)(ProfileForm);
 
 /***/ }),
 
@@ -39618,6 +39789,15 @@ var _BaseForm = function (_React$Component) {
             for (var key in data) {
                 if (!data[key]) data[key] = '';
             }return data;
+        }
+    }, {
+        key: 'slugify',
+        value: function slugify(text) {
+            return text.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
+            .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+            .replace(/\-\-+/g, '-') // Replace multiple - with single -
+            .replace(/^-+/, '') // Trim - from start of text
+            .replace(/-+$/, ''); // Trim - from end of text
         }
     }]);
 
