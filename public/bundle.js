@@ -2608,6 +2608,17 @@ module.exports = { prefix: 'fas', iconName: 'tachometer-alt', icon: [576, 512, [
 
 /***/ }),
 
+/***/ "./node_modules/@fortawesome/fontawesome-free-solid/faTrashAlt.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@fortawesome/fontawesome-free-solid/faTrashAlt.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = { prefix: 'fas', iconName: 'trash-alt', icon: [448, 512, [], "f2ed", "M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm416 56v324c0 26.5-21.5 48-48 48H80c-26.5 0-48-21.5-48-48V140c0-6.6 5.4-12 12-12h360c6.6 0 12 5.4 12 12zm-272 68c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208z"] };
+
+/***/ }),
+
 /***/ "./node_modules/@fortawesome/fontawesome-free-solid/faUsers.js":
 /*!*********************************************************************!*\
   !*** ./node_modules/@fortawesome/fontawesome-free-solid/faUsers.js ***!
@@ -35186,7 +35197,7 @@ var clean = exports.clean = function clean() {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.addStudentsToCohort = undefined;
+exports.removeStudentsFromCohort = exports.addStudentsToCohort = undefined;
 
 var _index = __webpack_require__(/*! ../utils/api/index */ "./src/js/utils/api/index.js");
 
@@ -35216,6 +35227,25 @@ var addStudentsToCohort = exports.addStudentsToCohort = function addStudentsToCo
         var entities = state['manage_student'].map(function (student) {
             if (studentsArray.indexOf(student.id) !== -1) {
                 student.cohorts.push(cohort_slug);
+            }
+            return student;
+        });
+        _reactFluxDash2.default.dispatchEvent('manage_student', entities);
+    }).catch(function (error) {
+        Notify.error('Error: ' + (error.msg || error));
+    });
+};
+
+var removeStudentsFromCohort = exports.removeStudentsFromCohort = function removeStudentsFromCohort(cohort_slug, studentsArray) {
+    _index2.default.cohort().removeStudents(cohort_slug, studentsArray).then(function (result) {
+        Notify.success('The cohort was successfully removed from the student');
+
+        var state = _AdminStore2.default.getState();
+        var entities = state['manage_student'].map(function (student) {
+            if (studentsArray.indexOf(student.id) !== -1) {
+                student.cohorts = student.cohorts.filter(function (cohort) {
+                    return cohort != cohort_slug;
+                });
             }
             return student;
         });
@@ -36004,17 +36034,23 @@ var Wrapper = function () {
                 add: function add(args) {
                     return _this8.put(url + '/cohort/', args);
                 },
+                update: function update(id, args) {
+                    return _this8.post(url + '/cohort/' + id, args);
+                },
+                delete: function _delete(id) {
+                    return _this8.delete(url + '/cohort/' + id);
+                },
                 addStudents: function addStudents(cohortId, studentsArray) {
                     studentsArray = studentsArray.map(function (id) {
                         return { student_id: id };
                     });
                     return _this8.post(url + '/student/cohort/' + cohortId, studentsArray);
                 },
-                update: function update(id, args) {
-                    return _this8.post(url + '/cohort/' + id, args);
-                },
-                delete: function _delete(id) {
-                    return _this8.delete(url + '/cohort/' + id);
+                removeStudents: function removeStudents(cohortId, studentsArray) {
+                    studentsArray = studentsArray.map(function (id) {
+                        return { student_id: id };
+                    });
+                    return _this8.delete(url + '/student/cohort/' + cohortId, studentsArray);
                 }
             };
         }
@@ -37621,13 +37657,17 @@ var _faPlusCircle = __webpack_require__(/*! @fortawesome/fontawesome-free-solid/
 
 var _faPlusCircle2 = _interopRequireDefault(_faPlusCircle);
 
+var _faTrashAlt = __webpack_require__(/*! @fortawesome/fontawesome-free-solid/faTrashAlt */ "./node_modules/@fortawesome/fontawesome-free-solid/faTrashAlt.js");
+
+var _faTrashAlt2 = _interopRequireDefault(_faTrashAlt);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/* global FontAwesomeConfig */
 _fontawesome2.default.config = {
     autoReplaceSvg: 'nest'
-}; /* global FontAwesomeConfig */
-
-_fontawesome2.default.library.add(_faCheck2.default, _faGraduationCap2.default, _faPlay2.default, _faSpinner2.default, _faSearch2.default, _faGithub2.default, _faCog2.default, _faUsers2.default, _faEllipsisV2.default, _faSignOutAlt2.default, _faTachometerAlt2.default, _faPlusCircle2.default);
+};
+_fontawesome2.default.library.add(_faCheck2.default, _faGraduationCap2.default, _faPlay2.default, _faSpinner2.default, _faSearch2.default, _faGithub2.default, _faCog2.default, _faUsers2.default, _faEllipsisV2.default, _faSignOutAlt2.default, _faTachometerAlt2.default, _faPlusCircle2.default, _faTrashAlt2.default);
 
 /***/ }),
 
@@ -39294,11 +39334,18 @@ var Edit = function Edit(_ref) {
     var cohorts = studentCohorts.map(function (c, i) {
         return _react2.default.createElement(
             'li',
-            { key: i, className: 'nav-item' },
+            { key: i, className: 'nav-item mr-3' },
             _react2.default.createElement(
                 _reactRouterDom.Link,
-                { to: '/manage/cohort/?slug=' + c, className: 'nav-link' },
+                { to: '/manage/cohort/?slug=' + c, className: 'mr-2' },
                 c
+            ),
+            _react2.default.createElement(
+                'a',
+                { href: '#', onClick: function onClick() {
+                        return StudentActions.removeStudentsFromCohort(c, [data.id]);
+                    } },
+                _react2.default.createElement('i', { className: 'fas fa-trash-alt fa-xs' })
             )
         );
     });

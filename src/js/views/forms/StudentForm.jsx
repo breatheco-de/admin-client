@@ -108,7 +108,14 @@ class Form extends _BaseForm{
 }
 
 const Edit = ({data, studentCohorts, formUpdated}) => {
-    const cohorts = studentCohorts.map((c,i) => (<li key={i} className="nav-item"><Link to={`/manage/cohort/?slug=${c}`} className="nav-link">{c}</Link></li>));
+    const cohorts = studentCohorts.map((c,i) => (
+        <li key={i} className="nav-item mr-3">
+            <Link to={`/manage/cohort/?slug=${c}`} className="mr-2">
+                {c}
+            </Link>
+            <a href="#" onClick={() => StudentActions.removeStudentsFromCohort(c, [data.id])}><i className="fas fa-trash-alt fa-xs"></i></a>
+        </li>
+    ));
     return (
         <div>
             <div className="form-group">
