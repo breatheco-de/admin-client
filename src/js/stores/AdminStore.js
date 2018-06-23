@@ -15,6 +15,7 @@ class AdminStore extends Flux.DashStore{
         this.addEvent("manage_cohort", this._transformCohorts.bind(this));
         this.addEvent("manage_location", this._transformLocation.bind(this));
         this.addEvent("manage_profile", this._transformProfile.bind(this));
+        this.addEvent("manage_event", this._transformEvent.bind(this));
     }
     
     _transformUsers(users){ 
@@ -25,6 +26,7 @@ class AdminStore extends Flux.DashStore{
     _transformLocation(results){ return results; }
     _transformCohorts(results){ return results; }
     _transformProfile(results){ return results; }
+    _transformEvent(results){ return results; }
     
     getSingle(type, id){ 
         let entities = this.getAll(type);
@@ -42,7 +44,7 @@ class AdminStore extends Flux.DashStore{
     }
     getAll(type){ 
         let result = this.getState();
-        if(typeof result[`manage_${type}`] === 'undefined') return [];
+        if(typeof result[`manage_${type}`] === 'undefined' || !result[`manage_${type}`]) return [];
         else return result[`manage_${type}`];
     }
     replace(type, newEntity){

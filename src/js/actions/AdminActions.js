@@ -1,7 +1,7 @@
 import BC from '../utils/api/index';
 import Flux from '@4geeksacademy/react-flux-dash';
 import AdminStore from '../stores/AdminStore';
-import * as Notify from '../actions/NotifyActions';
+import {Notify} from '../utils/bc-components/src/index';
 import {cohortActions} from '../actions/CustomActions';
 
 export const get = (types) => {

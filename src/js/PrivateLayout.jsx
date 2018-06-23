@@ -2,7 +2,7 @@ import React from 'react';
 import Flux from '@4geeksacademy/react-flux-dash';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import { Sidebar } from './utils/bc-components/index';
+import { Sidebar } from './utils/bc-components/src/index';
 import HomeView from './views/HomeView';
 
 import ManageView from './views/ManageView';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import AdminStore from '../../stores/AdminStore';
-import { Modal } from '../../utils/bc-components/index';
+import { Modal, Notify } from '../../utils/bc-components/src/index';
 import * as StudentActions from '../../actions/StudentActions';
 import _BaseForm from './_BaseForm';
 import validator from 'validator';
@@ -14,6 +14,7 @@ class Form extends _BaseForm{
             data: this.setDefaultState(),
             addCohort: null,
             newCohort: null,
+            notifyStudent: false,
             dependencies: {
                 cohort: AdminStore.getAll('cohort'),
             }
@@ -68,11 +69,14 @@ class Form extends _BaseForm{
     }
     
     addToCohort(){
-        StudentActions.addStudentsToCohort(this.state.newCohort, [this.state.data.id]);
-        this.setState({
-            addCohort: null,
-            newCohort: null
-        });
+        if(!this.state.newCohort) Notify.error("Invalid cohort");
+        else{
+            StudentActions.addStudentsToCohort(this.state.newCohort, this.state.data.id, this.state.notifyStudent);
+            this.setState({
+                addCohort: null,
+                newCohort: null
+            });
+        }
     }
     
     render(){
@@ -86,9 +90,14 @@ class Form extends _BaseForm{
                         newCohort: null
                     })}
                 >
-                    <select onChange={(e) => this.setState({ newCohort: e.target.value })}>
+                    <select className="form-control" onChange={(e) => {
+                        this.setState({ newCohort: e.target.value });
+                    }}>
+                        <option value={null}>Select a cohort</option>
                         {cohorts}
                     </select>
+                    <input type="checkbox" value={this.state.notifyStudent} onChange={(e) => this.setState({ notifyStudent: e.target.checked })} />
+                    Run automation and notify student about his new cohort
                 </Modal>
                 {
                     (this.state.mode === 'add') ?

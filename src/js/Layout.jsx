@@ -3,19 +3,15 @@ import Flux from '@4geeksacademy/react-flux-dash';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import PrivateLayout from './PrivateLayout';
-import LoginView from './views/authentication/LoginView';
-import ForgotView from './views/authentication/ForgotView';
-import UserStore from './stores/UserStore';
 import * as AdminActions from './actions/AdminActions';
 
-import NotificationStore from './stores/NotificationStore';
-import { Notifier, PrivateRoute } from './utils/bc-components/index';
+import { Notifier, PrivateRoute, Session, ForgotView, LoginView } from './utils/bc-components/src/index';
 
 class Layout extends Flux.View{
     
     constructor(){
         super();
-        const session = UserStore.getSession();
+        const session = Session.getSession();
         
         this.state = {
             loggedIn: (session && session.autenticated),
@@ -26,14 +22,11 @@ class Layout extends Flux.View{
     }
     
     componentDidMount(){
-        this.notiSubs = NotificationStore.subscribe("notifications", 
-            (notifications) => this.setState({ notifications })
-        );
-        const session = UserStore.getSession();
+        const session = Session.getSession();
         this.setState({
             loggedIn: (session && session.autenticated)
         });
-        this.sessionSubscription = UserStore.subscribe("session", this.sessionChange.bind(this));
+        this.sessionSubscription = Session.subscribe("session", this.sessionChange.bind(this));
     }
     
     sessionChange(session){
@@ -52,7 +45,7 @@ class Layout extends Flux.View{
             <div className="layout">
                 <BrowserRouter>
                     <div>
-                        <Notifier notifications={this.state.notifications} />
+                        <Notifier />
                         <Switch>
                             <Route exact path='/login' component={LoginView} />
                             <Route exact path='/forgot' component={ForgotView} />

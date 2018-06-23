@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserError } from '../../utils/bc-components/index';
+import { UserError } from '../../utils/bc-components/src/index';
 import AdminStore from '../../stores/AdminStore';
 
 export default class _BaseForm extends React.Component{
@@ -48,7 +48,7 @@ export default class _BaseForm extends React.Component{
     sanitizeData(data){
         return data;
     }
-    componentWillMount(){
+    componentDidMount(){
         for(let entity in this.state.dependencies){
             this._dependencyTransformers[entity] = (state) => {
                 let updatedDependency = {};

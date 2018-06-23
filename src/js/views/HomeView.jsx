@@ -1,6 +1,6 @@
 import React from "react";
 import Flux from '@4geeksacademy/react-flux-dash';
-import { Panel } from '../utils/bc-components/index';
+import { Panel } from '../utils/bc-components/src/index';
 
 export default class HomeView extends Flux.View {
   

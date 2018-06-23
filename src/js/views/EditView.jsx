@@ -1,10 +1,9 @@
 import React from "react";
 import Flux from '@4geeksacademy/react-flux-dash';
-import { Panel, List, DropLink } from '../utils/bc-components/index';
+import { Panel, Notify } from '../utils/bc-components/src/index';
 
 import AdminStore from '../stores/AdminStore';
 import * as AdminActions from '../actions/AdminActions';
-import * as Notify from '../actions/NotifyActions';
 
 export default class ManageView extends Flux.View {
   

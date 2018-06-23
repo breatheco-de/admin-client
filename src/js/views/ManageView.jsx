@@ -1,6 +1,6 @@
 import React from "react";
 import Flux from '@4geeksacademy/react-flux-dash';
-import { Panel, List } from '../utils/bc-components/index';
+import { Panel, List } from '../utils/bc-components/src/index';
 
 import AdminStore from '../stores/AdminStore';
 import * as AdminActions from '../actions/AdminActions';
@@ -23,6 +23,7 @@ export default class ManageView extends Flux.View {
     initialize(){
         let slug = this.props.match.params.entity_slug;
         let entities = AdminStore.getAll(slug);
+        if(!entities) entities = [];
         this.EVENT_NAME = "manage_"+slug;
         this.setState({
             entities,
@@ -75,6 +76,9 @@ export default class ManageView extends Flux.View {
                 break;
                 case "delete":
                     AdminActions.remove(this.state.entitySlug, ent);
+                break;
+                case "open_in_new_window":
+                    window.open(opt.url, '_blank');
                 break;
                 default:
                     if(typeof AdminActions.custom[this.state.entitySlug][opt.slug] === 'undefined')

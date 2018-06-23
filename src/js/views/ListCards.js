@@ -1,9 +1,9 @@
 import React from "react";
-import { DropLink } from '../utils/bc-components/index';
+import { DropLink } from '../utils/bc-components/src/index';
 
 const dropdownOptions = [
     { label: 'edit', slug: 'edit' },
-    { label: 'delete (from breathecode only)', slug: 'delete' }
+    { label: 'delete (from breathecode only)', slug: 'delete', icon: 'trash' }
 ];
 let cards = {
     userCard: (data, key, onEntitySelect) => (
@@ -93,6 +93,28 @@ let cards = {
                 {data.name}
                 <p className='subrow'>
                     <small className="text-info">{data.description}</small>
+                </p>
+            </DropLink>
+        </li>
+    ),
+    eventCard: (data, key, onEntitySelect) => (
+        <li key={key}>
+            <DropLink
+                className='list_card'
+                dropdown={dropdownOptions.concat([
+                    { 
+                        label: 'got to landing', 
+                        slug: 'open_in_new_window', 
+                        url: data.url
+                    }
+                ])}
+                onSelect={(opt) => onEntitySelect(opt, data)}
+            >
+                {data.title}
+                <p className='subrow'>
+                    <small className="text-secondary">{data.city}:</small>
+                    <small className="text-info">{data.type}</small>
+                    <small className="ml-4 text-warning">{data.event_date.substr(0,10)}</small>
                 </p>
             </DropLink>
         </li>
