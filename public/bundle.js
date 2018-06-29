@@ -80563,7 +80563,7 @@ var _index = __webpack_require__(/*! ../utils/bc-components/src/index */ "./src/
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var dropdownOptions = [{ label: 'edit', slug: 'edit' }, { label: 'delete (from breathecode only)', slug: 'delete', icon: 'trash' }];
+var dropdownOptions = [{ label: 'Edit', slug: 'edit' }, { label: 'Delete (from breathecode only)', slug: 'delete', icon: 'trash' }];
 var cards = {
     userCard: function userCard(data, key, onEntitySelect) {
         return _react2.default.createElement(
@@ -80738,11 +80738,26 @@ var cards = {
                 _index.DropLink,
                 {
                     className: 'list_card',
-                    dropdown: dropdownOptions.concat([{
-                        label: 'got to landing',
+                    dropdown: [{
+                        label: 'Got To Landing',
                         slug: 'open_in_new_window',
                         url: data.url
-                    }]),
+                    }].concat(function () {
+                        var statusActions = [];
+                        if (data.status !== 'published') statusActions.push({
+                            label: 'Publish Event',
+                            slug: 'change_event_status',
+                            event_id: data.id,
+                            new_status: 'published'
+                        });
+                        if (data.status === 'published') statusActions.push({
+                            label: 'Unpublish the event (make it a draft again)',
+                            slug: 'change_event_status',
+                            event_id: data.id,
+                            new_status: 'draft'
+                        });
+                        return statusActions;
+                    }()).concat(dropdownOptions),
                     onSelect: function onSelect(opt) {
                         return onEntitySelect(opt, data);
                     }
@@ -80762,10 +80777,23 @@ var cards = {
                         { className: 'text-info' },
                         data.type
                     ),
+                    data.status == 'published' ? _react2.default.createElement(
+                        'small',
+                        { className: 'ml-4 text-success' },
+                        data.status
+                    ) : data.status == 'draft' ? _react2.default.createElement(
+                        'small',
+                        { className: 'ml-4 text-danger' },
+                        data.status
+                    ) : _react2.default.createElement(
+                        'small',
+                        { className: 'ml-4 text-secondary' },
+                        data.status
+                    ),
                     _react2.default.createElement(
                         'small',
                         { className: 'ml-4 text-warning' },
-                        data.event_date.substr(0, 10)
+                        '(' + data.event_date.substr(0, 10) + ')'
                     )
                 )
             )
@@ -80901,6 +80929,12 @@ var ManageView = function (_Flux$View) {
                         break;
                     case "open_in_new_window":
                         window.open(opt.url, '_blank');
+                        break;
+                    case "change_event_status":
+                        AdminActions.update(this.state.entitySlug, {
+                            id: opt.event_id,
+                            status: opt.new_status
+                        });
                         break;
                     default:
                         if (typeof AdminActions.custom[this.state.entitySlug][opt.slug] === 'undefined') throw new Error('Undefined custom action ' + this.state.entitySlug + '.' + opt.slug + '()');else AdminActions.custom[this.state.entitySlug][opt.slug](opt.data);
@@ -81446,7 +81480,8 @@ var Form = function (_BaseForm2) {
     }, {
         key: 'sanitizeData',
         value: function sanitizeData(data) {
-            data.event_date = data.event_date.format("YYYY-MM-DD hh:mm:ss");
+            if (data.event_date && typeof data.event_date !== 'string') data.event_date = data.event_date.format("YYYY-MM-DD hh:mm:ss");
+
             return data;
         }
     }, {
@@ -81520,6 +81555,44 @@ var EditForm = function EditForm(_ref) {
                     return formUpdated({ title: e.target.value });
                 }
             })
+        ),
+        _react2.default.createElement(
+            'div',
+            { className: 'form-group' },
+            _react2.default.createElement(
+                'select',
+                { className: 'form-control',
+                    value: data.status,
+                    onChange: function onChange(e) {
+                        return formUpdated({ status: e.target.value });
+                    }
+                },
+                _react2.default.createElement(
+                    'option',
+                    { value: 'draft' },
+                    'Draft'
+                ),
+                _react2.default.createElement(
+                    'option',
+                    { value: 'pending_review' },
+                    'Pending Review (spelling and small details)'
+                ),
+                _react2.default.createElement(
+                    'option',
+                    { value: 'unlisted' },
+                    'Unlisted (will not be show on the calendar)'
+                ),
+                _react2.default.createElement(
+                    'option',
+                    { value: 'published' },
+                    'Published (shown on the calendar)'
+                )
+            ),
+            _react2.default.createElement(
+                'small',
+                { className: 'form-text text-muted' },
+                'Initial cohort for the student'
+            )
         ),
         _react2.default.createElement(
             'div',
@@ -81670,12 +81743,12 @@ var EditForm = function EditForm(_ref) {
                 _react2.default.createElement(
                     'option',
                     { value: true },
-                    'Private'
+                    'Private (for students or invite only)'
                 ),
                 _react2.default.createElement(
                     'option',
                     { value: false },
-                    'Invite Only'
+                    'Public'
                 )
             ),
             _react2.default.createElement(

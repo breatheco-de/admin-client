@@ -43,7 +43,9 @@ class Form extends _BaseForm{
     }
     
     sanitizeData(data){
-        data.event_date = data.event_date.format("YYYY-MM-DD hh:mm:ss");
+        if(data.event_date && typeof data.event_date !== 'string')
+            data.event_date = data.event_date.format("YYYY-MM-DD hh:mm:ss");
+            
         return data;
     }
     
@@ -79,6 +81,18 @@ const EditForm = ({data, dependencies, formUpdated}) => {
                     value={data.title} 
                     onChange={(e) => formUpdated({ title: e.target.value})}
                 />
+            </div>
+            <div className="form-group">
+                <select className="form-control"
+                     value={data.status}
+                    onChange={(e) => formUpdated({ status: e.target.value})}
+                >
+                    <option value={'draft'}>Draft</option>
+                    <option value={'pending_review'}>Pending Review (spelling and small details)</option>
+                    <option value={'unlisted'}>Unlisted (will not be show on the calendar)</option>
+                    <option value={'published'}>Published (shown on the calendar)</option>
+                </select>
+                <small className="form-text text-muted">Initial cohort for the student</small>
             </div>
             <div className="form-group">
                 <input type="text" className="form-control"  placeholder="Address"
@@ -146,8 +160,8 @@ const EditForm = ({data, dependencies, formUpdated}) => {
                     onChange={(e) => formUpdated({ invite_only: e.target.value})}
                 >
                     <option value={null}>Select visibility</option>
-                    <option value={true}>Private</option>
-                    <option value={false}>Invite Only</option>
+                    <option value={true}>Private (for students or invite only)</option>
+                    <option value={false}>Public</option>
                 </select>
                 <small className="form-text text-muted">Private events are for academy students only</small>
             </div>

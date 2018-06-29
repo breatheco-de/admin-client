@@ -2,8 +2,8 @@ import React from "react";
 import { DropLink } from '../utils/bc-components/src/index';
 
 const dropdownOptions = [
-    { label: 'edit', slug: 'edit' },
-    { label: 'delete (from breathecode only)', slug: 'delete', icon: 'trash' }
+    { label: 'Edit', slug: 'edit' },
+    { label: 'Delete (from breathecode only)', slug: 'delete', icon: 'trash' }
 ];
 let cards = {
     userCard: (data, key, onEntitySelect) => (
@@ -50,7 +50,7 @@ let cards = {
                 { 
                     label: 'review students', 
                     slug: 'cohort_students', 
-                    to: `/manage/student/?cohort=${data.slug}`
+                    to: '/manage/student/?cohort='+data.slug
                 },
                 { 
                     label: 'change cohort stage', 
@@ -101,20 +101,43 @@ let cards = {
         <li key={key}>
             <DropLink
                 className='list_card'
-                dropdown={dropdownOptions.concat([
+                dropdown={[
                     { 
-                        label: 'got to landing', 
+                        label: 'Got To Landing', 
                         slug: 'open_in_new_window', 
                         url: data.url
                     }
-                ])}
+                ].concat((() => {
+                    let statusActions = [];
+                    if(data.status !== 'published') statusActions.push({
+                        label: 'Publish Event', 
+                        slug: 'change_event_status',
+                        event_id: data.id,
+                        new_status: 'published'
+                    });
+                    if(data.status === 'published') statusActions.push({
+                        label: 'Unpublish the event (make it a draft again)', 
+                        slug: 'change_event_status',
+                        event_id: data.id,
+                        new_status: 'draft'
+                    });
+                    return statusActions;
+                })()).concat(dropdownOptions)}
                 onSelect={(opt) => onEntitySelect(opt, data)}
             >
                 {data.title}
                 <p className='subrow'>
                     <small className="text-secondary">{data.city}:</small>
                     <small className="text-info">{data.type}</small>
-                    <small className="ml-4 text-warning">{data.event_date.substr(0,10)}</small>
+                    {
+                        (data.status == 'published') ?
+                            <small className="ml-4 text-success">{data.status}</small>
+                        : (data.status == 'draft') ?
+                            <small className="ml-4 text-danger">{data.status}</small>
+                        :
+                            <small className="ml-4 text-secondary">{data.status}</small>
+                    }
+                    <small className="ml-4 text-warning">{'('+data.event_date.substr(0,10)+')'}</small>
                 </p>
             </DropLink>
         </li>

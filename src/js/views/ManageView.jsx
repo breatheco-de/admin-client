@@ -80,6 +80,12 @@ export default class ManageView extends Flux.View {
                 case "open_in_new_window":
                     window.open(opt.url, '_blank');
                 break;
+                case "change_event_status":
+                    AdminActions.update(this.state.entitySlug, {
+                        id: opt.event_id,
+                        status: opt.new_status
+                    });
+                break;
                 default:
                     if(typeof AdminActions.custom[this.state.entitySlug][opt.slug] === 'undefined')
                         throw new Error(`Undefined custom action ${this.state.entitySlug}.${opt.slug}()`);
