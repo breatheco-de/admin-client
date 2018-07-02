@@ -76837,7 +76837,7 @@ module.exports = function(module) {
 /*! exports provided: name, version, description, main, scripts, author, license, devDependencies, babel, dependencies, default */
 /***/ (function(module) {
 
-module.exports = {"name":"workspace","version":"1.0.2","description":"","main":"index.js","scripts":{"c9":"webpack-dev-server --mode development --open --host $IP --port $PORT --config webpack.dev.js","dev":"webpack --mode development --config webpack.dev.js","start":"http-server -a $IP","build":"webpack --mode development --config webpack.prod.js"},"author":"","license":"ISC","devDependencies":{"@breathecode/breathecode-cli":"0.0.1","babel-cli":"^6.26.0","babel-core":"^6.26.0","babel-loader":"^7.1.2","babel-preset-env":"^1.6.0","babel-preset-react":"^6.24.1","css-loader":"^0.28.7","dotenv-webpack":"^1.5.5","file-loader":"^1.1.5","html-loader":"^0.5.5","html-webpack-plugin":"^3.2.0","markdown-loader":"^2.0.2","node-sass":"^4.5.3","react-svg-loader":"^2.1.0","sass-loader":"^6.0.6","style-loader":"^0.19.0","webpack":"^4.0.1","webpack-cli":"^2.0.9","webpack-dev-server":"^3.1.3","webpack-merge":"^4.1.2"},"babel":{"presets":["env","react"]},"dependencies":{"@4geeksacademy/react-flux-dash":"^3.0.2","@fortawesome/fontawesome":"^1.1.4","@fortawesome/fontawesome-free-brands":"^5.0.9","@fortawesome/fontawesome-free-regular":"^5.0.8","@fortawesome/fontawesome-free-solid":"^5.0.8","bootstrap":"^4.0.0-beta.2","events":"^1.1.1","flux":"^3.1.3","jquery":"^3.2.1","moment":"^2.19.4","popper.js":"^1.12.9","prop-types":"^15.6.1","query-string":"^5.1.1","react":"^16.0.0","react-ace":"^5.9.0","react-datetime":"^2.14.0","react-dom":"^16.0.0","react-flux-dash":"^1.1.6","react-marked":"^0.3.1","react-mousetrap":"^0.2.0","react-polyfills":"0.0.1","react-quill":"^1.3.0","react-router":"^4.2.0","react-router-dom":"^4.2.2","react-split-pane":"^0.1.77","react-transition-group":"^1.2.1","reactstrap":"^5.0.0-beta.3","validator":"^9.4.1","wordpress-rest-api":"^0.8.0"}};
+module.exports = {"name":"workspace","version":"1.0.2","description":"","main":"index.js","scripts":{"c9":"webpack-dev-server --mode development --open --host $IP --port $PORT --config webpack.dev.js","dev":"webpack --mode development --config webpack.dev.js","start":"http-server -a $IP","build":"webpack --mode development --config webpack.prod.js"},"author":"","license":"ISC","devDependencies":{"@breathecode/breathecode-cli":"0.0.1","babel-cli":"^6.26.0","babel-core":"^6.26.0","babel-loader":"^7.1.2","babel-preset-env":"^1.6.0","babel-preset-react":"^6.24.1","css-loader":"^0.28.7","dotenv-webpack":"^1.5.5","file-loader":"^1.1.5","html-loader":"^0.5.5","html-webpack-plugin":"^3.2.0","markdown-loader":"^2.0.2","node-sass":"^4.5.3","react-svg-loader":"^2.1.0","sass-loader":"^6.0.6","style-loader":"^0.19.0","webpack":"^4.0.1","webpack-cli":"^2.0.9","webpack-dev-server":"^3.1.3","webpack-merge":"^4.1.2"},"babel":{"presets":["env","react"]},"dependencies":{"@4geeksacademy/react-flux-dash":"^3.0.2","@breathecode/api-js-wrapper":"^1.0.1","@fortawesome/fontawesome":"^1.1.4","@fortawesome/fontawesome-free-brands":"^5.0.9","@fortawesome/fontawesome-free-regular":"^5.0.8","@fortawesome/fontawesome-free-solid":"^5.0.8","bootstrap":"^4.0.0-beta.2","events":"^1.1.1","flux":"^3.1.3","jquery":"^3.2.1","moment":"^2.19.4","popper.js":"^1.12.9","prop-types":"^15.6.1","query-string":"^5.1.1","react":"^16.0.0","react-ace":"^5.9.0","react-datetime":"^2.14.0","react-dom":"^16.0.0","react-flux-dash":"^1.1.6","react-marked":"^0.3.1","react-mousetrap":"^0.2.0","react-polyfills":"0.0.1","react-quill":"^1.3.0","react-router":"^4.2.0","react-router-dom":"^4.2.2","react-split-pane":"^0.1.77","react-transition-group":"^1.2.1","reactstrap":"^5.0.0-beta.3","validator":"^9.4.1","wordpress-rest-api":"^0.8.0"}};
 
 /***/ }),
 
@@ -77008,6 +77008,10 @@ var _ManageView = __webpack_require__(/*! ./views/ManageView */ "./src/js/views/
 
 var _ManageView2 = _interopRequireDefault(_ManageView);
 
+var _IFrameView = __webpack_require__(/*! ./views/IFrameView */ "./src/js/views/IFrameView.jsx");
+
+var _IFrameView2 = _interopRequireDefault(_IFrameView);
+
 var _EditView = __webpack_require__(/*! ./views/EditView */ "./src/js/views/EditView.jsx");
 
 var _EditView2 = _interopRequireDefault(_EditView);
@@ -77067,6 +77071,7 @@ var Layout = function (_Flux$View) {
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _HomeView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/home', component: _HomeView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/dashboard', component: _HomeView2.default }),
+                        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/manage/i/:entity_slug', component: _IFrameView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/manage/:entity_slug/:entity_id/edit', component: _EditView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/manage/:entity_slug/add', component: _EditView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/manage/:entity_slug', component: _ManageView2.default }),
@@ -77449,6 +77454,14 @@ var MainMenu = function (_React$Component) {
                     null,
                     '-'
                 ),
+                role == 'admin' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Replits', slug: 'replit', to: '/manage/i/replit/' }) : '',
+                role == 'admin' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Quizzes', slug: 'quiz', to: '/manage/i/quiz/' }) : '',
+                role == 'admin' ? _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-users', label: 'Syllabus', slug: 'syllabus', to: '/manage/i/syllabus/' }) : '',
+                _react2.default.createElement(
+                    'p',
+                    null,
+                    '-'
+                ),
                 _react2.default.createElement(_index.MenuItem, { icon: 'fas fa-sign-out-alt', label: 'Close Session', slug: 'close_session',
                     onClick: function onClick() {
                         return (0, _index.logout)();
@@ -77659,7 +77672,7 @@ var Wrapper = function () {
     function Wrapper() {
         _classCallCheck(this, Wrapper);
 
-        this.assetsPath = "https://assets.breatheco.de/apis";
+        this.assetsPath = "https://assets.breatheco.de" + '/api';
         this.apiPath = "https://api.breatheco.de";
         this.assetsToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRJZCI6ImFsZXNhbmNoZXpyIiwiaWF0IjoxNTI5Nzc5NDY1LCJleHAiOjMzMDg2NzMxNDY1fQ.VbZIyqFFvEpLrXx5O6XTlA4dXVQvF8F18BFTetM_Jb8";
         this._debug = false;
@@ -80538,6 +80551,87 @@ var HomeView = function (_Flux$View) {
 }(_reactFluxDash2.default.View);
 
 exports.default = HomeView;
+
+/***/ }),
+
+/***/ "./src/js/views/IFrameView.jsx":
+/*!*************************************!*\
+  !*** ./src/js/views/IFrameView.jsx ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _reactFluxDash = __webpack_require__(/*! @4geeksacademy/react-flux-dash */ "./node_modules/@4geeksacademy/react-flux-dash/dist/react-flux-dash.js");
+
+var _reactFluxDash2 = _interopRequireDefault(_reactFluxDash);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _index = __webpack_require__(/*! ../utils/bc-components/src/index */ "./src/js/utils/bc-components/src/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var IFrameView = function (_Flux$View) {
+  _inherits(IFrameView, _Flux$View);
+
+  function IFrameView() {
+    _classCallCheck(this, IFrameView);
+
+    var _this = _possibleConstructorReturn(this, (IFrameView.__proto__ || Object.getPrototypeOf(IFrameView)).call(this));
+
+    _this.state = {
+      loading: true
+    };
+    return _this;
+  }
+
+  _createClass(IFrameView, [{
+    key: 'getIframeURL',
+    value: function getIframeURL() {
+      var type = this.props.match.params.entity_slug;
+      if (type === "replit") return "https://assets.breatheco.de" + '/apps/replit-maker';
+      if (type === "quiz") return "https://assets.breatheco.de" + '/apps/quiz-maker';
+      if (type === "syllabus") return "https://assets.breatheco.de" + '/apps/syllabus-maker';
+      return '';
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      return _react2.default.createElement(
+        _index.Panel,
+        { padding: false, style: { overflow: 'hidden' } },
+        _react2.default.createElement(_index.Loading, { show: this.state.loading }),
+        _react2.default.createElement('iframe', { onLoad: function onLoad() {
+            return _this2.setState({ loading: false });
+          }, className: 'lesson-iframe', src: this.getIframeURL(),
+          height: '100%', width: '100%', frameBorder: '0' })
+      );
+    }
+  }]);
+
+  return IFrameView;
+}(_reactFluxDash2.default.View);
+
+exports.default = IFrameView;
 
 /***/ }),
 

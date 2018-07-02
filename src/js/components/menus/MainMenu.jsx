@@ -45,6 +45,16 @@ class MainMenu extends React.Component{
                     <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" /> :''
                 }
                 <p>-</p>
+                { (role == 'admin') ? 
+                    <MenuItem icon="fas fa-users" label="Replits" slug="replit" to="/manage/i/replit/" /> :''
+                }
+                { (role == 'admin') ? 
+                    <MenuItem icon="fas fa-users" label="Quizzes" slug="quiz" to="/manage/i/quiz/" /> :''
+                }
+                { (role == 'admin') ? 
+                    <MenuItem icon="fas fa-users" label="Syllabus" slug="syllabus" to="/manage/i/syllabus/" /> :''
+                }
+                <p>-</p>
                 <MenuItem icon="fas fa-sign-out-alt" label="Close Session" slug="close_session"
                     onClick={() => logout()}
                 />

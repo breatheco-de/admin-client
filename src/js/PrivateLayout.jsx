@@ -6,6 +6,7 @@ import { Sidebar } from './utils/bc-components/src/index';
 import HomeView from './views/HomeView';
 
 import ManageView from './views/ManageView';
+import IFrameView from './views/IFrameView';
 import EditView from './views/EditView';
 import MainMenu from './components/menus/MainMenu';
 
@@ -37,6 +38,7 @@ class Layout extends Flux.View{
                         <Route exact path='/' component={HomeView} />
                         <Route exact path='/home' component={HomeView} />
                         <Route exact path='/dashboard' component={HomeView} />
+                        <Route exact path='/manage/i/:entity_slug' component={IFrameView} />
                         <Route exact path='/manage/:entity_slug/:entity_id/edit' component={EditView} />
                         <Route exact path='/manage/:entity_slug/add' component={EditView} />
                         <Route exact path='/manage/:entity_slug' component={ManageView} />
