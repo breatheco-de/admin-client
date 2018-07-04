@@ -1,4 +1,4 @@
-import BC from '../utils/api/index';
+import BC from '@breathecode/api-js-wrapper';
 import Flux from '@4geeksacademy/react-flux-dash';
 import AdminStore from '../stores/AdminStore';
 import { Notify } from '../utils/bc-components/src/index';
