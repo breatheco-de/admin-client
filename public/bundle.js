@@ -2624,6 +2624,332 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_react__;
 
 /***/ }),
 
+/***/ "./node_modules/@breathecode/api-js-wrapper/index.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/@breathecode/api-js-wrapper/index.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {/* global fetch, localStorage */
+class Wrapper{
+    
+    constructor(){
+        this.assetsPath = (typeof process != 'undefined') ? "https://assets.breatheco.de"+'/apis' : null;
+        this.apiPath = (typeof process != 'undefined') ? "https://api.breatheco.de" : null;
+        this.token = (typeof process != 'undefined') ? "84914113e56a4af0195eb3a2eef3a30fe08a9426" : null;
+        this.assetsToken = (typeof process != 'undefined') ? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRJZCI6ImFsZXNhbmNoZXpyIiwiaWF0IjoxNTI5Nzc5NDY1LCJleHAiOjMzMDg2NzMxNDY1fQ.VbZIyqFFvEpLrXx5O6XTlA4dXVQvF8F18BFTetM_Jb8" : null;
+        this._debug = false;
+        this.pending = {
+            get: {}, post: {}, put: {}, delete: {}
+        };
+    }
+    _logError(error){ if(this._debug) console.error(error); }
+    
+    setOptions(options){
+        this.assetsPath = (typeof options.assetsPath !== 'undefined') ? options.assetsPath : this.assetsPath;
+        this.apiPath = (typeof options.apiPath !== 'undefined') ? options.apiPath : this.apiPath;
+        this._debug = (typeof options.debug !== 'undefined') ? options.debug : this._debug;
+        if(typeof options.token !== 'undefined') this.setToken({bc_token: options.token});
+        if(typeof options.assetsToken !== 'undefined') this.setToken({assets_token: options.assetsToken});
+    }
+    
+    setToken({bc_token, assets_token}){
+        if(typeof bc_token != 'undefined')
+        {
+            this.token = bc_token;
+            if(typeof localStorage !== 'undefined') localStorage.setItem('bc_token', bc_token);
+        }
+        if(typeof assets_token != 'undefined')
+        {
+            this.assetsToken = assets_token;
+            if(typeof localStorage !== 'undefined') localStorage.setItem('bc_assets_token', assets_token);
+        }
+    }
+    getToken(key=''){
+        const tokens = {
+            bc_token: (this.token) ? this.token : (typeof localStorage !== 'undefined') ? localStorage.getItem('bc_token') : null,
+            assets_token: (this.assetsToken) ? this.assetsToken : (typeof localStorage !== 'undefined') ? localStorage.getItem('bc_assets_token') : null
+        };
+        if(key=='assets') return tokens.assets_token;
+        else if(key=='api') return tokens.bc_token;
+        else return tokens;
+    }
+    fetch(...args){
+        return fetch(...args);
+    }
+    
+    req(method, path, args){
+        
+        let opts = { 
+            method, 
+            headers: {'Content-Type': 'application/json'}
+        };
+        if(method === 'get'){
+            path += this.serialize(args).toStr();
+            path += `?access_token=${this.getToken((path.indexOf('//assets') == -1) ? 'api':'assets')}`;
+        } 
+        else
+        {
+            path += `?access_token=${this.getToken((path.indexOf('//assets') == -1) ? 'api':'assets')}`;
+            //if(this.token) args.access_token = this.token;
+            if((method=='post' || method=='put') && !args) throw new Error('Missing request body');
+            opts.body = this.serialize(args).toJSON();
+        } 
+        
+        return new Promise((resolve, reject) => {
+            
+            if(typeof this.pending[method][path] !== 'undefined' && this.pending[method][path])
+                reject({ pending: true, msg: `Request ${method}: ${path} was ignored because a previous one was already pending` });
+            else this.pending[method][path] = true;
+            
+            this.fetch( path, opts)
+                .then((resp) => {
+                    this.pending[method][path] = false;
+                    if(resp.status == 200) return resp.json();
+                    else{
+                        this._logError(resp);
+                        if(resp.status == 403) reject({ msg: 'Invalid username or password', code: 403 }); 
+                        else if(resp.status == 401) reject({ msg: 'Unauthorized', code: 401 }); 
+                        else if(resp.status == 400) reject({ msg: 'Invalid Argument', code: 400 }); 
+                        else reject({ msg: 'There was an error, try again later', code: 500 });
+                    } 
+                    return false;
+                })
+                .then((json) => { 
+                    if(!json) throw new Error('There was a problem processing the request');
+                    if(json.access_token) this.setToken(json.access_token);
+                    resolve(json);
+                    return json;
+                })
+                .catch((error) => {
+                    this.pending[method][path] = false;
+                    console.error(error.message);
+                    reject(error.message);
+                });
+        });
+                
+    }
+    _encodeKeys(obj){
+        for(let key in obj){
+            let newkey = key.replace('-','_');
+            
+            let temp = obj[key];
+            delete obj[key];
+            obj[newkey] = temp;
+        }
+        return obj;
+    }
+    _decodeKeys(obj){
+        for(let key in obj){
+            let newkey = key.replace('_','-');
+            
+            let temp = obj[key];
+            delete obj[key];
+            obj[newkey] = temp;
+        }
+        return obj;
+    }
+    post(...args){ return this.req('post', ...args); }
+    get(...args){ return this.req('get', ...args); }
+    put(...args){ return this.req('put', ...args); }
+    delete(...args){ return this.req('delete', ...args); }
+    serialize(obj){
+        return {
+            obj,
+            toStr: function(){
+                var str = "";
+                for (var key in this.obj) {
+                    if (str != "") {
+                        str += "&";
+                    }
+                    str += key + "=" + encodeURIComponent(this.obj[key]);
+                }
+                return str;
+            },
+            toJSON: function(){
+                return JSON.stringify(this.obj);
+            }
+        }
+    }
+
+    credentials(){
+        let url = this.assetsPath+'/credentials';
+        return {
+            autenticate: (username, password) => {
+                return this.post(url+'/auth', { username, password });
+            },
+            remind: (username) => {
+                return this.post(this.apiPath+'/remind/user/'+encodeURIComponent(username), { username });
+            }
+        };
+    }
+    syllabus(){
+        let url = this.assetsPath+'/syllabus';
+        return {
+            get: (slug) => {
+                if(!slug) throw new Error('Missing slug');
+                else return this.get(url+'/'+slug);
+            }
+        };
+    }
+    todo(){
+        let url = this.apiPath;
+        return {
+            getByStudent: (id) => {
+                return this.get(url+'/student/'+id+'/task/');
+            },
+            add: (id, args) => {
+                return this.post(url+'/student/'+id+'/task/', args);
+            },
+            update: (args) => {
+                return this.post(url+'/task/'+args.id, args);
+            }
+        };
+    }
+    project(){
+        let url = this.assetsPath;
+        return {
+            all: (syllabus_slug) => {
+                return this.get(url+'/project/all');
+            }
+        };
+    }
+    user(){
+        let url = this.apiPath;
+        return {
+            all: () => {
+                return this.get(url+'/user/');
+            },
+            add: (args) => {
+                return this.put(url+'/user/', args);
+            },
+            update: (id, args) => {
+                return this.post(url+'/user/'+id, args);
+            },
+            delete: (id) => {
+                return this.delete(url+'/user/'+id);
+            }
+        };
+    }
+    event(){
+        let url = this.assetsPath;
+        this.token
+        return {
+            all: () => {
+                return this.get(url+'/event/all');
+            },
+            get: (id) => {
+                return this.get(url+'/event/'+id);
+            },
+            add: (args) => {
+                return this.put(url+'/event/', args);
+            },
+            update: (id, args) => {
+                return this.post(url+'/event/'+id, args);
+            },
+            delete: (id) => {
+                return this.delete(url+'/event/'+id);
+            }
+        };
+    }
+    student(){
+        let url = this.apiPath;
+        let assetsURL = this.assetsPath;
+        return {
+            all: () => {
+                return this.get(url+'/students/');
+            },
+            add: (args) => {
+                return this.put(assetsURL+'/credentials/signup', args);
+            },
+            update: (id, args) => {
+                return this.post(url+'/student/'+id, args);
+            },
+            delete: (id) => {
+                return this.delete(url+'/student/'+id);
+            }
+        };
+    }
+    cohort(){
+        let url = this.apiPath;
+        return {
+            all: () => {
+                return this.get(url+'/cohorts/');
+            },
+            get: (id) => {
+                return this.get(url+'/cohort/'+id);
+            },
+            add: (args) => {
+                return this.put(url+'/cohort/', args);
+            },
+            update: (id, args) => {
+                return this.post(url+'/cohort/'+id, args);
+            },
+            delete: (id) => {
+                return this.delete(url+'/cohort/'+id);
+            },
+            addStudents: (cohortId, studentsArray) => {
+                studentsArray = studentsArray.map(id => {
+                    return { student_id: id };
+                });
+                return this.post(url+'/student/cohort/'+cohortId, studentsArray);
+            },
+            removeStudents: (cohortId, studentsArray) => {
+                studentsArray = studentsArray.map(id => {
+                    return { student_id: id };
+                });
+                return this.delete(url+'/student/cohort/'+cohortId, studentsArray);
+            }
+        };
+    }
+    location(){
+        let url = this.apiPath;
+        return {
+            all: () => {
+                return this.get(url+'/locations/');
+            },
+            get: (id) => {
+                return this.get(url+'/location/'+id);
+            },
+            add: (args) => {
+                return this.put(url+'/location/', args);
+            },
+            update: (id, args) => {
+                return this.post(url+'/location/'+id, args);
+            },
+            delete: (id) => {
+                return this.delete(url+'/location/'+id);
+            }
+        };
+    }
+    profile(){
+        let url = this.apiPath;
+        return {
+            all: () => {
+                return this.get(url+'/profiles/');
+            },
+            get: (id) => {
+                return this.get(url+'/profile/'+id);
+            },
+            add: (args) => {
+                return this.put(url+'/profile/', args);
+            },
+            update: (id, args) => {
+                return this.post(url+'/profile/'+id, args);
+            },
+            delete: (id) => {
+                return this.delete(url+'/profile/'+id);
+            }
+        };
+    }
+}
+if(true) module.exports = new Wrapper();
+window.BC = new Wrapper();
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../process/browser.js */ "./node_modules/process/browser.js")))
+
+/***/ }),
+
 /***/ "./node_modules/@fortawesome/fontawesome-free-brands/faGithub.js":
 /*!***********************************************************************!*\
   !*** ./node_modules/@fortawesome/fontawesome-free-brands/faGithub.js ***!
@@ -29313,6 +29639,201 @@ function pathToRegexp (path, keys, options) {
 
   return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/process/browser.js":
+/*!*****************************************!*\
+  !*** ./node_modules/process/browser.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
 
 
 /***/ }),
@@ -76837,7 +77358,7 @@ module.exports = function(module) {
 /*! exports provided: name, version, description, main, scripts, author, license, devDependencies, babel, dependencies, default */
 /***/ (function(module) {
 
-module.exports = {"name":"workspace","version":"1.0.2","description":"","main":"index.js","scripts":{"c9":"webpack-dev-server --mode development --open --host $IP --port $PORT --config webpack.dev.js","dev":"webpack --mode development --config webpack.dev.js","start":"http-server -a $IP","build":"webpack --mode development --config webpack.prod.js"},"author":"","license":"ISC","devDependencies":{"@breathecode/breathecode-cli":"0.0.1","babel-cli":"^6.26.0","babel-core":"^6.26.0","babel-loader":"^7.1.2","babel-preset-env":"^1.6.0","babel-preset-react":"^6.24.1","css-loader":"^0.28.7","dotenv-webpack":"^1.5.5","file-loader":"^1.1.5","html-loader":"^0.5.5","html-webpack-plugin":"^3.2.0","markdown-loader":"^2.0.2","node-sass":"^4.5.3","react-svg-loader":"^2.1.0","sass-loader":"^6.0.6","style-loader":"^0.19.0","webpack":"^4.0.1","webpack-cli":"^2.0.9","webpack-dev-server":"^3.1.3","webpack-merge":"^4.1.2"},"babel":{"presets":["env","react"]},"dependencies":{"@4geeksacademy/react-flux-dash":"^3.0.2","@breathecode/api-js-wrapper":"^1.0.1","@fortawesome/fontawesome":"^1.1.4","@fortawesome/fontawesome-free-brands":"^5.0.9","@fortawesome/fontawesome-free-regular":"^5.0.8","@fortawesome/fontawesome-free-solid":"^5.0.8","bootstrap":"^4.0.0-beta.2","events":"^1.1.1","flux":"^3.1.3","jquery":"^3.2.1","moment":"^2.19.4","popper.js":"^1.12.9","prop-types":"^15.6.1","query-string":"^5.1.1","react":"^16.0.0","react-ace":"^5.9.0","react-datetime":"^2.14.0","react-dom":"^16.0.0","react-flux-dash":"^1.1.6","react-marked":"^0.3.1","react-mousetrap":"^0.2.0","react-polyfills":"0.0.1","react-quill":"^1.3.0","react-router":"^4.2.0","react-router-dom":"^4.2.2","react-split-pane":"^0.1.77","react-transition-group":"^1.2.1","reactstrap":"^5.0.0-beta.3","validator":"^9.4.1","wordpress-rest-api":"^0.8.0"}};
+module.exports = {"name":"workspace","version":"1.0.2","description":"","main":"index.js","scripts":{"c9":"webpack-dev-server --mode development --open --host $IP --port $PORT --config webpack.dev.js","dev":"webpack --mode development --config webpack.dev.js","start":"http-server -a $IP","build":"webpack --mode development --config webpack.prod.js"},"author":"","license":"ISC","devDependencies":{"@breathecode/breathecode-cli":"0.0.1","babel-cli":"^6.26.0","babel-core":"^6.26.0","babel-loader":"^7.1.2","babel-preset-env":"^1.6.0","babel-preset-react":"^6.24.1","css-loader":"^0.28.7","dotenv-webpack":"^1.5.5","file-loader":"^1.1.5","html-loader":"^0.5.5","html-webpack-plugin":"^3.2.0","markdown-loader":"^2.0.2","node-sass":"^4.5.3","react-svg-loader":"^2.1.0","sass-loader":"^6.0.6","style-loader":"^0.19.0","webpack":"^4.0.1","webpack-cli":"^2.0.9","webpack-dev-server":"^3.1.3","webpack-merge":"^4.1.2"},"babel":{"presets":["env","react"]},"dependencies":{"@4geeksacademy/react-flux-dash":"^3.0.2","@breathecode/api-js-wrapper":"^1.0.5","@fortawesome/fontawesome":"^1.1.4","@fortawesome/fontawesome-free-brands":"^5.0.9","@fortawesome/fontawesome-free-regular":"^5.0.8","@fortawesome/fontawesome-free-solid":"^5.0.8","bootstrap":"^4.0.0-beta.2","events":"^1.1.1","flux":"^3.1.3","jquery":"^3.2.1","moment":"^2.19.4","popper.js":"^1.12.9","prop-types":"^15.6.1","query-string":"^5.1.1","react":"^16.0.0","react-ace":"^5.9.0","react-datetime":"^2.14.0","react-dom":"^16.0.0","react-flux-dash":"^1.1.6","react-marked":"^0.3.1","react-mousetrap":"^0.2.0","react-polyfills":"0.0.1","react-quill":"^1.3.0","react-router":"^4.2.0","react-router-dom":"^4.2.2","react-split-pane":"^0.1.77","react-transition-group":"^1.2.1","reactstrap":"^5.0.0-beta.3","validator":"^9.4.1","wordpress-rest-api":"^0.8.0"}};
 
 /***/ }),
 
@@ -77111,9 +77632,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.custom = exports.firstUpperCase = exports.remove = exports.update = exports.add = exports.get = undefined;
 
-var _index = __webpack_require__(/*! ../utils/api/index */ "./src/js/utils/api/index.js");
+var _apiJsWrapper = __webpack_require__(/*! @breathecode/api-js-wrapper */ "./node_modules/@breathecode/api-js-wrapper/index.js");
 
-var _index2 = _interopRequireDefault(_index);
+var _apiJsWrapper2 = _interopRequireDefault(_apiJsWrapper);
 
 var _reactFluxDash = __webpack_require__(/*! @4geeksacademy/react-flux-dash */ "./node_modules/@4geeksacademy/react-flux-dash/dist/react-flux-dash.js");
 
@@ -77123,7 +77644,7 @@ var _AdminStore = __webpack_require__(/*! ../stores/AdminStore */ "./src/js/stor
 
 var _AdminStore2 = _interopRequireDefault(_AdminStore);
 
-var _index3 = __webpack_require__(/*! ../utils/bc-components/src/index */ "./src/js/utils/bc-components/src/index.js");
+var _index = __webpack_require__(/*! ../utils/bc-components/src/index */ "./src/js/utils/bc-components/src/index.js");
 
 var _CustomActions = __webpack_require__(/*! ../actions/CustomActions */ "./src/js/actions/CustomActions.js");
 
@@ -77132,32 +77653,32 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var get = exports.get = function get(types) {
     if (!Array.isArray(types)) types = [].concat([types]);
     types.forEach(function (type) {
-        if (typeof _index2.default[type] === 'function') _index2.default[type]().all().then(function (result) {
+        if (typeof _apiJsWrapper2.default[type] === 'function') _apiJsWrapper2.default[type]().all().then(function (result) {
             _reactFluxDash2.default.dispatchEvent('manage_' + type, result.data || result);
         });else throw new Error('Invalid fetch type: ' + type);
     });
 };
 
 var add = exports.add = function add(type, data) {
-    if (typeof _index2.default[type] === 'function') {
-        _index2.default[type]().add(data).then(function (result) {
-            _index3.Notify.success('The ' + type + ' was successfully added');
+    if (typeof _apiJsWrapper2.default[type] === 'function') {
+        _apiJsWrapper2.default[type]().add(data).then(function (result) {
+            _index.Notify.success('The ' + type + ' was successfully added');
 
             var state = _AdminStore2.default.getState();
             var data = typeof result.data !== 'undefined' ? result.data : result;
             var entities = state['manage_' + type].concat([data]);
             _reactFluxDash2.default.dispatchEvent('manage_' + type, entities);
         }).catch(function (error) {
-            _index3.Notify.error('Error: ' + (error.msg || error));
+            _index.Notify.error('Error: ' + (error.msg || error));
         });
     } else throw new Error('Invalid fetch type: ' + type);
 };
 
 var update = exports.update = function update(type, data) {
-    if (typeof _index2.default[type] === 'function') {
+    if (typeof _apiJsWrapper2.default[type] === 'function') {
         delete data.email;
-        _index2.default[type]().update(data.id, data).then(function (result) {
-            _index3.Notify.success('The ' + type + ' was successfully updated');
+        _apiJsWrapper2.default[type]().update(data.id, data).then(function (result) {
+            _index.Notify.success('The ' + type + ' was successfully updated');
 
             var state = _AdminStore2.default.getState();
             var data = typeof result.data !== 'undefined' ? result.data : result;
@@ -77174,11 +77695,11 @@ var update = exports.update = function update(type, data) {
 
 var remove = exports.remove = function remove(type, data) {
 
-    _index3.Notify.info("Are you sure?", function (answer) {
+    _index.Notify.info("Are you sure?", function (answer) {
         if (answer) {
-            if (typeof _index2.default[type] === 'function') {
-                _index2.default[type]().delete(data.id).then(function (result) {
-                    _index3.Notify.success('The ' + type + ' was successfully deleted');
+            if (typeof _apiJsWrapper2.default[type] === 'function') {
+                _apiJsWrapper2.default[type]().delete(data.id).then(function (result) {
+                    _index.Notify.success('The ' + type + ' was successfully deleted');
 
                     var state = _AdminStore2.default.getState();
                     var entities = state['manage_' + type].filter(function (ent) {
@@ -77187,7 +77708,7 @@ var remove = exports.remove = function remove(type, data) {
 
                     _reactFluxDash2.default.dispatchEvent('manage_' + type, entities);
                 }).catch(function (error) {
-                    return _index3.Notify.error('There was an error on the deletion');
+                    return _index.Notify.error('There was an error on the deletion');
                 });
             } else throw new Error('Invalid fetch type: ' + type);
         }
@@ -77225,9 +77746,9 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _index = __webpack_require__(/*! ../utils/api/index */ "./src/js/utils/api/index.js");
+var _apiJsWrapper = __webpack_require__(/*! @breathecode/api-js-wrapper */ "./node_modules/@breathecode/api-js-wrapper/index.js");
 
-var _index2 = _interopRequireDefault(_index);
+var _apiJsWrapper2 = _interopRequireDefault(_apiJsWrapper);
 
 var _reactFluxDash = __webpack_require__(/*! @4geeksacademy/react-flux-dash */ "./node_modules/@4geeksacademy/react-flux-dash/dist/react-flux-dash.js");
 
@@ -77237,13 +77758,13 @@ var _AdminStore = __webpack_require__(/*! ../stores/AdminStore */ "./src/js/stor
 
 var _AdminStore2 = _interopRequireDefault(_AdminStore);
 
-var _index3 = __webpack_require__(/*! ../utils/bc-components/src/index */ "./src/js/utils/bc-components/src/index.js");
+var _index = __webpack_require__(/*! ../utils/bc-components/src/index */ "./src/js/utils/bc-components/src/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var sync = function sync(type) {
     return function (result) {
-        _index3.Notify.success('The ' + type + ' was updated');
+        _index.Notify.success('The ' + type + ' was updated');
         _reactFluxDash2.default.dispatchEvent('manage_' + type, _AdminStore2.default.replace(type, result.data || result));
     };
 };
@@ -77271,11 +77792,11 @@ var cohortActions = exports.cohortActions = {
     change_stage: function change_stage(data) {
         var _this = this;
 
-        _index3.Notify.info(_StatusChooser, function (newStage) {
-            return _index3.Notify.info("Are you sure? The new stage is: " + newStage, function (answer) {
-                _index3.Notify.clean();
+        _index.Notify.info(_StatusChooser, function (newStage) {
+            return _index.Notify.info("Are you sure? The new stage is: " + newStage, function (answer) {
+                _index.Notify.clean();
                 if (answer) {
-                    _index2.default.cohort().update(data.cohort.id, { stage: newStage }).then(sync(_this._type));
+                    _apiJsWrapper2.default.cohort().update(data.cohort.id, { stage: newStage }).then(sync(_this._type));
                 }
             });
         });
@@ -77299,9 +77820,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.removeStudentsFromCohort = exports.addStudentsToCohort = undefined;
 
-var _index = __webpack_require__(/*! ../utils/api/index */ "./src/js/utils/api/index.js");
+var _apiJsWrapper = __webpack_require__(/*! @breathecode/api-js-wrapper */ "./node_modules/@breathecode/api-js-wrapper/index.js");
 
-var _index2 = _interopRequireDefault(_index);
+var _apiJsWrapper2 = _interopRequireDefault(_apiJsWrapper);
 
 var _reactFluxDash = __webpack_require__(/*! @4geeksacademy/react-flux-dash */ "./node_modules/@4geeksacademy/react-flux-dash/dist/react-flux-dash.js");
 
@@ -77311,17 +77832,17 @@ var _AdminStore = __webpack_require__(/*! ../stores/AdminStore */ "./src/js/stor
 
 var _AdminStore2 = _interopRequireDefault(_AdminStore);
 
-var _index3 = __webpack_require__(/*! ../utils/bc-components/src/index */ "./src/js/utils/bc-components/src/index.js");
+var _index = __webpack_require__(/*! ../utils/bc-components/src/index */ "./src/js/utils/bc-components/src/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var addStudentsToCohort = exports.addStudentsToCohort = function addStudentsToCohort(cohort_slug, student_id) {
     var notify_student = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
-    if (notify_student) _index3.Notify.info("Are you sure? Several emails will be sent to the student", function (answer) {
+    if (notify_student) _index.Notify.info("Are you sure? Several emails will be sent to the student", function (answer) {
         if (answer) {
-            _index2.default.cohort().addStudentsWithAC(cohort_slug, student_id).then(function (result) {
-                _index3.Notify.success('The cohort was successfully added to the student');
+            _apiJsWrapper2.default.cohort().addStudentsWithAC(cohort_slug, student_id).then(function (result) {
+                _index.Notify.success('The cohort was successfully added to the student');
 
                 var state = _AdminStore2.default.getState();
                 var entities = state['manage_student'].map(function (student) {
@@ -77332,12 +77853,12 @@ var addStudentsToCohort = exports.addStudentsToCohort = function addStudentsToCo
                 });
                 _reactFluxDash2.default.dispatchEvent('manage_student', entities);
             }).catch(function (error) {
-                _index3.Notify.error('Error: ' + (error.msg || error));
+                _index.Notify.error('Error: ' + (error.msg || error));
             });
         }
         _reactFluxDash2.default.dispatchEvent("notifications", []);
-    });else _index2.default.cohort().addStudents(cohort_slug, [student_id]).then(function (result) {
-        _index3.Notify.success('The cohort was successfully added to the student');
+    });else _apiJsWrapper2.default.cohort().addStudents(cohort_slug, [student_id]).then(function (result) {
+        _index.Notify.success('The cohort was successfully added to the student');
 
         var state = _AdminStore2.default.getState();
         var entities = state['manage_student'].map(function (student) {
@@ -77348,13 +77869,13 @@ var addStudentsToCohort = exports.addStudentsToCohort = function addStudentsToCo
         });
         _reactFluxDash2.default.dispatchEvent('manage_student', entities);
     }).catch(function (error) {
-        _index3.Notify.error('Error: ' + (error.msg || error));
+        _index.Notify.error('Error: ' + (error.msg || error));
     });
 };
 
 var removeStudentsFromCohort = exports.removeStudentsFromCohort = function removeStudentsFromCohort(cohort_slug, studentsArray) {
-    _index2.default.cohort().removeStudents(cohort_slug, studentsArray).then(function (result) {
-        _index3.Notify.success('The cohort was successfully removed from the student');
+    _apiJsWrapper2.default.cohort().removeStudents(cohort_slug, studentsArray).then(function (result) {
+        _index.Notify.success('The cohort was successfully removed from the student');
 
         var state = _AdminStore2.default.getState();
         var entities = state['manage_student'].map(function (student) {
@@ -77367,7 +77888,7 @@ var removeStudentsFromCohort = exports.removeStudentsFromCohort = function remov
         });
         _reactFluxDash2.default.dispatchEvent('manage_student', entities);
     }).catch(function (error) {
-        _index3.Notify.error('Error: ' + (error.msg || error));
+        _index.Notify.error('Error: ' + (error.msg || error));
     });
 };
 
@@ -77650,426 +78171,6 @@ var AdminStore = function (_Flux$DashStore) {
 }(_reactFluxDash2.default.DashStore);
 
 exports.default = new AdminStore();
-
-/***/ }),
-
-/***/ "./src/js/utils/api/index.js":
-/*!***********************************!*\
-  !*** ./src/js/utils/api/index.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/* global fetch, localStorage */
-var Wrapper = function () {
-    function Wrapper() {
-        _classCallCheck(this, Wrapper);
-
-        this.assetsPath = "https://assets.breatheco.de" + '/api';
-        this.apiPath = "https://api.breatheco.de";
-        this.assetsToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRJZCI6ImFsZXNhbmNoZXpyIiwiaWF0IjoxNTI5Nzc5NDY1LCJleHAiOjMzMDg2NzMxNDY1fQ.VbZIyqFFvEpLrXx5O6XTlA4dXVQvF8F18BFTetM_Jb8";
-        this._debug = false;
-        this.token = null;
-        this.pending = {
-            get: {}, post: {}, put: {}, delete: {}
-        };
-    }
-
-    _createClass(Wrapper, [{
-        key: '_logError',
-        value: function _logError(error) {
-            if (this._debug) console.error(error);
-        }
-    }, {
-        key: 'setOptions',
-        value: function setOptions(options) {
-            this.assetsPath = typeof options.assetsPath !== 'undefined' ? options.assetsPath : this.assetsPath;
-            this.assetsToken = typeof options.assetsToken !== 'undefined' ? options.assetsToken : this.assetsToken;
-            this.apiPath = typeof options.apiPath !== 'undefined' ? options.apiPath : this.apiPath;
-            this._debug = typeof options.debug !== 'undefined' ? options.debug : this._debug;
-            if (typeof options.token !== 'undefined') this.setToken(options.token);
-        }
-    }, {
-        key: 'setToken',
-        value: function setToken(token) {
-            this.token = token;
-            if (typeof localStorage !== 'undefined') localStorage.setItem('bc_token', token);
-        }
-    }, {
-        key: 'getToken',
-        value: function getToken(data) {
-            if (this.token) return this.token;else {
-                if (typeof localStorage !== 'undefined') return localStorage.getItem('bc_token');else null;
-            }
-        }
-    }, {
-        key: 'fetch',
-        value: function (_fetch) {
-            function fetch() {
-                return _fetch.apply(this, arguments);
-            }
-
-            fetch.toString = function () {
-                return _fetch.toString();
-            };
-
-            return fetch;
-        }(function () {
-            return fetch.apply(undefined, arguments);
-        })
-    }, {
-        key: 'req',
-        value: function req(method, path, args) {
-            var _this = this;
-
-            var opts = {
-                method: method,
-                headers: { 'Content-Type': 'application/json' }
-            };
-            if (method === 'get') {
-                path += this.serialize(args).toStr();
-                this.token = this.getToken();
-                if (this.token) path += '?access_token=' + this.token;
-            } else {
-                if (path.indexOf('//api') != -1 || path.indexOf('//talenttree') != -1) {
-                    this.token = this.getToken();
-                    if (this.token) path += '?access_token=' + this.token;
-                } else if (path.indexOf('//assets') != -1) {
-                    if (this.assetsToken) path += '?access_token=' + this.assetsToken;
-                }
-                //if(this.token) args.access_token = this.token;
-                if ((method == 'post' || method == 'put') && !args) throw new Error('Missing request body');
-                opts.body = this.serialize(args).toJSON();
-            }
-
-            return new Promise(function (resolve, reject) {
-
-                if (typeof _this.pending[method][path] !== 'undefined' && _this.pending[method][path]) reject({ pending: true, msg: 'Request ' + method + ': ' + path + ' was ignored because a previous one was already pending' });else _this.pending[method][path] = true;
-
-                _this.fetch(path, opts).then(function (resp) {
-                    _this.pending[method][path] = false;
-                    if (resp.status == 200) return resp.json();else {
-                        _this._logError(resp);
-                        if (resp.status == 403) reject({ msg: 'Invalid username or password', code: 403 });else if (resp.status == 401) reject({ msg: 'Unauthorized', code: 401 });else if (resp.status == 400) reject({ msg: 'Invalid Argument', code: 400 });else reject({ msg: 'There was an error, try again later', code: 500 });
-                    }
-                    return false;
-                }).then(function (json) {
-                    if (!json) throw new Error('There was a problem processing the request');
-                    if (json.access_token) _this.setToken(json.access_token);
-                    resolve(json);
-                    return json;
-                }).catch(function (error) {
-                    _this.pending[method][path] = false;
-                    console.error(error.message);
-                    reject(error.message);
-                });
-            });
-        }
-    }, {
-        key: '_encodeKeys',
-        value: function _encodeKeys(obj) {
-            for (var key in obj) {
-                var newkey = key.replace('-', '_');
-
-                var temp = obj[key];
-                delete obj[key];
-                obj[newkey] = temp;
-            }
-            return obj;
-        }
-    }, {
-        key: '_decodeKeys',
-        value: function _decodeKeys(obj) {
-            for (var key in obj) {
-                var newkey = key.replace('_', '-');
-
-                var temp = obj[key];
-                delete obj[key];
-                obj[newkey] = temp;
-            }
-            return obj;
-        }
-    }, {
-        key: 'post',
-        value: function post() {
-            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-                args[_key] = arguments[_key];
-            }
-
-            return this.req.apply(this, ['post'].concat(args));
-        }
-    }, {
-        key: 'get',
-        value: function get() {
-            for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-                args[_key2] = arguments[_key2];
-            }
-
-            return this.req.apply(this, ['get'].concat(args));
-        }
-    }, {
-        key: 'put',
-        value: function put() {
-            for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-                args[_key3] = arguments[_key3];
-            }
-
-            return this.req.apply(this, ['put'].concat(args));
-        }
-    }, {
-        key: 'delete',
-        value: function _delete() {
-            for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-                args[_key4] = arguments[_key4];
-            }
-
-            return this.req.apply(this, ['delete'].concat(args));
-        }
-    }, {
-        key: 'serialize',
-        value: function serialize(obj) {
-            return {
-                obj: obj,
-                toStr: function toStr() {
-                    var str = "";
-                    for (var key in this.obj) {
-                        if (str != "") {
-                            str += "&";
-                        }
-                        str += key + "=" + encodeURIComponent(this.obj[key]);
-                    }
-                    return str;
-                },
-                toJSON: function toJSON() {
-                    return JSON.stringify(this.obj);
-                }
-            };
-        }
-    }, {
-        key: 'credentials',
-        value: function credentials() {
-            var _this2 = this;
-
-            var url = this.assetsPath + '/credentials';
-            return {
-                autenticate: function autenticate(username, password) {
-                    return _this2.post(url + '/auth', { username: username, password: password });
-                },
-                remind: function remind(username) {
-                    return _this2.post(_this2.apiPath + '/remind/user/' + encodeURIComponent(username), { username: username });
-                }
-            };
-        }
-    }, {
-        key: 'syllabus',
-        value: function syllabus() {
-            var _this3 = this;
-
-            var url = this.assetsPath + '/syllabus';
-            return {
-                get: function get(slug) {
-                    if (!slug) throw new Error('Missing slug');else return _this3.get(url + '/' + slug);
-                }
-            };
-        }
-    }, {
-        key: 'event',
-        value: function event() {
-            var _this4 = this;
-
-            var url = this.assetsPath + '/event/';
-            return {
-                all: function all() {
-                    return _this4.get(url + 'all');
-                },
-                get: function get(slug) {
-                    if (!slug) throw new Error('Missing slug');else return _this4.get(url + slug);
-                },
-                add: function add(args) {
-                    return _this4.put(url, args);
-                },
-                update: function update(id, args) {
-                    return _this4.post(url + id, args);
-                },
-                delete: function _delete(id) {
-                    return _this4.delete(url + id);
-                }
-            };
-        }
-    }, {
-        key: 'todo',
-        value: function todo() {
-            var _this5 = this;
-
-            var url = this.apiPath;
-            return {
-                getByStudent: function getByStudent(id) {
-                    return _this5.get(url + '/student/' + id + '/task/');
-                },
-                add: function add(id, args) {
-                    return _this5.post(url + '/student/' + id + '/task/', args);
-                },
-                update: function update(args) {
-                    return _this5.post(url + '/task/' + args.id, args);
-                }
-            };
-        }
-    }, {
-        key: 'project',
-        value: function project() {
-            var _this6 = this;
-
-            var url = this.assetsPath;
-            return {
-                all: function all(syllabus_slug) {
-                    return _this6.get(url + '/project/all');
-                }
-            };
-        }
-    }, {
-        key: 'user',
-        value: function user() {
-            var _this7 = this;
-
-            var url = this.apiPath;
-            return {
-                all: function all() {
-                    return _this7.get(url + '/user/');
-                },
-                add: function add(args) {
-                    return _this7.put(url + '/user/', args);
-                },
-                update: function update(id, args) {
-                    return _this7.post(url + '/user/' + id, args);
-                },
-                delete: function _delete(id) {
-                    return _this7.delete(url + '/user/' + id);
-                }
-            };
-        }
-    }, {
-        key: 'student',
-        value: function student() {
-            var _this8 = this;
-
-            var url = this.apiPath;
-            var assetsURL = this.assetsPath;
-            return {
-                all: function all() {
-                    return _this8.get(url + '/students/');
-                },
-                add: function add(args) {
-                    return _this8.put(assetsURL + '/credentials/signup', args);
-                },
-                update: function update(id, args) {
-                    return _this8.post(url + '/student/' + id, args);
-                },
-                delete: function _delete(id) {
-                    return _this8.delete(url + '/student/' + id);
-                }
-            };
-        }
-    }, {
-        key: 'cohort',
-        value: function cohort() {
-            var _this9 = this;
-
-            var url = this.apiPath;
-            return {
-                all: function all() {
-                    return _this9.get(url + '/cohorts/');
-                },
-                get: function get(id) {
-                    return _this9.get(url + '/cohort/' + id);
-                },
-                add: function add(args) {
-                    return _this9.put(url + '/cohort/', args);
-                },
-                update: function update(id, args) {
-                    return _this9.post(url + '/cohort/' + id, args);
-                },
-                delete: function _delete(id) {
-                    return _this9.delete(url + '/cohort/' + id);
-                },
-                addStudents: function addStudents(cohortId, studentsArray) {
-                    studentsArray = studentsArray.map(function (id) {
-                        return { student_id: id };
-                    });
-                    return _this9.post(url + '/student/cohort/' + cohortId, studentsArray);
-                },
-                addStudentsWithAC: function addStudentsWithAC(cohort_slug, student_id) {
-                    var dataToSend = { student_id: student_id, cohort_slug: cohort_slug };
-                    return _this9.post(_this9.assetsPath + '/hook/breathecode/second_cohort_registration', dataToSend);
-                },
-                removeStudents: function removeStudents(cohortId, studentsArray) {
-                    studentsArray = studentsArray.map(function (id) {
-                        return { student_id: id };
-                    });
-                    return _this9.delete(url + '/student/cohort/' + cohortId, studentsArray);
-                }
-            };
-        }
-    }, {
-        key: 'location',
-        value: function location() {
-            var _this10 = this;
-
-            var url = this.apiPath;
-            return {
-                all: function all() {
-                    return _this10.get(url + '/locations/');
-                },
-                get: function get(id) {
-                    return _this10.get(url + '/location/' + id);
-                },
-                add: function add(args) {
-                    return _this10.put(url + '/location/', args);
-                },
-                update: function update(id, args) {
-                    return _this10.post(url + '/location/' + id, args);
-                },
-                delete: function _delete(id) {
-                    return _this10.delete(url + '/location/' + id);
-                }
-            };
-        }
-    }, {
-        key: 'profile',
-        value: function profile() {
-            var _this11 = this;
-
-            var url = this.apiPath;
-            return {
-                all: function all() {
-                    return _this11.get(url + '/profiles/');
-                },
-                get: function get(id) {
-                    return _this11.get(url + '/profile/' + id);
-                },
-                add: function add(args) {
-                    return _this11.put(url + '/profile/', args);
-                },
-                update: function update(id, args) {
-                    return _this11.post(url + '/profile/' + id, args);
-                },
-                delete: function _delete(id) {
-                    return _this11.delete(url + '/profile/' + id);
-                }
-            };
-        }
-    }]);
-
-    return Wrapper;
-}();
-
-module.exports = new Wrapper();
 
 /***/ }),
 
@@ -79671,14 +79772,14 @@ var _reactFluxDash = __webpack_require__(/*! @4geeksacademy/react-flux-dash */ "
 
 var _reactFluxDash2 = _interopRequireDefault(_reactFluxDash);
 
-var _index = __webpack_require__(/*! ../../../../api/index */ "./src/js/utils/api/index.js");
+var _apiJsWrapper = __webpack_require__(/*! @breathecode/api-js-wrapper */ "./node_modules/@breathecode/api-js-wrapper/index.js");
 
-var _index2 = _interopRequireDefault(_index);
+var _apiJsWrapper2 = _interopRequireDefault(_apiJsWrapper);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var loginUser = exports.loginUser = function loginUser(username, password) {
-    return _index2.default.credentials().autenticate(username, password).then(function (data) {
+    return _apiJsWrapper2.default.credentials().autenticate(username, password).then(function (data) {
 
         //if its not a student or teacher we have to initialize cohorts to empty
         if (typeof data.cohorts === 'undefined') data.cohorts = [];
@@ -79720,7 +79821,7 @@ var logoutUser = exports.logoutUser = function logoutUser(history) {
 };
 
 var remindUser = exports.remindUser = function remindUser(email) {
-    return _index2.default.credentials().remind(email).then(function (data) {
+    return _apiJsWrapper2.default.credentials().remind(email).then(function (data) {
         return data;
     });
 };
