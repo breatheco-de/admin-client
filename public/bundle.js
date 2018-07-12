@@ -77471,6 +77471,7 @@ var Layout = function (_Flux$View) {
                             _react2.default.createElement(_index.PrivateRoute, { path: '/student/:student_id', loggedIn: this.state.loggedIn, component: _PrivateLayout2.default }),
                             _react2.default.createElement(_index.PrivateRoute, { path: '/manage', loggedIn: this.state.loggedIn, component: _PrivateLayout2.default }),
                             _react2.default.createElement(_index.PrivateRoute, { path: '/dashboard', loggedIn: this.state.loggedIn, component: _PrivateLayout2.default }),
+                            _react2.default.createElement(_index.PrivateRoute, { path: '/:entity_slug/i/:view_slug', loggedIn: this.state.loggedIn, component: _PrivateLayout2.default }),
                             _react2.default.createElement(_reactRouterDom.Route, { render: function render() {
                                     return _react2.default.createElement(
                                         'p',
@@ -77533,6 +77534,10 @@ var _IFrameView = __webpack_require__(/*! ./views/IFrameView */ "./src/js/views/
 
 var _IFrameView2 = _interopRequireDefault(_IFrameView);
 
+var _IFrameManageView = __webpack_require__(/*! ./views/IFrameManageView */ "./src/js/views/IFrameManageView.jsx");
+
+var _IFrameManageView2 = _interopRequireDefault(_IFrameManageView);
+
 var _EditView = __webpack_require__(/*! ./views/EditView */ "./src/js/views/EditView.jsx");
 
 var _EditView2 = _interopRequireDefault(_EditView);
@@ -77592,10 +77597,11 @@ var Layout = function (_Flux$View) {
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _HomeView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/home', component: _HomeView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/dashboard', component: _HomeView2.default }),
-                        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/manage/i/:entity_slug', component: _IFrameView2.default }),
+                        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/manage/i/:entity_slug', component: _IFrameManageView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/manage/:entity_slug/:entity_id/edit', component: _EditView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/manage/:entity_slug/add', component: _EditView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/manage/:entity_slug', component: _ManageView2.default }),
+                        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/:entity_slug/i/:view_slug', component: _IFrameView2.default }),
                         _react2.default.createElement(_reactRouterDom.Route, { render: function render() {
                                 return _react2.default.createElement(
                                     'p',
@@ -80655,6 +80661,87 @@ exports.default = HomeView;
 
 /***/ }),
 
+/***/ "./src/js/views/IFrameManageView.jsx":
+/*!*******************************************!*\
+  !*** ./src/js/views/IFrameManageView.jsx ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _reactFluxDash = __webpack_require__(/*! @4geeksacademy/react-flux-dash */ "./node_modules/@4geeksacademy/react-flux-dash/dist/react-flux-dash.js");
+
+var _reactFluxDash2 = _interopRequireDefault(_reactFluxDash);
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _index = __webpack_require__(/*! ../utils/bc-components/src/index */ "./src/js/utils/bc-components/src/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var IFrameManageView = function (_Flux$View) {
+  _inherits(IFrameManageView, _Flux$View);
+
+  function IFrameManageView() {
+    _classCallCheck(this, IFrameManageView);
+
+    var _this = _possibleConstructorReturn(this, (IFrameManageView.__proto__ || Object.getPrototypeOf(IFrameManageView)).call(this));
+
+    _this.state = {
+      loading: true
+    };
+    return _this;
+  }
+
+  _createClass(IFrameManageView, [{
+    key: 'getIframeURL',
+    value: function getIframeURL() {
+      var type = this.props.match.params.entity_slug;
+      if (type === "replit") return "https://assets.breatheco.de" + '/apps/replit-maker';
+      if (type === "quiz") return "https://assets.breatheco.de" + '/apps/quiz-maker';
+      if (type === "syllabus") return "https://assets.breatheco.de" + '/apps/syllabus-maker';
+      return '';
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      return _react2.default.createElement(
+        _index.Panel,
+        { padding: false, style: { overflow: 'hidden' } },
+        _react2.default.createElement(_index.Loading, { show: this.state.loading }),
+        _react2.default.createElement('iframe', { onLoad: function onLoad() {
+            return _this2.setState({ loading: false });
+          }, className: 'lesson-iframe', src: this.getIframeURL(),
+          height: '100%', width: '100%', frameBorder: '0' })
+      );
+    }
+  }]);
+
+  return IFrameManageView;
+}(_reactFluxDash2.default.View);
+
+exports.default = IFrameManageView;
+
+/***/ }),
+
 /***/ "./src/js/views/IFrameView.jsx":
 /*!*************************************!*\
   !*** ./src/js/views/IFrameView.jsx ***!
@@ -80707,10 +80794,9 @@ var IFrameView = function (_Flux$View) {
     key: 'getIframeURL',
     value: function getIframeURL() {
       var type = this.props.match.params.entity_slug;
-      if (type === "replit") return "https://assets.breatheco.de" + '/apps/replit-maker';
-      if (type === "quiz") return "https://assets.breatheco.de" + '/apps/quiz-maker';
-      if (type === "syllabus") return "https://assets.breatheco.de" + '/apps/syllabus-maker';
-      return '';
+      var view = this.props.match.params.view_slug;
+      //let view = this.props.match.params.view_slug;
+      return "https://assets.breatheco.de" + '/apps/view/' + type + '/' + view + window.location.search;
     }
   }, {
     key: 'render',
@@ -80799,13 +80885,10 @@ var cards = {
                 _index.DropLink,
                 {
                     className: 'list_card',
-                    dropdown: [
-                        // { 
-                        //     label: 'internal profile', 
-                        //     slug: 'internal_profile', 
-                        //     to: `/internal_profile/student/${data.id}`
-                        // }
-                    ].concat(dropdownOptions),
+                    dropdown: [{
+                        label: 'Recent Activity',
+                        to: '/student/i/activity/?user=' + data.id
+                    }].concat(dropdownOptions),
                     onSelect: function onSelect(opt) {
                         return onEntitySelect(opt, data);
                     } },

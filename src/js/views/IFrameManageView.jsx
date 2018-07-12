@@ -2,7 +2,7 @@ import Flux from '@4geeksacademy/react-flux-dash';
 import React from "react";
 import {Panel, Loading} from '../utils/bc-components/src/index';
 
-export default class IFrameView extends Flux.View {
+export default class IFrameManageView extends Flux.View {
   
   constructor(){
     super();
@@ -13,9 +13,10 @@ export default class IFrameView extends Flux.View {
   
   getIframeURL(){
       let type = this.props.match.params.entity_slug;
-      let view = this.props.match.params.view_slug;
-      //let view = this.props.match.params.view_slug;
-      return process.env.ASSETS_URL+'/apps/view/'+type+'/'+view+window.location.search;
+      if(type==="replit") return process.env.ASSETS_URL+'/apps/replit-maker';
+      if(type==="quiz") return process.env.ASSETS_URL+'/apps/quiz-maker';
+      if(type==="syllabus") return process.env.ASSETS_URL+'/apps/syllabus-maker';
+      return '';
   }
   
   render() {

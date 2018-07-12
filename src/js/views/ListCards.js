@@ -26,11 +26,10 @@ let cards = {
             <DropLink
                 className='list_card'
                 dropdown={[
-                    // { 
-                    //     label: 'internal profile', 
-                    //     slug: 'internal_profile', 
-                    //     to: `/internal_profile/student/${data.id}`
-                    // }
+                    { 
+                        label: 'Recent Activity', 
+                        to: `/student/i/activity/?user=${data.id}`
+                    }
                 ].concat(dropdownOptions)}
                 onSelect={(opt) => onEntitySelect(opt, data)}>
                     <h5 className="m-0">{data.full_name}</h5>
