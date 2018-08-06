@@ -2637,7 +2637,7 @@ class Wrapper{
     constructor(){
         this.assetsPath = (typeof process != 'undefined') ? "https://assets.breatheco.de"+'/apis' : null;
         this.apiPath = (typeof process != 'undefined') ? "https://api.breatheco.de" : null;
-        this.token = (typeof process != 'undefined') ? "84914113e56a4af0195eb3a2eef3a30fe08a9426" : null;
+        this.token = (typeof process != 'undefined') ? "bb5b00446f351aac8dae8606f2c5d6d72375234e" : null;
         this.assetsToken = (typeof process != 'undefined') ? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRJZCI6ImFsZXNhbmNoZXpyIiwiaWF0IjoxNTI5Nzc5NDY1LCJleHAiOjMzMDg2NzMxNDY1fQ.VbZIyqFFvEpLrXx5O6XTlA4dXVQvF8F18BFTetM_Jb8" : null;
         this._debug = false;
         this.pending = {
