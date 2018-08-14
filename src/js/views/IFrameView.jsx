@@ -1,7 +1,7 @@
 import Flux from '@4geeksacademy/react-flux-dash';
 import React from "react";
 import {Panel, Loading} from '../utils/bc-components/src/index';
-
+import {Session} from '../utils/bc-components/src/index';
 export default class IFrameView extends Flux.View {
   
   constructor(){
@@ -12,10 +12,13 @@ export default class IFrameView extends Flux.View {
   }
   
   getIframeURL(){
+      const session = Session.getSession();
+      const token = `?bc_token=${session.breathecodeToken}&assets_token=${session.assetsToken}`;
       let type = this.props.match.params.entity_slug;
       let view = this.props.match.params.view_slug;
+      
       //let view = this.props.match.params.view_slug;
-      return process.env.ASSETS_URL+'/apps/view/'+type+'/'+view+window.location.search;
+      return process.env.ASSETS_URL+'/apps/view/'+type+'/'+view+window.location.search+token;
   }
   
   render() {

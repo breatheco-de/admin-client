@@ -1,7 +1,7 @@
 import Flux from '@4geeksacademy/react-flux-dash';
 import React from "react";
 import {Panel, Loading} from '../utils/bc-components/src/index';
-
+import {Session} from '../utils/bc-components/src/index';
 export default class IFrameManageView extends Flux.View {
   
   constructor(){
@@ -12,10 +12,12 @@ export default class IFrameManageView extends Flux.View {
   }
   
   getIframeURL(){
+      const session = Session.getSession();
+      const token = `?bc_token=${session.breathecodeToken}&assets_token=${session.assetsToken}`;
       let type = this.props.match.params.entity_slug;
-      if(type==="replit") return process.env.ASSETS_URL+'/apps/replit-maker';
-      if(type==="quiz") return process.env.ASSETS_URL+'/apps/quiz-maker';
-      if(type==="syllabus") return process.env.ASSETS_URL+'/apps/syllabus-maker';
+      if(type==="replit") return process.env.ASSETS_URL+'/apps/replit-maker'+token;
+      if(type==="quiz") return process.env.ASSETS_URL+'/apps/quiz-maker'+token;
+      if(type==="syllabus") return process.env.ASSETS_URL+'/apps/syllabus-maker'+token;
       return '';
   }
   

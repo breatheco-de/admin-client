@@ -2637,8 +2637,8 @@ class Wrapper{
     constructor(){
         this.assetsPath = (typeof process != 'undefined') ? "https://assets.breatheco.de"+'/apis' : null;
         this.apiPath = (typeof process != 'undefined') ? "https://api.breatheco.de" : null;
-        this.token = (typeof process != 'undefined') ? "bb5b00446f351aac8dae8606f2c5d6d72375234e" : null;
-        this.assetsToken = (typeof process != 'undefined') ? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRJZCI6ImFsZXNhbmNoZXpyIiwiaWF0IjoxNTI5Nzc5NDY1LCJleHAiOjMzMDg2NzMxNDY1fQ.VbZIyqFFvEpLrXx5O6XTlA4dXVQvF8F18BFTetM_Jb8" : null;
+        this.token = (typeof process != 'undefined') ? process.env.API_TOKEN : null;
+        this.assetsToken = (typeof process != 'undefined') ? process.env.ASSETS_TOKEN : null;
         this._debug = false;
         this.pending = {
             get: {}, post: {}, put: {}, delete: {}
@@ -77358,7 +77358,7 @@ module.exports = function(module) {
 /*! exports provided: name, version, description, main, scripts, author, license, devDependencies, babel, dependencies, default */
 /***/ (function(module) {
 
-module.exports = {"name":"workspace","version":"1.0.2","description":"","main":"index.js","scripts":{"c9":"webpack-dev-server --mode development --open --host $IP --port $PORT --config webpack.dev.js","dev":"webpack --mode development --config webpack.dev.js","start":"http-server -a $IP","build":"webpack --mode development --config webpack.prod.js"},"author":"","license":"ISC","devDependencies":{"@breathecode/breathecode-cli":"0.0.1","babel-cli":"^6.26.0","babel-core":"^6.26.0","babel-loader":"^7.1.2","babel-preset-env":"^1.6.0","babel-preset-react":"^6.24.1","css-loader":"^0.28.7","dotenv-webpack":"^1.5.5","file-loader":"^1.1.5","html-loader":"^0.5.5","html-webpack-plugin":"^3.2.0","markdown-loader":"^2.0.2","node-sass":"^4.5.3","react-svg-loader":"^2.1.0","sass-loader":"^6.0.6","style-loader":"^0.19.0","webpack":"^4.0.1","webpack-cli":"^2.0.9","webpack-dev-server":"^3.1.3","webpack-merge":"^4.1.2"},"babel":{"presets":["env","react"]},"dependencies":{"@4geeksacademy/react-flux-dash":"^3.0.2","@breathecode/api-js-wrapper":"^1.0.5","@fortawesome/fontawesome":"^1.1.4","@fortawesome/fontawesome-free-brands":"^5.0.9","@fortawesome/fontawesome-free-regular":"^5.0.8","@fortawesome/fontawesome-free-solid":"^5.0.8","bootstrap":"^4.0.0-beta.2","events":"^1.1.1","flux":"^3.1.3","jquery":"^3.2.1","moment":"^2.19.4","popper.js":"^1.12.9","prop-types":"^15.6.1","query-string":"^5.1.1","react":"^16.0.0","react-ace":"^5.9.0","react-datetime":"^2.14.0","react-dom":"^16.0.0","react-flux-dash":"^1.1.6","react-marked":"^0.3.1","react-mousetrap":"^0.2.0","react-polyfills":"0.0.1","react-quill":"^1.3.0","react-router":"^4.2.0","react-router-dom":"^4.2.2","react-split-pane":"^0.1.77","react-transition-group":"^1.2.1","reactstrap":"^5.0.0-beta.3","validator":"^9.4.1","wordpress-rest-api":"^0.8.0"}};
+module.exports = {"name":"workspace","version":"1.0.2","description":"","main":"index.js","scripts":{"c9":"webpack-dev-server --mode development --open --host $IP --port $PORT --config webpack.dev.js","dev":"webpack --mode development --config webpack.dev.js","start":"http-server -a $IP","build":"webpack --mode development --config webpack.prod.js"},"author":"","license":"ISC","devDependencies":{"@breathecode/breathecode-cli":"0.0.1","babel-cli":"^6.26.0","babel-core":"^6.26.0","babel-loader":"^7.1.2","babel-preset-env":"^1.6.0","babel-preset-react":"^6.24.1","css-loader":"^0.28.7","dotenv-webpack":"^1.5.5","file-loader":"^1.1.5","html-loader":"^0.5.5","html-webpack-plugin":"^3.2.0","http-server":"^0.11.1","markdown-loader":"^2.0.2","node-sass":"^4.5.3","react-svg-loader":"^2.1.0","sass-loader":"^6.0.6","style-loader":"^0.19.0","webpack":"^4.0.1","webpack-cli":"^2.0.9","webpack-dev-server":"^3.1.3","webpack-merge":"^4.1.2"},"babel":{"presets":["env","react"]},"dependencies":{"@4geeksacademy/react-flux-dash":"^3.0.2","@breathecode/api-js-wrapper":"^1.0.5","@fortawesome/fontawesome":"^1.1.4","@fortawesome/fontawesome-free-brands":"^5.0.9","@fortawesome/fontawesome-free-regular":"^5.0.8","@fortawesome/fontawesome-free-solid":"^5.0.8","bootstrap":"^4.0.0-beta.2","events":"^1.1.1","flux":"^3.1.3","jquery":"^3.2.1","moment":"^2.19.4","popper.js":"^1.12.9","prop-types":"^15.6.1","query-string":"^5.1.1","react":"^16.0.0","react-ace":"^5.9.0","react-datetime":"^2.14.0","react-dom":"^16.0.0","react-flux-dash":"^1.1.6","react-marked":"^0.3.1","react-mousetrap":"^0.2.0","react-polyfills":"0.0.1","react-quill":"^1.3.0","react-router":"^4.2.0","react-router-dom":"^4.2.2","react-split-pane":"^0.1.77","react-transition-group":"^1.2.1","reactstrap":"^5.0.0-beta.3","validator":"^9.4.1","wordpress-rest-api":"^0.8.0"}};
 
 /***/ }),
 
@@ -79793,6 +79793,7 @@ var loginUser = exports.loginUser = function loginUser(username, password) {
         _reactFluxDash2.default.dispatchEvent("session", {
             githubToken: null,
             autenticated: true,
+            assetsToken: data.assets_token,
             breathecodeToken: data.access_token,
             currentCohort: data.cohorts.length === 1 ? data.cohorts[0] : data.cohorts,
             user: {
@@ -80712,10 +80713,12 @@ var IFrameManageView = function (_Flux$View) {
   _createClass(IFrameManageView, [{
     key: 'getIframeURL',
     value: function getIframeURL() {
+      var session = _index.Session.getSession();
+      var token = '?bc_token=' + session.breathecodeToken + '&assets_token=' + session.assetsToken;
       var type = this.props.match.params.entity_slug;
-      if (type === "replit") return "https://assets.breatheco.de" + '/apps/replit-maker';
-      if (type === "quiz") return "https://assets.breatheco.de" + '/apps/quiz-maker';
-      if (type === "syllabus") return "https://assets.breatheco.de" + '/apps/syllabus-maker';
+      if (type === "replit") return "https://assets.breatheco.de" + '/apps/replit-maker' + token;
+      if (type === "quiz") return "https://assets.breatheco.de" + '/apps/quiz-maker' + token;
+      if (type === "syllabus") return "https://assets.breatheco.de" + '/apps/syllabus-maker' + token;
       return '';
     }
   }, {
@@ -80793,10 +80796,13 @@ var IFrameView = function (_Flux$View) {
   _createClass(IFrameView, [{
     key: 'getIframeURL',
     value: function getIframeURL() {
+      var session = _index.Session.getSession();
+      var token = '?bc_token=' + session.breathecodeToken + '&assets_token=' + session.assetsToken;
       var type = this.props.match.params.entity_slug;
       var view = this.props.match.params.view_slug;
+
       //let view = this.props.match.params.view_slug;
-      return "https://assets.breatheco.de" + '/apps/view/' + type + '/' + view + window.location.search;
+      return "https://assets.breatheco.de" + '/apps/view/' + type + '/' + view + window.location.search + token;
     }
   }, {
     key: 'render',
