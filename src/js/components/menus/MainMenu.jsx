@@ -1,20 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withRouter} from 'react-router-dom';
-import { MenuItem, Session, logout } from '../../utils/bc-components/src/index';
+import { MenuItem, logout } from '../../utils/react-components/src/index';
+import {Session} from 'bc-react-session';
 
 class MainMenu extends React.Component{
     
     constructor(){
         super();
         this.state = {
-            session: Session.getSession()
+            session: Session.store.getSession()
         };
     }
     
     componentWillMount(){
         this.setState({
-            session: Session.getSession()
+            session: Session.store.getSession()
         });
     }
     

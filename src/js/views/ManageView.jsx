@@ -1,6 +1,6 @@
 import React from "react";
 import Flux from '@4geeksacademy/react-flux-dash';
-import { Panel, List } from '../utils/bc-components/src/index';
+import { Panel, List } from '../utils/react-components/src/index';
 
 import AdminStore from '../stores/AdminStore';
 import * as AdminActions from '../actions/AdminActions';

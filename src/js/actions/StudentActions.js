@@ -1,7 +1,15 @@
-import BC from '@breathecode/api-js-wrapper';
+import BC from '../utils/api.js';
 import Flux from '@4geeksacademy/react-flux-dash';
 import AdminStore from '../stores/AdminStore';
-import { Notify } from '../utils/bc-components/src/index';
+import { Notify } from 'bc-react-notifier';
+import {Session} from 'bc-react-session';
+BC.setOptions({
+    getToken: (type='api')=> {
+        const session = Session.store.getSession();
+        console.log(session.access_token);
+        return 'Bearer '+session.access_token;
+    }
+});
 
 export const addStudentsToCohort = (cohort_slug, student_id, notify_student=true) => {
     if(notify_student) Notify.info("Are you sure? Several emails will be sent to the student", (answer) => {

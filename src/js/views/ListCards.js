@@ -1,5 +1,5 @@
 import React from "react";
-import { DropLink } from '../utils/bc-components/src/index';
+import { DropLink } from '..//utils/react-components/src/index';
 
 const dropdownOptions = [
     { label: 'Edit', slug: 'edit' },

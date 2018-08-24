@@ -1,8 +1,17 @@
-import BC from '@breathecode/api-js-wrapper';
+import BC from '../utils/api.js';
 import Flux from '@4geeksacademy/react-flux-dash';
 import AdminStore from '../stores/AdminStore';
-import {Notify} from '../utils/bc-components/src/index';
+import {Notify} from 'bc-react-notifier';
+import {Session} from 'bc-react-session';
 import {cohortActions} from '../actions/CustomActions';
+
+BC.setOptions({
+    getToken: (type='api')=> {
+        const session = Session.store.getSession();
+        console.log(session.access_token);
+        return 'Bearer '+session.access_token;
+    }
+});
 
 export const get = (types) => {
     if(!Array.isArray(types)) types = [].concat([types]);

@@ -1,8 +1,6 @@
 import React from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import AdminStore from '../../stores/AdminStore';
-import { Modal, Notify } from '../../utils/bc-components/src/index';
-import * as StudentActions from '../../actions/StudentActions';
 import _BaseForm from './_BaseForm';
 import validator from 'validator';
 import DateTime from 'react-datetime';

@@ -1,5 +1,4 @@
 import React from 'react';
-import { UserError } from '../../utils/bc-components/src/index';
 import AdminStore from '../../stores/AdminStore';
 
 export default class _BaseForm extends React.Component{

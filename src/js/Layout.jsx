@@ -4,40 +4,15 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import PrivateLayout from './PrivateLayout';
 import * as AdminActions from './actions/AdminActions';
-
-import { Notifier, PrivateRoute, Session, ForgotView, LoginView } from './utils/bc-components/src/index';
+import { PrivateRoute } from 'bc-react-session';
+import { Notifier } from 'bc-react-notifier';
+import { Forgot, Login } from './utils/react-components/src/index';
 
 class Layout extends Flux.View{
     
     constructor(){
         super();
-        const session = Session.getSession();
-        
-        this.state = {
-            loggedIn: (session && session.autenticated),
-            notifications: [],
-            errors: null
-        };
         AdminActions.get(["cohort","location",'profile']);
-    }
-    
-    componentDidMount(){
-        const session = Session.getSession();
-        this.setState({
-            loggedIn: (session && session.autenticated)
-        });
-        this.sessionSubscription = Session.subscribe("session", this.sessionChange.bind(this));
-    }
-    
-    sessionChange(session){
-        this.setState({ 
-            loggedIn: session.autenticated, 
-        });
-    }
-    
-    redirect(path){
-        this.setState({ history: null });
-        this.state.history.push(path);
     }
     
     render() {
@@ -47,13 +22,13 @@ class Layout extends Flux.View{
                     <div>
                         <Notifier />
                         <Switch>
-                            <Route exact path='/login' component={LoginView} />
-                            <Route exact path='/forgot' component={ForgotView} />
-                            <PrivateRoute exact path='/' loggedIn={this.state.loggedIn} component={PrivateLayout} />
-                            <PrivateRoute path='/student/:student_id' loggedIn={this.state.loggedIn} component={PrivateLayout} />
-                            <PrivateRoute path='/manage' loggedIn={this.state.loggedIn} component={PrivateLayout} />
-                            <PrivateRoute path='/dashboard' loggedIn={this.state.loggedIn} component={PrivateLayout} />
-                            <PrivateRoute path='/:entity_slug/i/:view_slug' loggedIn={this.state.loggedIn} component={PrivateLayout} />
+                            <Route exact path='/login' component={Login} />
+                            <Route exact path='/forgot' component={Forgot} />
+                            <PrivateRoute exact path='/' component={PrivateLayout} />
+                            <PrivateRoute path='/student/:student_id' component={PrivateLayout} />
+                            <PrivateRoute path='/manage' component={PrivateLayout} />
+                            <PrivateRoute path='/dashboard' component={PrivateLayout} />
+                            <PrivateRoute path='/:entity_slug/i/:view_slug' component={PrivateLayout} />
                             <Route render={() => (<p className="text-center mt-5">Not found</p>)} />
                         </Switch>
                     </div>
