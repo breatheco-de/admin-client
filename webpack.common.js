@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -14,7 +13,7 @@ module.exports = {
   },
   module: {
     rules: [
-        { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel-loader" },
+        { test: /\.(js|jsx)?$/, exclude: /node_modules/, loader: "babel-loader" },
         { test: /\.md$/, use: [
               {
                   loader: "html-loader"
@@ -28,7 +27,7 @@ module.exports = {
           ]
         },
         {
-          test: /\.scss$/, use: [{
+          test: /\.(css|scss)$/, use: [{
               loader: "style-loader" // creates style nodes from JS strings
           }, {
               loader: "css-loader" // translates CSS into CommonJS
@@ -49,11 +48,6 @@ module.exports = {
     extensions: ['*', '.js', '.jsx'],
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      // In case you imported plugins individually, you must also require them here:
-      Util: "exports-loader?Util!bootstrap/js/dist/util",
-      Dropdown: "exports-loader?Dropdown!bootstrap/js/dist/dropdown",
-    }),
     new HtmlWebpackPlugin({
         favicon: 'favicon.png',
         template: 'template.html'
