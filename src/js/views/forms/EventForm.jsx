@@ -26,7 +26,7 @@ class Form extends _BaseForm{
             title: '',
             url: '',
             id: null,
-            capacity: 0,
+            capacity: 100,
             logo_url: '',
             event_date: '',
             type: '',
@@ -81,6 +81,7 @@ const EditForm = ({data, dependencies, formUpdated}) => {
                 />
             </div>
             <div className="form-group">
+                <small className="form-text text-muted">Event Status:</small>
                 <select className="form-control"
                      value={data.status}
                     onChange={(e) => formUpdated({ status: e.target.value})}
@@ -90,36 +91,36 @@ const EditForm = ({data, dependencies, formUpdated}) => {
                     <option value={'unlisted'}>Unlisted (will not be show on the calendar)</option>
                     <option value={'published'}>Published (shown on the calendar)</option>
                 </select>
-                <small className="form-text text-muted">Initial cohort for the student</small>
             </div>
             <div className="form-group">
-                <input type="text" className="form-control"  placeholder="Address"
+                <input type="text" className="form-control"  placeholder="Event Address"
                     value={data.address} 
                     onChange={(e) => formUpdated({ address: e.target.value})}
                 />
             </div>
             <div className="form-group">
+                <small className="form-text text-muted">Image Banner URL:</small>
                 <input type="text" className="form-control"  placeholder="Banner URL"
                     value={data.banner_url} 
                     onChange={(e) => formUpdated({ banner_url: e.target.value})}
                 />
-                <small className="form-text text-muted">To be shown on the listings and internal landing</small>
             </div>
             <div className="form-group">
+                <small className="form-text text-muted">Event Capacity:</small>
                 <input type="number" className="form-control" placeholder="Capacity"
                     value={data.capacity} 
                     onChange={(e) => formUpdated({ capacity: e.target.value})}
                 />
             </div>
             <div className="form-group">
-                <input type="url" className="form-control" placeholder="Event landing url"
+                <input type="url" className="form-control" placeholder="Eventbrite url (or alternatives)"
                     value={data.url} 
                     onChange={(e) => formUpdated({ url: e.target.value})}
                 />
-                <small className="form-text text-muted">Where people can signup to the event (eventbrite.com, meetup.com, etc.)</small>
             </div>
             <div className="form-group">
-                <DateTime value={data.event_date} 
+                <small className="form-text text-muted">Date and starting time:</small>
+                <DateTime value={data.event_date}
                     onChange={(value) => formUpdated({ event_date: value})}
                 />
             </div>
@@ -140,7 +141,6 @@ const EditForm = ({data, dependencies, formUpdated}) => {
                     <option value={null}>Select a location</option>
                     {locations}
                 </select>
-                <small className="form-text text-muted">Initial cohort for the student</small>
             </div>
             <div className="form-group">
                 <select className="form-control"

@@ -4,13 +4,15 @@ import AdminStore from '../stores/AdminStore';
 import {Notify} from 'bc-react-notifier';
 import {Session} from 'bc-react-session';
 import {cohortActions} from '../actions/CustomActions';
+import {logout} from '../utils/react-components/src/index';
 
 BC.setOptions({
     getToken: (type='api')=> {
         const session = Session.store.getSession();
-        console.log(session.access_token);
-        return 'Bearer '+session.access_token;
-    }
+        if(type=='assets') return 'JWT '+session.user.assets_token;
+        else return 'Bearer '+session.access_token;
+    },
+    onLogout: () => logout()
 });
 
 export const get = (types) => {

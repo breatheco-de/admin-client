@@ -5,8 +5,8 @@ import BC from '../api.js';
 BC.setOptions({
     getToken: (type='api')=> {
         const session = Session.store.getSession();
-        console.log(session.access_token);
-        return 'Bearer '+session.access_token;
+        if(type=='assets') return 'JWT '+session.user.assets_token;
+        else return 'Bearer '+session.access_token;
     },
     onLogout: () => logoutUser()
 });
@@ -17,6 +17,7 @@ export const loginUser = (username, password, history) =>{
         
         const access_token = data.access_token;
         const user = {
+            assets_token: data.assets_token,
             bc_id: data.id,
             wp_id: data.wp_id,
             bio: data.bio,
