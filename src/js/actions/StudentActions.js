@@ -8,7 +8,8 @@ import {logout} from '../utils/react-components/src/index';
 BC.setOptions({
     getToken: (type='api')=> {
         const session = Session.store.getSession();
-        if(type=='assets') return 'JWT '+session.user.assets_token;
+        if(type=='assets') 
+            return (typeof session.user == 'undefined') ? 'JWT '+session.user.assets_token:'';
         else return 'Bearer '+session.access_token;
     },
     onLogout: () => logout()
