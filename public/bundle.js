@@ -81822,7 +81822,7 @@ var IFrameManageView = function (_Flux$View) {
   _createClass(IFrameManageView, [{
     key: 'getIframeURL',
     value: function getIframeURL() {
-      var session = _bcReactSession.Session.getSession();
+      var session = _bcReactSession.Session.store.getSession();
       var token = '?bc_token=' + session.breathecodeToken + '&assets_token=' + session.assetsToken;
       var type = this.props.match.params.entity_slug;
       if (type === "replit") return "https://assets.breatheco.de" + '/apps/replit-maker' + token;
@@ -81907,7 +81907,7 @@ var IFrameView = function (_Flux$View) {
   _createClass(IFrameView, [{
     key: 'getIframeURL',
     value: function getIframeURL() {
-      var session = _bcReactSession.Session.getSession();
+      var session = _bcReactSession.Session.store.getSession();
       var token = '?bc_token=' + session.breathecodeToken + '&assets_token=' + session.assetsToken;
       var type = this.props.match.params.entity_slug;
       var view = this.props.match.params.view_slug;
