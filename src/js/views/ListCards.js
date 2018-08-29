@@ -28,7 +28,7 @@ let cards = {
                 dropdown={[
                     { 
                         label: 'Recent Activity', 
-                        to: `/student/i/activity/?user=${data.id}`
+                        to: '/student/i/activity/?user='+data.id
                     }
                 ].concat(dropdownOptions)}
                 onSelect={(opt) => onEntitySelect(opt, data)}>
@@ -136,7 +136,14 @@ let cards = {
                         :
                             <small className="ml-4 text-secondary">{data.status}</small>
                     }
-                    <small className="ml-4 text-warning">{'('+data.event_date.substr(0,10)+')'}</small>
+                    <small className="ml-4 text-warning">
+                        On: {data.event_date.substr(0,10)}
+                        { (data.hasPassed) ? 
+                                <span className="text-black"> (passed)</span> 
+                            : 
+                                <span className="text-success"> (upcoming)</span> 
+                        }
+                    </small>
                 </p>
             </DropLink>
         </li>

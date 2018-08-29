@@ -1,6 +1,6 @@
 /* global localStorage */
 import Flux from '@4geeksacademy/react-flux-dash';
-
+import moment from 'moment';
 class AdminStore extends Flux.DashStore{
     constructor(){
         super();
@@ -26,7 +26,18 @@ class AdminStore extends Flux.DashStore{
     _transformLocation(results){ return results; }
     _transformCohorts(results){ return results; }
     _transformProfile(results){ return results; }
-    _transformEvent(results){ return results; }
+    _transformEvent(results){ 
+        if(!Array.isArray(results)) return results;
+        results = results.map((ev) => {
+            const startTime = moment(ev.event_date);
+            if(startTime.isBefore(moment())) ev.hasPassed = true;
+            else ev.hasPassed = false;
+            
+            return ev;
+        });
+        
+        return results; 
+    }
     
     getSingle(type, id){ 
         let entities = this.getAll(type);

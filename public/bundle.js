@@ -77181,7 +77181,7 @@ module.exports = function(module) {
 /*! exports provided: name, version, description, main, scripts, author, license, devDependencies, babel, dependencies, default */
 /***/ (function(module) {
 
-module.exports = {"name":"workspace","version":"1.0.51","description":"","main":"index.js","scripts":{"c9":"webpack-dev-server --mode development --open --host $IP --port $PORT --config webpack.dev.js","dev":"webpack --mode development --config webpack.dev.js","start":"http-server -a $IP","build":"webpack --mode development --config webpack.prod.js"},"author":"","license":"ISC","devDependencies":{"@breathecode/breathecode-cli":"0.0.1","babel-cli":"^6.26.0","babel-core":"^6.26.0","babel-loader":"^7.1.2","babel-preset-env":"^1.6.0","babel-preset-react":"^6.24.1","css-loader":"^0.28.7","dotenv-webpack":"^1.5.5","file-loader":"^1.1.5","html-loader":"^0.5.5","html-webpack-plugin":"^3.2.0","http-server":"^0.11.1","markdown-loader":"^2.0.2","node-sass":"^4.5.3","react-svg-loader":"^2.1.0","sass-loader":"^6.0.6","style-loader":"^0.19.0","webpack":"^4.0.1","webpack-cli":"^2.0.9","webpack-dev-server":"^3.1.3","webpack-merge":"^4.1.2"},"babel":{"presets":["env","react"]},"dependencies":{"@4geeksacademy/react-flux-dash":"^3.0.2","@breathecode/api-js-wrapper":"^1.0.6","@fortawesome/fontawesome":"^1.1.4","@fortawesome/fontawesome-free-brands":"^5.0.9","@fortawesome/fontawesome-free-regular":"^5.0.8","@fortawesome/fontawesome-free-solid":"^5.0.8","bc-react-notifier":"^1.1.0","bc-react-session":"^1.0.5","bootstrap":"^4.0.0-beta.2","events":"^1.1.1","flux":"^3.1.3","jquery":"^3.2.1","moment":"^2.19.4","popper.js":"^1.12.9","prop-types":"^15.6.1","query-string":"^5.1.1","react":"^16.0.0","react-ace":"^5.9.0","react-datetime":"^2.14.0","react-dom":"^16.0.0","react-flux-dash":"^1.1.6","react-marked":"^0.3.1","react-mousetrap":"^0.2.0","react-polyfills":"0.0.1","react-quill":"^1.3.0","react-router":"^4.2.0","react-router-dom":"^4.2.2","react-split-pane":"^0.1.77","react-transition-group":"^1.2.1","reactstrap":"^5.0.0-beta.3","validator":"^9.4.1","wordpress-rest-api":"^0.8.0"}};
+module.exports = {"name":"workspace","version":"1.0.52","description":"","main":"index.js","scripts":{"c9":"webpack-dev-server --mode development --open --host $IP --port $PORT --config webpack.dev.js","dev":"webpack --mode development --config webpack.dev.js","start":"http-server -a $IP","build":"webpack --mode development --config webpack.prod.js"},"author":"","license":"ISC","devDependencies":{"@breathecode/breathecode-cli":"0.0.1","babel-cli":"^6.26.0","babel-core":"^6.26.0","babel-loader":"^7.1.2","babel-preset-env":"^1.6.0","babel-preset-react":"^6.24.1","css-loader":"^0.28.7","dotenv-webpack":"^1.5.5","file-loader":"^1.1.5","html-loader":"^0.5.5","html-webpack-plugin":"^3.2.0","http-server":"^0.11.1","markdown-loader":"^2.0.2","node-sass":"^4.5.3","react-svg-loader":"^2.1.0","sass-loader":"^6.0.6","style-loader":"^0.19.0","webpack":"^4.0.1","webpack-cli":"^2.0.9","webpack-dev-server":"^3.1.3","webpack-merge":"^4.1.2"},"babel":{"presets":["env","react"]},"dependencies":{"@4geeksacademy/react-flux-dash":"^3.0.2","@breathecode/api-js-wrapper":"^1.0.6","@fortawesome/fontawesome":"^1.1.4","@fortawesome/fontawesome-free-brands":"^5.0.9","@fortawesome/fontawesome-free-regular":"^5.0.8","@fortawesome/fontawesome-free-solid":"^5.0.8","bc-react-notifier":"^1.1.0","bc-react-session":"^1.0.5","bootstrap":"^4.0.0-beta.2","events":"^1.1.1","flux":"^3.1.3","jquery":"^3.2.1","moment":"^2.19.4","popper.js":"^1.12.9","prop-types":"^15.6.1","query-string":"^5.1.1","react":"^16.0.0","react-ace":"^5.9.0","react-datetime":"^2.14.0","react-dom":"^16.0.0","react-flux-dash":"^1.1.6","react-marked":"^0.3.1","react-mousetrap":"^0.2.0","react-polyfills":"0.0.1","react-quill":"^1.3.0","react-router":"^4.2.0","react-router-dom":"^4.2.2","react-split-pane":"^0.1.77","react-transition-group":"^1.2.1","reactstrap":"^5.0.0-beta.3","validator":"^9.4.1","wordpress-rest-api":"^0.8.0"}};
 
 /***/ }),
 
@@ -77924,6 +77924,10 @@ var _reactFluxDash = __webpack_require__(/*! @4geeksacademy/react-flux-dash */ "
 
 var _reactFluxDash2 = _interopRequireDefault(_reactFluxDash);
 
+var _moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+
+var _moment2 = _interopRequireDefault(_moment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -77956,7 +77960,7 @@ var AdminStore = function (_Flux$DashStore) {
     }
 
     _createClass(AdminStore, [{
-        key: "_transformUsers",
+        key: '_transformUsers',
         value: function _transformUsers(users) {
             if (!Array.isArray(users)) return users;
             return users.filter(function (user) {
@@ -77964,58 +77968,66 @@ var AdminStore = function (_Flux$DashStore) {
             });
         }
     }, {
-        key: "_transformStudents",
+        key: '_transformStudents',
         value: function _transformStudents(results) {
             return results;
         }
     }, {
-        key: "_transformLocation",
+        key: '_transformLocation',
         value: function _transformLocation(results) {
             return results;
         }
     }, {
-        key: "_transformCohorts",
+        key: '_transformCohorts',
         value: function _transformCohorts(results) {
             return results;
         }
     }, {
-        key: "_transformProfile",
+        key: '_transformProfile',
         value: function _transformProfile(results) {
             return results;
         }
     }, {
-        key: "_transformEvent",
+        key: '_transformEvent',
         value: function _transformEvent(results) {
+            if (!Array.isArray(results)) return results;
+            results = results.map(function (ev) {
+                var startTime = (0, _moment2.default)(ev.event_date);
+                if (startTime.isBefore((0, _moment2.default)())) ev.hasPassed = true;else ev.hasPassed = false;
+
+                return ev;
+            });
+
             return results;
         }
     }, {
-        key: "getSingle",
+        key: 'getSingle',
         value: function getSingle(type, id) {
             var entities = this.getAll(type);
             var results = entities.filter(function (ent) {
                 return ent.id == id;
             });
-            if (results.length === 1) return results[0];else if (results.length === 0) return null;else if (results.length > 1) throw new Error("There seems to be more than one " + type + " with the id: " + id);
+            if (results.length === 1) return results[0];else if (results.length === 0) return null;else if (results.length > 1) throw new Error('There seems to be more than one ' + type + ' with the id: ' + id);
         }
     }, {
-        key: "getSingleBy",
+        key: 'getSingleBy',
         value: function getSingleBy(type, key, value) {
             var entities = this.getAll(type);
             var results = entities.filter(function (ent) {
                 return ent[key] == value;
             });
-            if (results.length === 1) return results[0];else if (results.length === 0) return null;else if (results.length > 1) throw new Error("There seems to be more than one " + type + " with the " + key + ": " + value);
+            if (results.length === 1) return results[0];else if (results.length === 0) return null;else if (results.length > 1) throw new Error('There seems to be more than one ' + type + ' with the ' + key + ': ' + value);
         }
     }, {
-        key: "getAll",
+        key: 'getAll',
         value: function getAll(type) {
             var result = this.getState();
-            if (typeof result["manage_" + type] === 'undefined' || !result["manage_" + type]) return [];else return result["manage_" + type];
+            if (typeof result['manage_' + type] === 'undefined' || !result['manage_' + type]) return [];else return result['manage_' + type];
         }
     }, {
-        key: "replace",
+        key: 'replace',
         value: function replace(type, newEntity) {
-            if (!newEntity || typeof newEntity.id == 'undefined') throw new Error("Invalid " + type + " to replate");
+            if (!newEntity || typeof newEntity.id == 'undefined') throw new Error('Invalid ' + type + ' to replate');
             var entities = this.getAll(type);
             return entities.map(function (ent) {
                 return ent.id !== newEntity.id ? ent : newEntity;
@@ -78444,6 +78456,89 @@ var Wrapper = function () {
 if (true) module.exports = new Wrapper();
 window.BC = new Wrapper();
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./src/js/utils/filterFunctions.js":
+/*!*****************************************!*\
+  !*** ./src/js/utils/filterFunctions.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _queryString = __webpack_require__(/*! query-string */ "./node_modules/query-string/index.js");
+
+var _queryString2 = _interopRequireDefault(_queryString);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    student: function student(entity, extraSearch) {
+        var searchParams = _queryString2.default.parse(window.location.search);
+        var valid = true;
+        for (var key in searchParams) {
+            var token = searchParams[key].toLowerCase();
+            if (key == 'cohort') valid = entity.cohorts.indexOf(token) !== -1;else if (key == 'name') valid = entity.full_name.toLowerCase().search(token) !== -1;else if (key == 'email') valid = entity.email.toLowerCase().search(token) !== -1;
+        }
+        if (valid && extraSearch) {
+            var nameMatches = entity.full_name.toLowerCase().search(extraSearch) !== -1;
+            var emailMatches = entity.email.toLowerCase().search(extraSearch) !== -1;
+            if (nameMatches || emailMatches) valid = true;else valid = false;
+        }
+
+        return valid;
+    },
+    user: function user(entity, extraSearch) {
+        var searchParams = _queryString2.default.parse(window.location.search);
+        var valid = true;
+        for (var key in searchParams) {
+            var token = searchParams[key].toLowerCase();
+            if (key == 'name') valid = entity.full_name.toLowerCase().search(token) !== -1;else if (key == 'email') valid = entity.username.toLowerCase().search(token) !== -1;
+        }
+        if (valid && extraSearch) {
+            var nameMatches = entity.full_name.toLowerCase().search(extraSearch) !== -1;
+            var emailMatches = entity.username.toLowerCase().search(extraSearch) !== -1;
+            if (nameMatches || emailMatches) valid = true;else valid = false;
+        }
+
+        return valid;
+    },
+    cohort: function cohort(entity, extraSearch) {
+        var searchParams = _queryString2.default.parse(window.location.search);
+        var valid = true;
+        for (var key in searchParams) {
+            var token = searchParams[key].toLowerCase();
+            if (key == 'name') valid = entity.name.toLowerCase().search(token) !== -1;else if (key == 'profile') valid = entity.profile_slug.toLowerCase().search(token) !== -1;
+        }
+        if (valid && extraSearch) {
+            var nameMatches = entity.name.toLowerCase().search(extraSearch) !== -1;
+            if (nameMatches) valid = true;else valid = false;
+        }
+
+        return valid;
+    },
+    event: function event(entity, extraSearch) {
+        var searchParams = _queryString2.default.parse(window.location.search);
+        var valid = true;
+        for (var key in searchParams) {
+            var token = searchParams[key].toLowerCase();
+            if (key == 'name') valid = entity.title.toLowerCase().search(token) !== -1;
+        }
+        if (valid && extraSearch) {
+            var nameMatches = entity.title.toLowerCase().search(extraSearch) !== -1;
+            if (nameMatches) valid = true;else valid = false;
+        }
+
+        return valid;
+    }
+};
 
 /***/ }),
 
@@ -80792,7 +80887,7 @@ MenuItem.propTypes = {
     label: _propTypes2.default.string.isRequired,
     icon: _propTypes2.default.string,
     to: _propTypes2.default.string,
-    onClick: _propTypes2.default.func.isRequired
+    onClick: _propTypes2.default.func
 };
 MenuItem.defaultProps = {
     icon: '',
@@ -81557,6 +81652,27 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./src/js/utils/sortingFunctions.js":
+/*!******************************************!*\
+  !*** ./src/js/utils/sortingFunctions.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    event: function event(a, b) {
+        return a.event_date < b.event_date;
+    }
+};
+
+/***/ }),
+
 /***/ "./src/js/views/EditView.jsx":
 /*!***********************************!*\
   !*** ./src/js/views/EditView.jsx ***!
@@ -82188,7 +82304,17 @@ var cards = {
                     _react2.default.createElement(
                         'small',
                         { className: 'ml-4 text-warning' },
-                        '(' + data.event_date.substr(0, 10) + ')'
+                        'On: ',
+                        data.event_date.substr(0, 10),
+                        data.hasPassed ? _react2.default.createElement(
+                            'span',
+                            { className: 'text-black' },
+                            ' (passed)'
+                        ) : _react2.default.createElement(
+                            'span',
+                            { className: 'text-success' },
+                            ' (upcoming)'
+                        )
                     )
                 )
             )
@@ -82237,9 +82363,13 @@ var _ListCards = __webpack_require__(/*! ./ListCards */ "./src/js/views/ListCard
 
 var _ListCards2 = _interopRequireDefault(_ListCards);
 
-var _SearchFunctions = __webpack_require__(/*! ./SearchFunctions */ "./src/js/views/SearchFunctions.js");
+var _filterFunctions = __webpack_require__(/*! ../utils/filterFunctions */ "./src/js/utils/filterFunctions.js");
 
-var _SearchFunctions2 = _interopRequireDefault(_SearchFunctions);
+var _filterFunctions2 = _interopRequireDefault(_filterFunctions);
+
+var _sortingFunctions = __webpack_require__(/*! ../utils/sortingFunctions */ "./src/js/utils/sortingFunctions.js");
+
+var _sortingFunctions2 = _interopRequireDefault(_sortingFunctions);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -82340,15 +82470,21 @@ var ManageView = function (_Flux$View) {
     }, {
         key: 'filterEntity',
         value: function filterEntity(entity) {
-            var seatchFunction = _SearchFunctions2.default[this.state.entitySlug];
-            return typeof seatchFunction === 'function' ? seatchFunction(entity, this.state.searchToken) : true;
+            var filterFunction = _filterFunctions2.default[this.state.entitySlug];
+            return typeof filterFunction === 'function' ? filterFunction(entity, this.state.searchToken) : true;
+        }
+    }, {
+        key: 'sortEntity',
+        value: function sortEntity(a, b) {
+            var sortFunction = _sortingFunctions2.default[this.state.entitySlug];
+            return typeof sortFunction === 'function' ? sortFunction(a, b) : null;
         }
     }, {
         key: 'render',
         value: function render() {
             var _this2 = this;
 
-            var entities = this.state.entities.filter(this.filterEntity.bind(this)).map(function (data, i) {
+            var entities = this.state.entities.filter(this.filterEntity.bind(this)).sort(this.sortEntity.bind(this)).map(function (data, i) {
                 return _ListCards2.default[_this2.state.entitySlug + 'Card'](data, i, _this2.onSelect.bind(_this2));
             });
             return _react2.default.createElement(
@@ -82406,75 +82542,6 @@ var ManageView = function (_Flux$View) {
 }(_reactFluxDash2.default.View);
 
 exports.default = ManageView;
-
-/***/ }),
-
-/***/ "./src/js/views/SearchFunctions.js":
-/*!*****************************************!*\
-  !*** ./src/js/views/SearchFunctions.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _queryString = __webpack_require__(/*! query-string */ "./node_modules/query-string/index.js");
-
-var _queryString2 = _interopRequireDefault(_queryString);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    student: function student(entity, extraSearch) {
-        var searchParams = _queryString2.default.parse(window.location.search);
-        var valid = true;
-        for (var key in searchParams) {
-            var token = searchParams[key].toLowerCase();
-            if (key == 'cohort') valid = entity.cohorts.indexOf(token) !== -1;else if (key == 'name') valid = entity.full_name.toLowerCase().search(token) !== -1;else if (key == 'email') valid = entity.email.toLowerCase().search(token) !== -1;
-        }
-        if (valid && extraSearch) {
-            var nameMatches = entity.full_name.toLowerCase().search(extraSearch) !== -1;
-            var emailMatches = entity.email.toLowerCase().search(extraSearch) !== -1;
-            if (nameMatches || emailMatches) valid = true;else valid = false;
-        }
-
-        return valid;
-    },
-    user: function user(entity, extraSearch) {
-        var searchParams = _queryString2.default.parse(window.location.search);
-        var valid = true;
-        for (var key in searchParams) {
-            var token = searchParams[key].toLowerCase();
-            if (key == 'name') valid = entity.full_name.toLowerCase().search(token) !== -1;else if (key == 'email') valid = entity.username.toLowerCase().search(token) !== -1;
-        }
-        if (valid && extraSearch) {
-            var nameMatches = entity.full_name.toLowerCase().search(extraSearch) !== -1;
-            var emailMatches = entity.username.toLowerCase().search(extraSearch) !== -1;
-            if (nameMatches || emailMatches) valid = true;else valid = false;
-        }
-
-        return valid;
-    },
-    cohort: function cohort(entity, extraSearch) {
-        var searchParams = _queryString2.default.parse(window.location.search);
-        var valid = true;
-        for (var key in searchParams) {
-            var token = searchParams[key].toLowerCase();
-            if (key == 'name') valid = entity.name.toLowerCase().search(token) !== -1;else if (key == 'profile') valid = entity.profile_slug.toLowerCase().search(token) !== -1;
-        }
-        if (valid && extraSearch) {
-            var nameMatches = entity.name.toLowerCase().search(extraSearch) !== -1;
-            if (nameMatches) valid = true;else valid = false;
-        }
-
-        return valid;
-    }
-};
 
 /***/ }),
 
@@ -82691,7 +82758,7 @@ var Form = function (_BaseForm2) {
                     _react2.default.createElement(
                         'select',
                         { className: 'form-control',
-                            defaultValue: this.state.data.language,
+                            value: this.state.data.language,
                             onChange: function onChange(e) {
                                 return _this2.formUpdated({ language: e.target.value });
                             } },
@@ -82718,7 +82785,7 @@ var Form = function (_BaseForm2) {
                     _react2.default.createElement(
                         'select',
                         { className: 'form-control',
-                            defaultValue: this.state.data.location_slug,
+                            value: this.state.data.location_slug,
                             onChange: function onChange(e) {
                                 return _this2.formUpdated({ location_slug: e.target.value });
                             } },
@@ -82736,7 +82803,7 @@ var Form = function (_BaseForm2) {
                     _react2.default.createElement(
                         'select',
                         { className: 'form-control',
-                            defaultValue: this.state.data.profile_slug,
+                            value: this.state.data.profile_slug,
                             onChange: function onChange(e) {
                                 return _this2.formUpdated({ profile_slug: e.target.value });
                             } },
@@ -83852,7 +83919,7 @@ var UserForm = function (_BaseForm2) {
                         ),
                         _react2.default.createElement(
                             'select',
-                            { className: 'form-control', defaultValue: this.state.data.type,
+                            { className: 'form-control', value: this.state.data.type,
                                 onChange: function onChange(e) {
                                     return _this2.formUpdated({ type: e.target.value });
                                 } },

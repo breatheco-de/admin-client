@@ -51,5 +51,20 @@ export default {
         }
         
         return valid;
+    },
+    event: (entity, extraSearch) => {
+        const searchParams = queryString.parse(window.location.search);
+        let valid = true;
+        for(let key in searchParams){
+            const token = searchParams[key].toLowerCase();
+            if(key=='name') valid = (entity.title.toLowerCase().search(token) !== -1 );
+        }
+        if(valid && extraSearch){
+            let nameMatches = (entity.title.toLowerCase().search(extraSearch) !== -1 );
+            if(nameMatches) valid = true;
+            else valid = false;
+        }
+        
+        return valid;
     }
 };

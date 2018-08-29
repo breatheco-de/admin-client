@@ -49,7 +49,7 @@ class UserForm extends _BaseForm{
                     </div>
                     <div className="form-group">
                         <label>User Role</label>
-                        <select className="form-control" defaultValue={this.state.data.type} 
+                        <select className="form-control" value={this.state.data.type} 
                             onChange={(e) => this.formUpdated({ type: e.target.value})}>
                             <option value="select">Select the type of user</option>
                             <option value="admin">admin</option>

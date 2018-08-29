@@ -5,7 +5,8 @@ import { Panel, List } from '../utils/react-components/src/index';
 import AdminStore from '../stores/AdminStore';
 import * as AdminActions from '../actions/AdminActions';
 import Cards from './ListCards';
-import SearchFunctions from './SearchFunctions';
+import FilterFunctions from '../utils/filterFunctions';
+import SortingFunctions from '../utils/sortingFunctions';
 
 export default class ManageView extends Flux.View {
   
@@ -96,13 +97,21 @@ export default class ManageView extends Flux.View {
     }
     
     filterEntity(entity){
-        let seatchFunction = SearchFunctions[this.state.entitySlug];
-        return (typeof seatchFunction === 'function') ? seatchFunction(entity, this.state.searchToken) : true;
+        let filterFunction = FilterFunctions[this.state.entitySlug];
+        return (typeof filterFunction === 'function') ? filterFunction(entity, this.state.searchToken) : true;
+    }
+    
+    sortEntity(a, b){
+        let sortFunction = SortingFunctions[this.state.entitySlug];
+        return (typeof sortFunction === 'function') ? sortFunction(a, b) : null;
     }
   
   render() {
     
-    const entities = this.state.entities.filter(this.filterEntity.bind(this)).map((data, i) => Cards[this.state.entitySlug+'Card'](data, i, this.onSelect.bind(this)));
+    const entities = this.state.entities
+                        .filter(this.filterEntity.bind(this))
+                        .sort(this.sortEntity.bind(this))
+                        .map((data, i) => Cards[this.state.entitySlug+'Card'](data, i, this.onSelect.bind(this)));
     return (
         <div className="with-padding">
             <Panel style={{padding: "10px"}} zDepth={1}>

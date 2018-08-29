@@ -81,7 +81,7 @@ class Form extends _BaseForm{
                 </div>
                 <div className="form-group">
                     <select className="form-control"
-                        defaultValue={this.state.data.language}
+                        value={this.state.data.language}
                         onChange={(e) => this.formUpdated({ language: e.target.value})}>
                         <option value={null}>select a language</option>
                         <option value="en">English</option>
@@ -90,7 +90,7 @@ class Form extends _BaseForm{
                 </div>
                 <div className="form-group">
                     <select className="form-control"
-                        defaultValue={this.state.data.location_slug}
+                        value={this.state.data.location_slug}
                         onChange={(e) => this.formUpdated({ location_slug: e.target.value})}>
                         <option value={null}>select a location</option>
                         {locations}
@@ -98,7 +98,7 @@ class Form extends _BaseForm{
                 </div>
                 <div className="form-group">
                     <select className="form-control"
-                        defaultValue={this.state.data.profile_slug}
+                        value={this.state.data.profile_slug}
                         onChange={(e) => this.formUpdated({ profile_slug: e.target.value})}>
                         <option value={null}>select a profile</option>
                         {profiles}

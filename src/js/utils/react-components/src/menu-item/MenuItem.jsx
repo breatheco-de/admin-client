@@ -30,8 +30,8 @@ MenuItem.propTypes = {
   label: PropTypes.string.isRequired,
   icon: PropTypes.string,
   to: PropTypes.string,
-  onClick: PropTypes.func.isRequired
-}
+  onClick: PropTypes.func
+};
 MenuItem.defaultProps = {
     icon: '',
     onClick: null,
