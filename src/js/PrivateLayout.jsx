@@ -10,6 +10,7 @@ import IFrameView from './views/IFrameView';
 import IFrameManageView from './views/IFrameManageView';
 import EditView from './views/EditView';
 import {menuModes}  from './utils/menu';
+import {Session} from 'bc-react-session';
 
 class Layout extends Flux.View{
     

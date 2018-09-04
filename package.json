@@ -48,7 +48,7 @@
     "@fortawesome/fontawesome-free-regular": "^5.0.8",
     "@fortawesome/fontawesome-free-solid": "^5.0.8",
     "bc-react-notifier": "^1.1.0",
-    "bc-react-session": "^1.0.5",
+    "bc-react-session": "^1.1.0",
     "bootstrap": "^4.0.0-beta.2",
     "events": "^1.1.1",
     "flux": "^3.1.3",

@@ -13,7 +13,7 @@ export default class IFrameView extends Flux.View {
   
   getIframeURL(){
       const session = Session.store.getSession();
-      const token = `?bc_token=${session.breathecodeToken}&assets_token=${session.assetsToken}`;
+      const token = `?bc_token=${session.user.access_token}&assets_token=${session.user.assets_token}`;
       let type = this.props.match.params.entity_slug;
       let view = this.props.match.params.view_slug;
       

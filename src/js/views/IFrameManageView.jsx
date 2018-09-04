@@ -13,7 +13,7 @@ export default class IFrameManageView extends Flux.View {
   
   getIframeURL(){
       const session = Session.store.getSession();
-      const token = `?bc_token=${session.breathecodeToken}&assets_token=${session.assetsToken}`;
+      const token = `?bc_token=${session.user.access_token}&assets_token=${session.user.assets_token}`;
       let type = this.props.match.params.entity_slug;
       if(type==="replit") return process.env.ASSETS_URL+'/apps/replit-maker'+token;
       if(type==="quiz") return process.env.ASSETS_URL+'/apps/quiz-maker'+token;
