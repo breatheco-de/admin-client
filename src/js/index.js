@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 //include your index.scss file into the bundle
 import '../styles/index.scss';
-import './utils/icons';
 
 var packg = require('../../package.json');
 console.info("BreatheCode Platform",packg.version, process.env.ENVIRONMENT);

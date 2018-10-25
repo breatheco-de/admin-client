@@ -29,6 +29,11 @@ let cards = {
                     { 
                         label: 'Recent Activity', 
                         to: '/student/i/activity/?user='+data.id
+                    },
+                    { 
+                        label: 'Change BreatheCode Status', 
+                        slug: 'change_breathecode_status',
+                        data: { student: data }
                     }
                 ].concat(dropdownOptions)}
                 onSelect={(opt) => onEntitySelect(opt, data)}>
@@ -37,6 +42,7 @@ let cards = {
                         <small className="text-info">{data.email}</small>
                         <small className="ml-4 text-secondary">{data.phone}</small>
                         <small className="ml-4 text-success">{data.github}</small>
+                        <small className={"ml-4 text-"+((data.status=='blocked' || data.status=='student_dropped') ? "danger":"secondary")}>{data.status}</small>
                     </p>
             </DropLink>
         </li>
@@ -105,6 +111,11 @@ let cards = {
                         label: 'Got To Landing', 
                         slug: 'open_in_new_window', 
                         url: data.url
+                    },
+                    { 
+                        label: 'Duplicate Event', 
+                        slug: 'duplicate_event', 
+                        data: { event: data }
                     }
                 ].concat((() => {
                     let statusActions = [];

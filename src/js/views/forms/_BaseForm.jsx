@@ -31,7 +31,6 @@ export default class _BaseForm extends React.Component{
         else{
             if(this._errors.length === 0) this.props.onSave(this.sanitizeData(this.state.data));
             else{
-                this._errors = [];
                 this.props.onError(this._errors);
             } 
         } 
@@ -39,6 +38,8 @@ export default class _BaseForm extends React.Component{
     onSubmit(e){
         e.preventDefault();
         e.stopPropagation();
+        this._errors = [];
+        this.setState({ _hasUserErrors: false });
         if(!this.validate || typeof this.validate === 'undefined') throw new Error('there is no way of validating the form');
         else if(this.validate(this.state.data)) this.submit();
 

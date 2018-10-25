@@ -54,7 +54,11 @@ class Wrapper{
                             reject({ msg: 'Unauthorized', code: 401 }); 
                             if(this.options.onLogout) this.options.onLogout();
                         } 
-                        else if(resp.status == 400) reject({ msg: 'Invalid Argument', code: 400 }); 
+                        else if(resp.status == 400) 
+                            resp.json()
+                                .then(data => reject({ msg: data.msg, code: 400 }))
+                                .catch(data => reject({ msg: 'Invalid Argument', code: 400 }));
+                                
                         else reject({ msg: 'There was an error, try again later', code: 500 });
                     } 
                     return false;
@@ -207,6 +211,9 @@ class Wrapper{
             },
             update: (id, args) => {
                 return this.post(url+'/student/'+id, args);
+            },
+            setStatus: (id, args) => {
+                return this.post(url+'/student/status/'+id, args);
             },
             delete: (id) => {
                 return this.delete(url+'/student/'+id);

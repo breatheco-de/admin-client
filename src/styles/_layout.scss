@@ -6,6 +6,16 @@
     	/* gradients - second red border, first red border, top white space, blue lines */
         @include notebook-background;
     }
+    .left-side{
+        width: 180px;
+        margin-left: 10px;
+        .navbar{
+            padding-right: 0;
+        }
+    }
+    .right-side{
+        width: calc( 100vw - 160px );
+    }
 }
 .white-resizer .Resizer{
     background: white;

@@ -30,33 +30,37 @@ class MainMenu extends React.Component{
         return(
             <ul className="nav flex-column">
                 <MenuItem icon="fas fa-tachometer-alt" label="Dashboard" slug="dashboard" to="/dashboard" />
+                <p className="m-0 mt-3">Manage:</p>
                 { (role == 'admin' || role == 'admissions') ? 
-                    <MenuItem icon="fas fa-users" label="Students" slug="student" to="/manage/student/" />:''
+                    <MenuItem icon="fas fa-user-graduate" label="Students" slug="student" to="/manage/student/" />:''
                 }
                 { (role == 'admin' || role == 'admissions') ? 
-                    <MenuItem icon="fas fa-users" label="Cohorts" slug="student" to="/manage/cohort/" />:''
+                    <MenuItem icon="fas fa-graduation-cap" label="Cohorts" slug="student" to="/manage/cohort/" />:''
                 }
                 { (role == 'admin') ? 
-                    <MenuItem icon="fas fa-users" label="Profiles" slug="profile" to="/manage/profile/" /> :''
+                    <MenuItem icon="fas fa-book-reader" label="Courses" slug="profile" to="/manage/profile/" /> :''
                 }
-                { (role == 'admin') ? 
-                    <MenuItem icon="fas fa-users" label="Events" slug="event" to="/manage/event/" />:''
+                { (role == 'admin' || role == 'admissions') ? 
+                    <MenuItem icon="fas fa-calendar-plus" label="Events" slug="event" to="/manage/event/" />:''
                 }
                 { (role == 'admin') ? 
                     <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" /> :''
                 }
+                <p className="m-0 mt-3">Apps:</p>
+                { (role == 'admin') ?
+                    <MenuItem icon="fas fa-calendar-check" label="Event Checkin" slug="replit" to="/manage/i/checkin/" /> :''
+                }
+                { (role == 'admin') ?
+                    <MenuItem icon="fas fa-dumbbell" label="Replits" slug="replit" to="/manage/i/replit/" /> :''
+                }
+                { (role == 'admin') ? 
+                    <MenuItem icon="fas fa-question-circle" label="Quizzes" slug="quiz" to="/manage/i/quiz/" /> :''
+                }
+                { (role == 'admin') ? 
+                    <MenuItem icon="fas fa-book" label="Syllabus" slug="syllabus" to="/manage/i/syllabus/" /> :''
+                }
                 <p>-</p>
-                { (role == 'admin') ? 
-                    <MenuItem icon="fas fa-users" label="Replits" slug="replit" to="/manage/i/replit/" /> :''
-                }
-                { (role == 'admin') ? 
-                    <MenuItem icon="fas fa-users" label="Quizzes" slug="quiz" to="/manage/i/quiz/" /> :''
-                }
-                { (role == 'admin') ? 
-                    <MenuItem icon="fas fa-users" label="Syllabus" slug="syllabus" to="/manage/i/syllabus/" /> :''
-                }
-                <p>-</p>
-                <MenuItem icon="fas fa-sign-out-alt" label="Close Session" slug="close_session"
+                <MenuItem icon="fas fa-sign-out-alt" label="Logout" slug="close_session"
                     onClick={() => logout()}
                 />
             </ul>

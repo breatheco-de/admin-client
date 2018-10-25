@@ -3,7 +3,7 @@ import Flux from '@4geeksacademy/react-flux-dash';
 import AdminStore from '../stores/AdminStore';
 import {Notify} from 'bc-react-notifier';
 import {Session} from 'bc-react-session';
-import {cohortActions} from '../actions/CustomActions';
+import { cohortActions, studentActions, eventActions } from '../actions/CustomActions';
 import {logout} from '../utils/react-components/src/index';
 
 BC.setOptions({
@@ -23,10 +23,10 @@ export const get = (types) => {
             Flux.dispatchEvent(`manage_${type}`, result.data || result);
         });
         else throw new Error('Invalid fetch type: '+type);
-    })
+    });
 };
     
-export const add = (type, data) => {
+export const add = (type, data) => new Promise((resolve, reject) => {
     if(typeof BC[type] === 'function') {
         BC[type]().add(data)
             .then((result) => {
@@ -36,15 +36,20 @@ export const add = (type, data) => {
                 const data = (typeof result.data !== 'undefined') ? result.data : result;
                 let entities = state[`manage_${type}`].concat([data]);
                 Flux.dispatchEvent(`manage_${type}`, entities);
+                resolve();
             })
             .catch((error) => {
-                Notify.error(`Error: ${error.msg || error}`);
+                Notify.error(`${error.msg || error}`);
+                reject();
             });
     }
-    else throw new Error('Invalid fetch type: '+type);
-};
+    else{
+        reject();
+        throw new Error('Invalid fetch type: '+type);
+    } 
+});
     
-export const update = (type, data) => {
+export const update = (type, data) => new Promise((resolve, reject) => {
     if(typeof BC[type] === 'function') {
         delete data.email;
         BC[type]().update(data.id, data)
@@ -59,14 +64,20 @@ export const update = (type, data) => {
                 });
                 
                 Flux.dispatchEvent(`manage_${type}`, entities);
+                resolve();
+            })
+            .catch((error) => {
+                reject();
+                Notify.error(`${error.msg || error}`);
             });
     }
-    else Flux.dispatchEvent("notifications", [{
-                msg: `There was a problem updating the ${type}`, type: 'info'
-            }]);
-};
+    else{
+        reject();
+        throw Error(`There is no type ${type} on the BC api wrapper`);
+    } 
+});
     
-export const remove = (type, data) => {
+export const remove = (type, data) => new Promise((resolve, reject) => {
     
     Notify.info("Are you sure?", (answer) => {
         if(answer){
@@ -79,19 +90,26 @@ export const remove = (type, data) => {
                         let entities = state[`manage_${type}`].filter(ent => ent.id !== data.id);
                         
                         Flux.dispatchEvent(`manage_${type}`, entities);
+                        resolve();
                     })
-                    .catch((error) => Notify.error(`There was an error on the deletion`));
+                    .catch((error) => {
+                        reject();
+                        Notify.error(`${error.msg || error}`);
+                    });
             }
-            else throw new Error('Invalid fetch type: '+type);
+            else{
+                reject();
+                throw new Error('Invalid fetch type: '+type);
+            } 
         }
-        
-        Flux.dispatchEvent("notifications", []);
     });
     
-};
+});
 
 export const firstUpperCase = (input) => { return input[0].toUpperCase()+input.substr(1); };
 
 export const custom = {
-    cohort: cohortActions
+    cohort: cohortActions,
+    student: studentActions,
+    event: eventActions
 };

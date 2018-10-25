@@ -1,6 +1,7 @@
 import React from "react";
 import Flux from '@4geeksacademy/react-flux-dash';
-import { Panel, Notify } from '../utils/react-components/src/index';
+import { Panel } from '../utils/react-components/src/index';
+import { Notify } from 'bc-react-notifier';
 
 import AdminStore from '../stores/AdminStore';
 import * as AdminActions from '../actions/AdminActions';
@@ -38,15 +39,19 @@ export default class ManageView extends Flux.View {
     }
     
     onSave(data){
-        if(this.state.mode==='add') AdminActions.add(this.state.entitySlug, data);
-        else if(this.state.mode==='edit') AdminActions.update(this.state.entitySlug, data);
-        else console.error('Uknown method '+this.state.mode);
+        if(this.state.mode==='add') 
+            AdminActions.add(this.state.entitySlug, data)
+                .then(resp => this.props.history.push(`/manage/${this.state.entitySlug}/`));
         
-        this.props.history.push(`/manage/${this.state.entitySlug}/`);
+        else if(this.state.mode==='edit') 
+            AdminActions.update(this.state.entitySlug, data)
+                .then(resp => this.props.history.push(`/manage/${this.state.entitySlug}/`));
+        
+        else console.error('Uknown method '+this.state.mode);
     }
     
     onError(errors){
-        Notify.error(errors.split(','));
+        Notify.error(errors);
     }
   
   render() {

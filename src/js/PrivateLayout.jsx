@@ -29,7 +29,7 @@ class Layout extends Flux.View{
 
         return (
             <div className="row">
-                <div className="col-4 col-sm-3 col-lg-2">
+                <div className="left-side">
                     <Sidebar 
                         onSelect={() => this.menuClicked()}
                         breadcrumb={[{ label: "BreatheCode", path: '/home' }]}
@@ -37,7 +37,7 @@ class Layout extends Flux.View{
                         selectedOption={this.state.currentMenuOption}
                     />
                 </div>
-                <div className="col-8 col-sm-9 col-lg-10">
+                <div className="right-side">
                     <Switch>
                         <Route exact path='/' component={HomeView} />
                         <Route exact path='/home' component={HomeView} />
