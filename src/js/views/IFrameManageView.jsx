@@ -19,7 +19,7 @@ export default class IFrameManageView extends Flux.View {
       else if(type==="quiz") return process.env.ASSETS_URL+'/apps/quiz-maker'+token;
       else if(type==="syllabus") return process.env.ASSETS_URL+'/apps/syllabus-maker'+token;
       else if(type==="checkin") return process.env.ASSETS_URL+'/apps/checkin'+token;
-      else return process.env.ASSETS_URL+'/404';
+      else return process.env.ASSETS_URL+'/apps/'+type+token;
   }
   
   render() {
