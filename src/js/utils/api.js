@@ -30,7 +30,7 @@ class Wrapper{
         };
         if(token) opts.headers['Authorization'] = token;
         
-        if(method === 'get') path += this.serialize(args).toStr();
+        if(method === 'get') path += '?'+this.serialize(args).toStr();
         else
         {
             if((method=='post' || method=='put') && !args) throw new Error('Missing request body');
@@ -182,8 +182,8 @@ class Wrapper{
         let url = this.options.assetsPath;
         this.options.token
         return {
-            all: () => {
-                return this.get(url+'/event/all');
+            all: (args={}) => {
+                return this.get(url+'/event/all', args);
             },
             get: (id) => {
                 return this.get(url+'/event/'+id);

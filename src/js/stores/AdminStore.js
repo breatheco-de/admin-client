@@ -33,8 +33,14 @@ class AdminStore extends Flux.DashStore{
             if(startTime.isBefore(moment())) ev.hasPassed = true;
             else ev.hasPassed = false;
             
+            if(ev.recurrent_type && ev.recurrent_type != 'one_time'){ //if is recurrent i look for the next upcoming event of that type
+                const childs = results.filter(child => child.parent_event == ev.id);
+                ev.event_date = childs.length > 0 ? childs[0].event_date : null;
+            } 
             return ev;
         });
+        
+        results = results.filter((ev) => (ev.parent_event == null));
         
         return results; 
     }

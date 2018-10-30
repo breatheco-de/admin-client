@@ -19,10 +19,19 @@ BC.setOptions({
 export const get = (types) => {
     if(!Array.isArray(types)) types = [].concat([types]);
     types.forEach(function(type){
-        if(typeof BC[type] === 'function') BC[type]().all().then((result) => {
-            Flux.dispatchEvent(`manage_${type}`, result.data || result);
-        });
-        else throw new Error('Invalid fetch type: '+type);
+        switch(type){
+            case "event":
+                BC[type]().all().then((result) => {
+                    Flux.dispatchEvent(`manage_${type}`, result.data || result);
+                });
+            break;
+            default:
+                if(typeof BC[type] === 'function') BC[type]().all().then((result) => {
+                    Flux.dispatchEvent(`manage_${type}`, result.data || result);
+                });
+                else throw new Error('Invalid fetch type: '+type);
+            break;
+        }
     });
 };
     

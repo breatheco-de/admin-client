@@ -147,10 +147,13 @@ let cards = {
                         :
                             <small className="ml-4 text-secondary">{data.status}</small>
                     }
-                    <small className="ml-4 text-warning">
-                        On: {data.event_date.substr(0,10)}
-                        { (data.hasPassed) ? 
-                                <span className="text-black"> (passed)</span> 
+                    <small className="ml-4">
+                        On: {(typeof data.event_date == 'string') ? data.event_date.substr(0,10) : 'no upcoming date'}
+                        { (data.recurrent_type && data.recurrent_type != "one_time") ? 
+                            <span className="text-primary"> ({data.recurrent_type})</span>
+                            :
+                            (data.hasPassed) ? 
+                                <span className="text-dark"> (already passed)</span> 
                             : 
                                 <span className="text-success"> (upcoming)</span> 
                         }

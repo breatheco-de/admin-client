@@ -1,11 +1,10 @@
 import React from "react";
 import Flux from '@4geeksacademy/react-flux-dash';
 import { Panel, List } from '../utils/react-components/src/index';
-import { Notify } from 'bc-react-notifier';
 import AdminStore from '../stores/AdminStore';
 import * as AdminActions from '../actions/AdminActions';
 import Cards from './ListCards';
-import FilterFunctions from '../utils/filterFunctions';
+import { functions, Filter } from '../utils/filters';
 import SortingFunctions from '../utils/sortingFunctions';
 
 export default class ManageView extends Flux.View {
@@ -30,8 +29,10 @@ export default class ManageView extends Flux.View {
             entities,
             entitySlug: slug,
             urlChange: false,
+            searchToken: '',
             entityComponent: slug+'Card'
         });
+        
         this.entitySubscription = AdminStore.subscribe(this.EVENT_NAME, this.updateFromStore.bind(this));
         AdminActions.get(slug);
     }
@@ -97,8 +98,8 @@ export default class ManageView extends Flux.View {
     }
     
     filterEntity(entity){
-        let filterFunction = FilterFunctions[this.state.entitySlug];
-        return (typeof filterFunction === 'function') ? filterFunction(entity, this.state.searchToken) : true;
+        let filterFunction = functions[this.state.entitySlug];
+        return (typeof filterFunction === 'function') ? filterFunction(entity, { query: this.state.searchToken }) : true;
     }
     
     sortEntity(a, b){
@@ -124,9 +125,11 @@ export default class ManageView extends Flux.View {
                     {this.state.entitySlug}
                     <input className="ml-3 search-entity" type="text" 
                         onChange={(e) => this.setState({ searchToken: e.target.value })} 
+                        value={this.state.searchToken}
                         placeholder="click to search..."
                     />
                 </h2>
+                <Filter history={this.props.history} type={this.state.entitySlug} />
                 <List>
                     {entities}
                 </List>

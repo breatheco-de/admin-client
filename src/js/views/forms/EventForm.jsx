@@ -7,6 +7,7 @@ import DateTime from 'react-datetime';
 import ReactQuill from 'react-quill'; // ES6
 
 const eventTypes = ['workshop','coding_weekend','hackathon','intro_to_coding','4geeks_night','other'];
+const recurrencyTypes = ['every_week', 'one_time'];
 
 class Form extends _BaseForm{
     
@@ -36,13 +37,18 @@ class Form extends _BaseForm{
             city_slug: '',
             banner_url: '',
             invite_only: 0,
-            description: ''
+            description: '',
+            recurrent: 0,
+            recurrent_type: ''
         };
     }
     
     sanitizeData(data){
         if(data.event_date && typeof data.event_date !== 'string')
             data.event_date = data.event_date.format("YYYY-MM-DD hh:mm:ss");
+            
+        if(data.recurrent_type == 'one_time') data.recurrent = false;
+        else data.recurrent = true;
             
         return data;
     }
@@ -131,6 +137,15 @@ const EditForm = ({data, dependencies, formUpdated}) => {
                 >
                     <option value={null}>Select an event type</option>
                     {types}
+                </select>
+            </div>
+            <div className="form-group">
+                <select className="form-control"
+                     value={data.recurrent_type}
+                    onChange={(e) => formUpdated({ recurrent_type: e.target.value})}
+                >
+                    <option value={null}>Event frequency</option>
+                    {recurrencyTypes.map((t,i) => (<option key={i} value={t}>{t}</option>))}
                 </select>
             </div>
             <div className="form-group">
