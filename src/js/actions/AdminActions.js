@@ -21,7 +21,7 @@ export const get = (types) => {
     types.forEach(function(type){
         switch(type){
             case "event":
-                BC[type]().all().then((result) => {
+                BC[type]().all({ unlisted: true }).then((result) => {
                     Flux.dispatchEvent(`manage_${type}`, result.data || result);
                 });
             break;
