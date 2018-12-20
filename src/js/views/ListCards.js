@@ -34,10 +34,23 @@ let cards = {
                         label: 'Change BreatheCode Status', 
                         slug: 'change_breathecode_status',
                         data: { student: data }
+                    },
+                    { 
+                        label: 'Change Work Status', 
+                        slug: 'change_hired_status',
+                        data: { student: data }
                     }
                 ].concat(dropdownOptions)}
                 onSelect={(opt) => onEntitySelect(opt, data)}>
-                    <h5 className="m-0">{data.full_name}</h5>
+                    <h5 className="m-0">
+                        {data.full_name}
+                        { (data.status === 'studies_finished' && data.seeking_job == 1 && data.found_job == 0) ? 
+                            <span className="ml-2 text-danger"><i class="fas fa-ban"></i> NOT HIRED YET</span>
+                            : (data.status === 'studies_finished' && data.seeking_job == 1 && data.found_job == 1) ?
+                                <span className="ml-2 text-success"><i class="fas fa-suitcase"></i> HIRED</span>
+                                : ''
+                        }
+                    </h5>
                     <p className='subrow'>
                         <small className="text-info">{data.email}</small>
                         <small className="ml-4 text-secondary">{data.phone}</small>
@@ -83,6 +96,19 @@ let cards = {
                     </small>
                     :
                     <small className="ml-4 text-danger">missing kickoff date</small>
+                }
+                { (data.ending_date && data.ending_date !== '' && data.ending_date !== '0000-00-00') ? 
+                    <small className="ml-4 text-secondary">
+                        to: {data.ending_date}
+                        { 
+                            ((new Date(data.ending_date).getTime()) <= (new Date()).getTime()) ?
+                                <small className="text-success"> (ongoing)</small>
+                                :
+                                <small className="text-primary"> (finished)</small>
+                        }
+                    </small>
+                    :
+                    <small className="ml-4 text-danger">missing ending_date</small>
                 }
             </p>
             </DropLink>

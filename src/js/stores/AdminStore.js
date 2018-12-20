@@ -22,10 +22,10 @@ class AdminStore extends Flux.DashStore{
         if(!Array.isArray(users)) return users;
         return users.filter(user => user.type !== 'student'); 
     }
-    _transformStudents(results){ return results; }
-    _transformLocation(results){ return results; }
-    _transformCohorts(results){ return results; }
-    _transformProfile(results){ return results; }
+    _transformStudents(results){ return Array.isArray(results) ? results : []; }
+    _transformLocation(results){ return Array.isArray(results) ? results : []; }
+    _transformCohorts(results){ return Array.isArray(results) ? results : []; }
+    _transformProfile(results){ return Array.isArray(results) ? results : []; }
     _transformEvent(results){ 
         if(!Array.isArray(results)) return results;
         results = results.map((ev) => {

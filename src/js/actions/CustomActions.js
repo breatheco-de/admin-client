@@ -63,6 +63,13 @@ const _StudentStatusChooser = ({onConfirm}) => (
         }
     </div>
 );
+const _StudentWorkStatusChooser = ({onConfirm}) => (
+    <div>
+        Choose the student hired status:
+        <a className="btn btn-light" onClick={() => onConfirm(1)}>Hired</a>
+        <a className="btn btn-light" onClick={() => onConfirm(0)}>Not yet hired</a>
+    </div>
+);
 export const studentActions = {
     _type: 'student',
     change_breathecode_status: function(data){ 
@@ -71,6 +78,16 @@ export const studentActions = {
                 Notify.clean();
                 if(answer){
                     BC.student().setStatus(data.student.id, { status: newStage }).then(sync(this._type));
+                }
+            })
+        );
+    },
+    change_hired_status: function(data){ 
+        Notify.info(_StudentWorkStatusChooser, (newStatus) =>
+            Notify.info("Are you sure you want to change the status?", (answer) => {
+                Notify.clean();
+                if(answer){
+                    BC.student().update(data.student.id, { found_job: newStatus }).then(sync(this._type));
                 }
             })
         );

@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import _BaseForm from './_BaseForm';
 import validator from 'validator';
 import AdminStore from '../../stores/AdminStore';
-
+import moment from 'moment';
 class Form extends _BaseForm{
     
     constructor(){
@@ -22,16 +22,21 @@ class Form extends _BaseForm{
             slug: '',
             profile_slug: '',
             slack_url: 'https://4geeksacademy.slack.com',
-            kickoff_date: ''
+            kickoff_date: '',
+            ending_date: '',
+            language: ''
         };
     }
     
     validate(data){
         if(validator.isEmpty(data.kickoff_date)) return this.throwError('Empty kickoff date');
+        if(validator.isEmpty(data.ending_date)) return this.throwError('Empty kickoff date');
         if(validator.isEmpty(data.name)) return this.throwError('Empty slug');
         if(validator.isEmpty(data.language)) return this.throwError('Empty slug language');
         if(validator.isEmpty(data.slack_url)) return this.throwError('Empty slack_url');
         if(validator.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug');
+        
+        if(moment(data.ending_date).isBefore(moment(data.kickoff_date))) return this.throwError('The ending date needs to be after the starting date');
         
         return true;
     }
@@ -73,11 +78,25 @@ class Form extends _BaseForm{
                         onChange={(e) => this.formUpdated({ slack_url: e.target.value})}
                     />
                 </div>
-                <div className="form-group">
-                    <input type="date" className="form-control" placeholder="kickoff_date"
-                        value={this.state.data.kickoff_date} 
-                        onChange={(e) => this.formUpdated({ kickoff_date: e.target.value})}
-                    />
+                <div className="row">
+                    <div className="col-6">
+                        <div className="form-group">
+                            <small className="form-text text-info">Starting</small>
+                            <input type="date" className="form-control" placeholder="kickoff_date"
+                                value={this.state.data.kickoff_date} 
+                                onChange={(e) => this.formUpdated({ kickoff_date: e.target.value})}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-6">
+                        <div className="form-group">
+                            <small className="form-text text-info">Ending</small>
+                            <input type="date" className="form-control" placeholder="ending_date"
+                                value={this.state.data.ending_date} 
+                                onChange={(e) => this.formUpdated({ ending_date: e.target.value})}
+                            />
+                        </div>
+                    </div>
                 </div>
                 <div className="form-group">
                     <select className="form-control"

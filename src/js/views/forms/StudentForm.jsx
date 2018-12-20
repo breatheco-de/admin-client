@@ -148,6 +148,14 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
                 />
             </div>
             <div className="form-group">
+                <small className="text-danger mr-2">Actively looking for a job?</small>
+                <input
+                    type="checkbox"
+                    checked={data.seeking_job}
+                    onChange={(e) => formUpdated({ seeking_job: e.target.checked})}
+                />
+            </div>
+            <div className="form-group">
                 <input type="text" className="form-control" placeholder="Phone Number"
                     value={data.phone} 
                     onChange={(e) => formUpdated({ phone: e.target.value})}
@@ -211,6 +219,14 @@ const Add = ({data, studentCohorts, formUpdated}) => {
                     {cohorts}
                 </select>
                 <small className="form-text text-muted">Initial cohort for the student</small>
+            </div>
+            <div className="form-group">
+                <small className="text-danger mr-2">Will it be looking for a job?</small>
+                <input
+                    type="checkbox"
+                    checked={data.seeking_job}
+                    onChange={(e) => formUpdated({ seeking_job: e.target.checked})}
+                />
             </div>
         </div>
     );
