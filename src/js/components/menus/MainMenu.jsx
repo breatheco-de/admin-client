@@ -31,7 +31,7 @@ class MainMenu extends React.Component{
             <ul className="nav flex-column">
                 <MenuItem icon="fas fa-tachometer-alt" label="Dashboard" slug="dashboard" to="/dashboard" />
                 <p className="m-0 mt-3">Manage:</p>
-                { (role == 'admin' || role == 'admissions') ? 
+                { (role == 'admin' || role == 'admissions' || role == 'career-support') ? 
                     <MenuItem icon="fas fa-user-graduate" label="Students" slug="student" to="/manage/student/" />:''
                 }
                 { (role == 'admin' || role == 'admissions') ? 
