@@ -55,7 +55,7 @@ class UserForm extends _BaseForm{
                             <option value="admin">admin</option>
                             <option value="teacher">teacher</option>
                             <option value="admissions">admissions</option>
-                            <option value="career_support">career_support</option>
+                            <option value="career-support">career-support</option>
                         </select>
                     </div>
                     <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
