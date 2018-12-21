@@ -34,7 +34,7 @@ class MainMenu extends React.Component{
                 { (role == 'admin' || role == 'admissions' || role == 'career-support') ? 
                     <MenuItem icon="fas fa-user-graduate" label="Students" slug="student" to="/manage/student/" />:''
                 }
-                { (role == 'admin' || role == 'admissions') ? 
+                { (role == 'admin' || role == 'admissions' || role == 'career-support') ? 
                     <MenuItem icon="fas fa-graduation-cap" label="Cohorts" slug="student" to="/manage/cohort/" />:''
                 }
                 { (role == 'admin') ? 
