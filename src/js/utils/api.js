@@ -178,6 +178,30 @@ class Wrapper{
             }
         };
     }
+    catalog(){
+        let url = this.options.apiPath;
+        return {
+            all: () => {
+                return this.get(url+'/catalogs/');
+            },
+            get: (slug=null) => {
+                if(!slug) throw new Error('Missing catalog slug');
+                return this.get(url+'/catalog/'+slug);
+            }
+        };
+    }
+    zap(){
+        let url = this.options.assetsPath;
+        return {
+            all: () => {
+                return this.get(url+'/zap/all');
+            },
+            execute: (slug=null, args=null) => {
+                if(!slug || !args) throw new Error('Missing zap slug or body');
+                return this.post(url+'/zap/execute/'+slug, args);
+            }
+        };
+    }
     event(){
         let url = this.options.assetsPath;
         this.options.token

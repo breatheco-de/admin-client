@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import _BaseForm from './_BaseForm';
 import validator from 'validator';
-import AdminStore from '../../stores/AdminStore';
+import store from '../../store';
 import moment from 'moment';
 class Form extends _BaseForm{
     
@@ -11,8 +11,8 @@ class Form extends _BaseForm{
         this.state = {
             data: this.setDefaultState(),
             dependencies: {
-                location: AdminStore.getAll('location'),
-                profile: AdminStore.getAll('profile')
+                location: store.getAll('location'),
+                profile: store.getAll('profile')
             },
         };
     }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import AdminStore from '../../stores/AdminStore';
+import store from '../../store';
 import { Modal } from '../../utils/react-components/src/index';
 import { Notify } from 'bc-react-notifier';
 import * as StudentActions from '../../actions/StudentActions';
@@ -17,7 +17,7 @@ class Form extends _BaseForm{
             newCohort: null,
             notifyStudent: false,
             dependencies: {
-                cohort: AdminStore.getAll('cohort'),
+                cohort: store.getAll('cohort'),
             }
         };
     }
@@ -63,7 +63,7 @@ class Form extends _BaseForm{
     
     sanitizeData(data){
         if(this.state.mode === 'add'){
-            const cohort = AdminStore.getSingleBy('cohort', 'slug', this.state.data.cohort_slug);
+            const cohort = store.getSingleBy('cohort', 'slug', this.state.data.cohort_slug);
             data.profile_slug = cohort.profile_slug;
         }
         return data;

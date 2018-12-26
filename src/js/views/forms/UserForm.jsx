@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import _BaseForm from './_BaseForm';
 import validator from 'validator';
-
+import store from '../../store';
 class UserForm extends _BaseForm{
     
     constructor(){
@@ -48,15 +48,20 @@ class UserForm extends _BaseForm{
                         />
                     </div>
                     <div className="form-group">
-                        <label>User Role</label>
                         <select className="form-control" value={this.state.data.type} 
                             onChange={(e) => this.formUpdated({ type: e.target.value})}>
                             <option value="select">Select the type of user</option>
-                            <option value="admin">admin</option>
-                            <option value="teacher">teacher</option>
-                            <option value="admissions">admissions</option>
-                            <option value="career-support">career-support</option>
+                            { store.getCatalog('user_types').map((l,i) => (<option key={i} value={l.value}>{l.label}</option>)) }
                         </select>
+                        <small className="text-info">Restrict the user for certain priviledges</small>
+                    </div>
+                    <div className="form-group">
+                        <select className="form-control" value={this.state.data.parent_location_id} 
+                            onChange={(e) => this.formUpdated({ parent_location_id: (e.target.value == 'select') ? null : e.target.value})}>
+                            <option value="select">Give access to all locations</option>
+                            { store.getAll('location').map((l,i) => (<option key={i} value={l.id}>access only {l.name}</option>)) }
+                        </select>
+                        <small className="text-info">The user will only have access to its parent location data</small>
                     </div>
                     <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
                     <button type="submit" className="btn btn-primary">Save</button>

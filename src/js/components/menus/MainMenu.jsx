@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withRouter} from 'react-router-dom';
 import { MenuItem, logout } from '../../utils/react-components/src/index';
-import {Session} from 'bc-react-session';
+import { Session } from 'bc-react-session';
 
 class MainMenu extends React.Component{
     
@@ -13,7 +13,7 @@ class MainMenu extends React.Component{
         };
     }
     
-    componentWillMount(){
+    componentDidMount(){
         this.setState({
             session: Session.store.getSession()
         });

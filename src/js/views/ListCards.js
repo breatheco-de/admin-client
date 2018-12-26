@@ -2,8 +2,8 @@ import React from "react";
 import { DropLink } from '..//utils/react-components/src/index';
 
 const dropdownOptions = [
-    { label: 'Edit', slug: 'edit' },
-    { label: 'Delete (from breathecode only)', slug: 'delete', icon: 'trash' }
+    { label: 'Edit', slug: 'edit', icon: 'fas fa-pencil-alt' },
+    { label: 'Delete (from breathecode only)', slug: 'delete', icon: 'fas fa-trash' }
 ];
 let cards = {
     userCard: (data, key, onEntitySelect) => (
@@ -26,18 +26,27 @@ let cards = {
             <DropLink
                 className='list_card'
                 dropdown={[
-                    { 
+                    {
                         label: 'Recent Activity', 
+                        icon: 'fas fa-calendar-check', 
                         to: '/student/i/activity/?user='+data.id
                     },
-                    { 
+                    {
                         label: 'Change BreatheCode Status', 
+                        icon: 'fas fa-graduation-cap', 
                         slug: 'change_breathecode_status',
                         data: { student: data }
                     },
-                    { 
-                        label: 'Change Work Status', 
+                    {
+                        label: 'Change Job Status', 
+                        icon: 'fas fa-suitcase', 
                         slug: 'change_hired_status',
+                        data: { student: data }
+                    },
+                    { 
+                        label: 'Change Finantial Status', 
+                        icon: 'fas fa-dollar-sign', 
+                        slug: 'change_finantial_status',
                         data: { student: data }
                     }
                 ].concat(dropdownOptions)}
@@ -45,9 +54,9 @@ let cards = {
                     <h5 className="m-0">
                         {data.full_name}
                         { (data.status === 'studies_finished' && data.seeking_job == 1 && data.found_job == 0) ? 
-                            <span className="ml-2 text-danger"><i class="fas fa-ban"></i> NOT HIRED YET</span>
+                            <span className="ml-2 text-danger"><i className="fas fa-ban"></i> NOT HIRED YET</span>
                             : (data.status === 'studies_finished' && data.seeking_job == 1 && data.found_job == 1) ?
-                                <span className="ml-2 text-success"><i class="fas fa-suitcase"></i> HIRED</span>
+                                <span className="ml-2 text-success"><i className="fas fa-suitcase"></i> HIRED</span>
                                 : ''
                         }
                     </h5>

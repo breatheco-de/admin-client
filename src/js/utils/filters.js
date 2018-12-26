@@ -1,7 +1,7 @@
 import React from 'react';
 import queryString from 'query-string';
 import moment from 'moment';
-import store from '../stores/AdminStore';
+import store from '../store';
 export const functions =  {
     student: (entity, extraSearch={}) => {
         const searchParams = queryString.parse(window.location.search);
@@ -39,6 +39,8 @@ export const functions =  {
             if(token == 'null') continue;
             if(key=='name') valid = (entity.full_name.toLowerCase().search(token) !== -1 );
             else if(key=='email') valid = (entity.username.toLowerCase().search(token) !== -1 );
+            
+            else if(key=='type' && token && token!='null' && entity.type && entity.type != token ) return false;
         }
         if(valid && typeof extraSearch.query == 'string'){
             let nameMatches = (entity.full_name.toLowerCase().search(extraSearch.query) !== -1 );
@@ -121,8 +123,8 @@ export const Filter = ({ history, type }) => {
                         }}
                     >
                         <option value="null">filter by recurrency type</option>
-                        <option value="one_time">one_time</option>
-                        <option value="every_week">every_week</option>
+                        <option value="one_time">One Time</option>
+                        <option value="every_week">Every Week</option>
                     </select>
                 </span>
             :(type=='student') ? (<span>
@@ -134,12 +136,7 @@ export const Filter = ({ history, type }) => {
                     }}
                 >
                     <option value="null">filter by status</option>
-                    <option value="under_review">under_review</option>
-                    <option value="currently_active">currenty active</option>
-                    <option value="postponed">postponed</option>
-                    <option value="studies_finished">studies finished</option>
-                    <option value="student_dropped">student_dropped</option>
-                    <option value="blocked">blocked</option>
+                    { store.getCatalog('student_status').map((c,i) => (<option key={i} value={c.value}>{c.label}</option>)) }
                 </select>
                 <select 
                     value={searchParams['seeking_job']}
@@ -171,10 +168,7 @@ export const Filter = ({ history, type }) => {
                     }}
                 >
                     <option value="null">Finantial Status</option>
-                    <option value="fully_paid">Fully Paid</option>
-                    <option value="up_to_date">Up to date</option>
-                    <option value="late">late</option>
-                    <option value="uknown">Uknown</option>
+                    { store.getCatalog('finantial_status').map((c,i) => (<option key={i} value={c.value}>{c.label}</option>)) }
                 </select>
                 <select 
                     value={searchParams['cohort']}
@@ -184,7 +178,7 @@ export const Filter = ({ history, type }) => {
                     }}
                 >
                      <option value="null">filter by cohort</option>
-                    { store.getAll('cohort').map((c,i) => (<option key={i} value={c.slug}>{c.kickoff_date}</option>)) }
+                    { store.getAll('cohort').map((c,i) => (<option key={i} value={c.slug}>{c.name}</option>)) }
                 </select>
             </span>)
             :(type=='cohort') ? (<span>
@@ -207,11 +201,7 @@ export const Filter = ({ history, type }) => {
                     }}
                 >
                     <option value="null">filter by stage</option>
-                    <option value="not-started">not-started</option>
-                    <option value="on-prework">on-prework</option>
-                    <option value="on-course">on-course</option>
-                    <option value="on-final-project">on-final-project</option>
-                    <option value="finished">finished</option>
+                    { store.getCatalog('cohort_stages').map((c,i) => (<option key={i} value={c.value}>{c.label}</option>)) }
                 </select>
                 <select 
                     value={searchParams['profile']}
@@ -232,6 +222,18 @@ export const Filter = ({ history, type }) => {
                 >
                      <option value="null">filter by location</option>
                     { store.getAll('location').map((l,i) => (<option key={i} value={l.id}>{l.name}</option>)) }
+                </select>
+            </span>)
+            :(type=='user') ? (<span>
+                <select 
+                    value={searchParams['type']}
+                    onChange={(e) => {
+                        searchParams['type'] = e.target.value;
+                        history.push('/manage/'+type+'/?'+queryString.stringify(searchParams));
+                    }}
+                >
+                    <option value="null">filter by role</option>
+                    { store.getCatalog('user_types').map((l,i) => (<option key={i} value={l.value}>{l.label}</option>)) }
                 </select>
             </span>)
             :''

@@ -1,7 +1,7 @@
 /* global localStorage */
 import Flux from '@4geeksacademy/react-flux-dash';
 import moment from 'moment';
-class AdminStore extends Flux.DashStore{
+class Store extends Flux.DashStore{
     constructor(){
         super();
         
@@ -16,6 +16,8 @@ class AdminStore extends Flux.DashStore{
         this.addEvent("manage_location", this._transformLocation.bind(this));
         this.addEvent("manage_profile", this._transformProfile.bind(this));
         this.addEvent("manage_event", this._transformEvent.bind(this));
+        
+        this.addEvent("catalog", this._transformCatalog.bind(this));
     }
     
     _transformUsers(users){ 
@@ -45,6 +47,28 @@ class AdminStore extends Flux.DashStore{
         return results; 
     }
     
+    _transformCatalog(catalogs){
+        
+        const makeTitle = (slug) => {
+            var words = slug.split('-');
+        
+            for(var i = 0; i < words.length; i++) {
+              var word = words[i];
+              words[i] = word.charAt(0).toUpperCase() + word.slice(1);
+            }
+        
+            return words.join(' ');
+        };
+        
+        for(let key in catalogs)
+            catalogs[key] = catalogs[key].map(value => 
+                typeof value.label !== 'undefined' ? value :
+                    ({ label: makeTitle(value), value })
+            );
+        
+        return catalogs; 
+    }
+    
     getSingle(type, id){ 
         let entities = this.getAll(type);
         let results = entities.filter((ent) => ent.id == id); 
@@ -64,6 +88,11 @@ class AdminStore extends Flux.DashStore{
         if(typeof result[`manage_${type}`] === 'undefined' || !result[`manage_${type}`]) return [];
         else return result[`manage_${type}`];
     }
+    getCatalog(type){ 
+        let catalogs = this.getState('catalog');
+        if(!catalogs || typeof catalogs[type] === 'undefined' || !catalogs[type]) return [];
+        else return catalogs[type];
+    }
     replace(type, newEntity){
         if(!newEntity || typeof newEntity.id == 'undefined') throw new Error(`Invalid ${type} to replate`);
         let entities = this.getAll(type);
@@ -76,4 +105,4 @@ class AdminStore extends Flux.DashStore{
     }
     
 }
-export default new AdminStore();
+export default new Store();

@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import AdminStore from '../../stores/AdminStore';
+import store from '../../stores/store';
 
 class Form extends React.Component{
     
@@ -8,7 +8,7 @@ class Form extends React.Component{
         super();
         this.state = {
             data: null,
-            allCohorts: AdminStore.getAll('cohort')
+            allCohorts: store.getAll('cohort')
         };
     }
     

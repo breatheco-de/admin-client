@@ -1,7 +1,11 @@
-.bcnotifier{
+ul.bcnotifier{
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 11;
+    li li{
+        height: inherit;
+        font-size: 80%;
+    }
 }

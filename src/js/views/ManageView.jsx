@@ -1,7 +1,7 @@
 import React from "react";
 import Flux from '@4geeksacademy/react-flux-dash';
 import { Panel, List } from '../utils/react-components/src/index';
-import AdminStore from '../stores/AdminStore';
+import store from '../store';
 import * as AdminActions from '../actions/AdminActions';
 import Cards from './ListCards';
 import { functions, Filter } from '../utils/filters';
@@ -13,6 +13,7 @@ export default class ManageView extends Flux.View {
         super();
         this.state ={
             entities: [],
+            catalogs: [],
             entitySlug: null,
             searchToken: null,
             urlChange: false
@@ -22,7 +23,7 @@ export default class ManageView extends Flux.View {
     
     initialize(){
         let slug = this.props.match.params.entity_slug;
-        let entities = AdminStore.getAll(slug);
+        let entities = store.getAll(slug);
         if(!entities) entities = [];
         this.EVENT_NAME = "manage_"+slug;
         this.setState({
@@ -33,7 +34,8 @@ export default class ManageView extends Flux.View {
             entityComponent: slug+'Card'
         });
         
-        this.entitySubscription = AdminStore.subscribe(this.EVENT_NAME, this.updateFromStore.bind(this));
+        this.entitySubscription = store.subscribe(this.EVENT_NAME, this.updateFromStore.bind(this));
+        this.catalogSubscription = store.subscribe('catalog', this.updateUpdateCatalogs.bind(this));
         AdminActions.get(slug);
     }
     
@@ -60,11 +62,18 @@ export default class ManageView extends Flux.View {
     
     componentWillUnmount(){
         this.entitySubscription.unsubscribe();
+        this.catalogSubscription.unsubscribe();
     }
     
     updateFromStore(state){
         this.setState({
             entities: state
+        });
+    }
+    
+    updateUpdateCatalogs(state){
+        this.setState({
+            catalogs: state
         });
     }
     
@@ -129,7 +138,7 @@ export default class ManageView extends Flux.View {
                         placeholder="click to search..."
                     />
                 </h2>
-                <Filter history={this.props.history} type={this.state.entitySlug} />
+                <Filter catalogs={this.state.catalogs} history={this.props.history} type={this.state.entitySlug} />
                 <List>
                     {entities}
                 </List>

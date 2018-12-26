@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import AdminStore from '../../stores/AdminStore';
+import store from '../../store';
 import _BaseForm from './_BaseForm';
 import validator from 'validator';
 import DateTime from 'react-datetime';
@@ -18,7 +18,7 @@ class Form extends _BaseForm{
             addCohort: null,
             newCohort: null,
             dependencies: {
-                location: AdminStore.getAll('location'),
+                location: store.getAll('location'),
             }
         };
     }

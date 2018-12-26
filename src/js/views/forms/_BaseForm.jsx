@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminStore from '../../stores/AdminStore';
+import store from '../../store';
 
 export default class _BaseForm extends React.Component{
     
@@ -57,7 +57,7 @@ export default class _BaseForm extends React.Component{
                     dependencies: Object.assign(this.state.dependencies, updatedDependency)
                 });
             };
-            this._dependencyListeners.push(AdminStore.subscribe('manage_'+entity, this._dependencyTransformers[entity].bind(this)));
+            this._dependencyListeners.push(store.subscribe('manage_'+entity, this._dependencyTransformers[entity].bind(this)));
         }
         if(this.props.mode=='add'){
             this.setState({

@@ -3,7 +3,7 @@ import Flux from '@4geeksacademy/react-flux-dash';
 import { Panel } from '../utils/react-components/src/index';
 import { Notify } from 'bc-react-notifier';
 
-import AdminStore from '../stores/AdminStore';
+import store from '../store';
 import * as AdminActions from '../actions/AdminActions';
 
 export default class ManageView extends Flux.View {
@@ -24,7 +24,7 @@ export default class ManageView extends Flux.View {
         if(this.props.match.params.entity_id){
             this.setState({
                 mode: 'edit',
-                entity: AdminStore.getSingle(slug, this.props.match.params.entity_id),
+                entity: store.getSingle(slug, this.props.match.params.entity_id),
                 entitySlug: slug,
                 entityComponent: require('./forms/'+ComponentName).default
             });

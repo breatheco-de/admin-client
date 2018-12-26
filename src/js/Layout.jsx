@@ -6,6 +6,7 @@ import PrivateLayout from './PrivateLayout';
 import * as AdminActions from './actions/AdminActions';
 import { PrivateRoute } from 'bc-react-session';
 import { Notifier } from 'bc-react-notifier';
+import { ZapActionRenderer, fetchZaps } from './utils/zaps';
 import { Forgot, Login } from './utils/react-components/src/index';
 
 class Layout extends Flux.View{
@@ -13,6 +14,8 @@ class Layout extends Flux.View{
     constructor(){
         super();
         AdminActions.get(["cohort","location",'profile']);
+        AdminActions.fetchCatalogs();
+        fetchZaps();
     }
     
     render() {
@@ -31,6 +34,7 @@ class Layout extends Flux.View{
                             <PrivateRoute path='/:entity_slug/i/:view_slug' component={PrivateLayout} />
                             <Route render={() => (<p className="text-center mt-5">Not found</p>)} />
                         </Switch>
+                        <ZapActionRenderer />
                     </div>
                 </BrowserRouter>
             </div>
