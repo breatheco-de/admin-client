@@ -41,18 +41,18 @@ class _PickCohortStage extends React.Component{
                     { store.getCatalog('cohort_stages').map((c,i) => (
                         <a key={i} className="btn btn-light" onClick={() => this.setState({ 
                             stage: c.value,
-                            actions: ZapManager.getZapActions('change_cohort_status@'+c.value).map(a => Object.assign(a, {checked: true}))
+                            actions: ZapManager.getZapActions('change_cohort_status@'+c.value)
                         })}>{c.label}</a>
                     )) }
                 </div>
                 :
                 <div className="row">
-                    <div className="col-12">This action will have the following additional consequences on the system:</div>
+                    <div className="col-12">Choose what zaps do you want to execute after this action:</div>
                     <ul className="col-11 col-sm-8 col-md-6 mx-auto bg-light mb-3">
                     { this.state.actions.length ? 
                         this.state.actions.map((action,i) => (
                             <li key={i}>
-                                <input type="checkbox" checked={action.checked}
+                                <input type="checkbox" className="mr-1" checked={action.checked}
                                     onChange={() => this.setState({ 
                                         actions: this.state.actions.map(a => a.slug !== action.slug ? a : Object.assign(a, {checked: !a.checked}))
                                     })} 

@@ -1,8 +1,10 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import EventEmitter from 'events';
 import PropTypes from 'prop-types';
 import { Dispatcher } from 'flux';
 import BC from '../utils/api.js';
+
 const ACTIONS_UPDATED = 'audted';
 const dispatcher = new Dispatcher();
 
@@ -22,7 +24,10 @@ class ZapStore extends EventEmitter{
         dispatcher.register((event) => {
             if(event.type == 'zaps'){
                 this.zaps = event.data;
-                this.emit('zaps_updated', event.data);
+                for( let zap_slug in this.zaps){
+                    this.zaps[zap_slug] = this.zaps[zap_slug].map(a => Object.assign(a, { checked: a.run_by_default || false }));
+                }
+                this.emit('zaps_updated', this.zaps);
             } 
             else if(event.type == 'zap_actions'){
                 this.actions = event.data;
@@ -73,7 +78,7 @@ const execute = (action, payload=null, onFinish=null) =>{
     dispatcher.dispatch({ type: 'zap_actions', data: actions.concat([_action]) });
     
     BC.zap().execute(action.slug, payload)
-        .then(() => {
+        .then((data) => {
             let actions = _store.getActions();
             dispatcher.dispatch({ 
                 type: 'zap_actions', 
@@ -81,6 +86,7 @@ const execute = (action, payload=null, onFinish=null) =>{
                     if(a.id == actionId){
                         a.status = 'success';
                         a.ended_at = new Date();
+                        a.details = data.msg || data;
                     } 
                     return a;
                 })
@@ -94,7 +100,7 @@ const execute = (action, payload=null, onFinish=null) =>{
                     if(a.id == actionId){
                         a.status = 'error';
                         a.ended_at = new Date();
-                        a.error = e;
+                        a.details = e.msg || e;
                     } 
                     return a;
                 })
@@ -126,12 +132,12 @@ let ActionCard = (props) => {
                     : (props.action.status === 'success') ? 
                         <span>
                             <i className="fas fa-check text-success mr-2"></i>
-                            <small>({props.action.getDelta()} seconds)</small>
+                            <Tooltip content={props.action.details}>({props.action.getDelta()} seconds)</Tooltip>
                         </span>
                         : (props.action.status === 'error') ? 
                             <span>
                                 <i className="fas fa-times text-danger mr-2"></i>
-                                <small>({props.action.getDelta()} seconds)</small>
+                                <Tooltip content={props.action.details}>({props.action.getDelta()} seconds)</Tooltip>
                             </span>
                             : <i className="fas fa-question text-warning"></i>
                 }
@@ -173,10 +179,10 @@ export class ZapActionRenderer extends React.Component{
         return(<div className={"bc_zaps "+(this.state.collapsed ? "collapsed" : "")+this.props.className}>
             <button onClick={() => this.setState({ collapsed: !this.state.collapsed})}><i className="fas fa-minus-square"></i></button>
             {(_store.getZaps().length===0) ?
-                <div className="alert alert-danger">The zap engine does not seem to be loading correctly</div>
+                <div className="alert alert-danger p-1">The zap engine does not seem to be loading correctly</div>
                 :
                 (this.state.actions.length == 0 || this.state.collapsed) ?  
-                    <p>No pending actions.</p>
+                    <p>No actions to show.</p>
                     :
                     this.state.actions.map((a, i) => (<ActionCard key={i} action={a} onClick={() => 
                         dispatcher.dispatch({ type: 'zap_actions', data: this.state.actions.filter(act => a.id !== act.id ) })
@@ -193,3 +199,122 @@ ZapActionRenderer.defaultProps = {
 };
 
 export const ZapManager = { clean, execute, remove, getZapActions: (slug) => _store.getZapActions(slug) };
+
+export default class Tooltip extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+    };
+    this.styles = {
+        wrapper: {
+            position: 'relative',
+            display: 'inline-block',
+            zIndex: '98',
+            color: '#555',
+            cursor: 'help',
+        },
+        tooltip: {
+            position: 'absolute',
+            zIndex: '99',
+            minWidth: '200px',
+            maxWidth: '420px',
+            background: '#000',
+            bottom: '100%',
+            left: '50%',
+            marginBottom: '10px',
+            padding: '5px',
+            WebkitTransform: 'translateX(-50%)',
+            msTransform: 'translateX(-50%)',
+            OTransform: 'translateX(-50%)',
+            transform: 'translateX(-50%)',
+        },
+        content: {
+            background: '#000',
+            color: '#fff',
+            display: 'inline',
+            fontSize: '.8em',
+            padding: '.3em 1em',
+        },
+        arrow: {
+            position: 'absolute',
+            width: '0',
+            height: '0',
+            bottom: '-5px',
+            left: '50%',
+            marginLeft: '-5px',
+            borderLeft: 'solid transparent 5px',
+            borderRight: 'solid transparent 5px',
+            borderTop: 'solid #000 5px',
+        },
+        gap: {
+            position: 'absolute',
+            width: '100%',
+            height: '20px',
+            bottom: '-20px',
+        }
+    };
+    if (props.styles) this.mergeStyles(props.styles);
+  }
+
+  mergeStyles(userStyles){
+    Object.keys(this.styles).forEach((name) => {
+      Object.assign(this.styles[name], userStyles[name]);
+    });
+  }
+
+  setVisibility(visible){
+    this.setState(Object.assign({}, this.state, {
+      visible,
+    }));
+  }
+
+  assignOutsideTouchHandler(){
+    const handler = (e) => {
+      let currentNode = e.target;
+      const componentNode = ReactDOM.findDOMNode(this.refs.instance);
+      while (currentNode.parentNode) {
+        if (currentNode === componentNode) return;
+        currentNode = currentNode.parentNode;
+      }
+      if (currentNode !== document) return;
+      this.setVisibility(false);
+      document.removeEventListener('touchstart', handler);
+    };
+    document.addEventListener('touchstart', handler);
+  }
+
+  render() {
+    const {props, state, styles} = this;
+    return (
+      <div
+        onMouseEnter={() => this.setVisibility(true)}
+        onMouseLeave={() => this.setVisibility(false)}
+        onTouchStart={() => {
+            this.show();
+            this.assignOutsideTouchHandler();
+        }}
+        ref="wrapper"
+        style={styles.wrapper}>
+        {props.children}
+        {
+          state.visible &&
+          <div ref="tooltip" style={styles.tooltip}>
+            <div ref="content" style={styles.content}>{props.content}</div>
+            <div ref="arrow" style={styles.arrow} />  
+            <div ref="gap" style={styles.gap} />
+          </div>
+        }
+      </div>
+    );
+  }
+}
+Tooltip.propTypes = {
+    children: PropTypes.any.isRequired,
+    content: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.array,
+    ]),
+    styles: PropTypes.object,
+};
