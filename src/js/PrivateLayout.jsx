@@ -10,7 +10,7 @@ import IFrameView from './views/IFrameView';
 import IFrameManageView from './views/IFrameManageView';
 import EditView from './views/EditView';
 import {menuModes}  from './utils/menu';
-import {Session} from 'bc-react-session';
+import { ZapActionRenderer, fetchZaps } from './utils/zaps';
 
 class Layout extends Flux.View{
     
@@ -22,7 +22,8 @@ class Layout extends Flux.View{
         };
     }
     
-    menuClicked(){
+    componentDidMount(){
+        fetchZaps();
     }
     
     render() {
@@ -50,6 +51,7 @@ class Layout extends Flux.View{
                         <Route render={() => (<p className="text-center mt-5">Not found</p>)} />
                     </Switch>
                 </div>
+                <ZapActionRenderer />
             </div>
         );
     }

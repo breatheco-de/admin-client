@@ -33,7 +33,7 @@ class Wrapper{
         if(method === 'get') path += '?'+this.serialize(args).toStr();
         else
         {
-            if((method=='post' || method=='put') && !args) throw new Error('Missing request body');
+            if((method == 'post' || method == 'put') && !args) throw new Error('Missing request body');
             opts.body = this.serialize(args).toJSON();
         } 
         

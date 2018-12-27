@@ -97,7 +97,7 @@ const _StudentStatusChooser = ({onConfirm}) => (
     <div>
         Choose the student new status:
         { store.getCatalog('student_status').map((c,i) => (
-            <a key={i} className="btn btn-light" onClick={() => onConfirm(c.slug)}>c.label</a>
+            <a key={i} className="btn btn-light" onClick={() => onConfirm(c.slug)}>{c.label}</a>
         )) }
     </div>
 );
@@ -112,7 +112,7 @@ const _StudentFinantialStatusChooser = ({onConfirm}) => (
     <div>
         Choose the student finantial status:
         { store.getCatalog('finantial_status').map((c,i) => (
-            <a key={i} className="btn btn-light" onClick={() => onConfirm(c.slug)}>c.label</a>
+            <a key={i} className="btn btn-light" onClick={() => onConfirm(c.slug)}>{c.label}</a>
         )) }
     </div>
 );
