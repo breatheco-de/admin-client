@@ -50,6 +50,8 @@ class Form extends _BaseForm{
         const d = this.state.data;
         if(!validator.isEmail(d.email)) return this.throwError('Missing the Email');
         if(validator.isEmpty(d.phone)) return this.throwError('Missing phone number');
+        if(!validator.isMobilePhone(d.phone,'any')) return this.throwError('Invalid phone number');
+        if(!d.cohort_slug || d.cohort_slug=='') return this.throwError('Please select a cohort');
         if(this.props.mode !== 'add'){
             if(validator.isEmpty(d.full_name)) return this.throwError('Missing the Full Name');
         } 
@@ -142,7 +144,7 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
                 />
             </div>
             <div className="form-group">
-                <input type="url" className="form-control" placeholder="Github URL"
+                <input type="url" className="form-control" placeholder="Github URL (optional)"
                     value={data.github} 
                     onChange={(e) => formUpdated({ github: e.target.value})}
                 />
@@ -200,7 +202,7 @@ const Add = ({data, studentCohorts, formUpdated}) => {
                 />
             </div>
             <div className="form-group">
-                <input type="url" className="form-control" placeholder="Github URL"
+                <input type="url" className="form-control" placeholder="Github URL (optional)"
                     value={data.github} 
                     onChange={(e) => formUpdated({ github: e.target.value})}
                 />
