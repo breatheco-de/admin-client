@@ -6,7 +6,7 @@ import validator from 'validator';
 import DateTime from 'react-datetime';
 import ReactQuill from 'react-quill'; // ES6
 
-const eventTypes = ['workshop','coding_weekend','hackathon','intro_to_coding','4geeks_night','other'];
+export const eventTypes = ['workshop','coding_weekend','hackathon','intro_to_coding','4geeks_night','other'];
 const recurrencyTypes = ['every_week', 'one_time'];
 
 class Form extends _BaseForm{
@@ -185,8 +185,10 @@ const EditForm = ({data, dependencies, formUpdated}) => {
                 >
                     <option value={null}>Select a city</option>
                     <option value={'miami'}>Miami</option>
-                    <option value={'caracas'}>Venezuela</option>
                     <option value={'maracaibo'}>Maracaibo</option>
+                    <option value={'santiago'}>Santiago de Chile</option>
+                    <option value={'bogota'}>Bogota</option>
+                    <option value={'jacksonville'}>Jacksonville</option>
                 </select>
             </div>
             <div className="form-group">

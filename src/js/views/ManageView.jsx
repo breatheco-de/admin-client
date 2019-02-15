@@ -140,7 +140,7 @@ export default class ManageView extends Flux.View {
                 </h2>
                 <Filter catalogs={this.state.catalogs} history={this.props.history} type={this.state.entitySlug} />
                 <List>
-                    {entities}
+                    {entities.length == 0 ? <p className="mt-5">No results to show</p> : entities}
                 </List>
             </Panel>
         </div>

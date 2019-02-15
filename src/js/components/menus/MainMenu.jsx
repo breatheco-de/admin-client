@@ -41,7 +41,7 @@ class MainMenu extends React.Component{
                     <MenuItem icon="fas fa-book-reader" label="Courses" slug="profile" to="/manage/profile/" /> :''
                 }
                 { (role == 'admin' || role == 'admissions') ? 
-                    <MenuItem icon="fas fa-calendar-plus" label="Events" slug="event" to="/manage/event/" />:''
+                    <MenuItem icon="fas fa-calendar-plus" label="Events" slug="event" to="/manage/event/?date_status=upcoming" />:''
                 }
                 { (role == 'admin') ? 
                     <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" /> :''

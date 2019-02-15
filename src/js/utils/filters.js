@@ -2,6 +2,8 @@ import React from 'react';
 import queryString from 'query-string';
 import moment from 'moment';
 import store from '../store';
+import { eventTypes } from '../views/forms/EventForm.jsx';
+
 export const functions =  {
     student: (entity, extraSearch={}) => {
         const searchParams = queryString.parse(window.location.search);
@@ -86,7 +88,16 @@ export const functions =  {
             if(key=='name') valid = (entity.title.toLowerCase().search(token) !== -1 );
             
             if(key=='status' && token && token!='null' && entity.status.toLowerCase().search(token) == -1 ) return false;
-            else if(key=='recurrent_type' && token && token!='null' && entity.recurrent_type && entity.recurrent_type != token ) return false;
+            
+            if(key=='date_status' && token && token!='null' ){
+                const eventDate = moment(entity.event_date);
+                if(token == 'upcoming' && moment().isAfter(eventDate)) return false;
+                if(token == 'past' && moment().isBefore(eventDate)) return false;
+            } 
+            
+            if(key=='recurrent_type' && token && token!='null' && entity.recurrent_type && entity.recurrent_type != token ) return false;
+            if(key=='type' && token && token!='null' && entity.type && entity.type != token ) return false;
+            if(key=='city_slug' && token && token!='null' && entity.city_slug && entity.city_slug != token ) return false;
         }
         if(valid && typeof extraSearch.query == 'string'){
             let nameMatches = (entity.title.toLowerCase().search(extraSearch.query) !== -1 );
@@ -105,6 +116,17 @@ export const Filter = ({ history, type }) => {
             {(type=='event') ? 
                 <span>
                     <select 
+                        value={searchParams['date_status']}
+                        onChange={(e) => {
+                            searchParams['date_status'] = e.target.value;
+                            history.push('/manage/'+type+'/?'+queryString.stringify(searchParams));
+                        }}
+                    >
+                        <option value="null">filter by date</option>
+                        <option value="upcoming">upcoming</option>
+                        <option value="past">past</option>
+                    </select>
+                    <select 
                         value={searchParams['status']}
                         onChange={(e) => {
                             searchParams['status'] = e.target.value;
@@ -114,6 +136,30 @@ export const Filter = ({ history, type }) => {
                         <option value="null">filter by status</option>
                         <option value="draft">draft</option>
                         <option value="published">published</option>
+                    </select>
+                    <select 
+                        value={searchParams['city_slug']}
+                        onChange={(e) => {
+                            searchParams['city_slug'] = e.target.value;
+                            history.push('/manage/'+type+'/?'+queryString.stringify(searchParams));
+                        }}
+                    >
+                        <option value="null">filter by city</option>
+                        <option value={'miami'}>Miami</option>
+                        <option value={'maracaibo'}>Maracaibo</option>
+                        <option value={'santiago'}>Santiago de Chile</option>
+                        <option value={'bogota'}>Bogota</option>
+                        <option value={'jacksonville'}>Jacksonville</option>
+                    </select>
+                    <select 
+                        value={searchParams['type']}
+                        onChange={(e) => {
+                            searchParams['type'] = e.target.value;
+                            history.push('/manage/'+type+'/?'+queryString.stringify(searchParams));
+                        }}
+                    >
+                        <option value="null">filter by type</option>
+                        {eventTypes.map((t,i) => (<option key={i} value={t}>{t}</option>))}
                     </select>
                     <select 
                         value={searchParams['recurrent_type']}
