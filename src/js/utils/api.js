@@ -156,16 +156,16 @@ class Wrapper{
     project(){
         let url = this.options.assetsPath;
         return {
-            all: (syllabus_slug) => {
-                return this.get(url+'/project/all');
+            all: (args={}) => {
+                return this.get(url+'/project/all', args);
             }
         };
     }
     user(){
         let url = this.options.apiPath;
         return {
-            all: () => {
-                return this.get(url+'/user/');
+            all: (args={}) => {
+                return this.get(url+'/user/', args);
             },
             add: (args) => {
                 return this.put(url+'/user/', args);
@@ -181,8 +181,8 @@ class Wrapper{
     catalog(){
         let url = this.options.apiPath;
         return {
-            all: () => {
-                return this.get(url+'/catalogs/');
+            all: (args={}) => {
+                return this.get(url+'/catalogs/', args);
             },
             get: (slug=null) => {
                 if(!slug) throw new Error('Missing catalog slug');
@@ -193,8 +193,8 @@ class Wrapper{
     zap(){
         let url = this.options.assetsPath;
         return {
-            all: () => {
-                return this.get(url+'/zap/all');
+            all: (args={}) => {
+                return this.get(url+'/zap/all', args);
             },
             execute: (slug=null, args=null) => {
                 if(!slug || !args) throw new Error('Missing zap slug or body');
@@ -227,8 +227,11 @@ class Wrapper{
         let url = this.options.apiPath;
         let assetsURL = this.options.assetsPath;
         return {
-            all: () => {
-                return this.get(url+'/students/');
+            get: (id) => {
+                return this.get(url+'/student/'+id);
+            },
+            all: (args={}) => {
+                return this.get(url+'/students/', args);
             },
             add: (args) => {
                 return this.put(assetsURL+'/credentials/signup', args);
@@ -247,8 +250,8 @@ class Wrapper{
     cohort(){
         let url = this.options.apiPath;
         return {
-            all: () => {
-                return this.get(url+'/cohorts/');
+            all: (args={}) => {
+                return this.get(url+'/cohorts/', args);
             },
             get: (id) => {
                 return this.get(url+'/cohort/'+id);
@@ -279,8 +282,8 @@ class Wrapper{
     location(){
         let url = this.options.apiPath;
         return {
-            all: () => {
-                return this.get(url+'/locations/');
+            all: (args={}) => {
+                return this.get(url+'/locations/', args);
             },
             get: (id) => {
                 return this.get(url+'/location/'+id);
@@ -299,8 +302,8 @@ class Wrapper{
     profile(){
         let url = this.options.apiPath;
         return {
-            all: () => {
-                return this.get(url+'/profiles/');
+            all: (args={}) => {
+                return this.get(url+'/profiles/', args);
             },
             get: (id) => {
                 return this.get(url+'/profile/'+id);
@@ -319,13 +322,13 @@ class Wrapper{
     lessons(){
         let url = this.options.assetsPath;
         return {
-            all: () => {
-                return this.get(url+'/lesson/all');
+            all: (args={}) => {
+                return this.get(url+'/lesson/all', args);
             },
             get: (id) => {
                 return this.get(url+'/lessons/'+id);
             }
-        }
+        };
     }
 }
 if(typeof module != 'undefined') module.exports = new Wrapper();

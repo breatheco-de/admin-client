@@ -9,24 +9,24 @@ class MainMenu extends React.Component{
     constructor(){
         super();
         this.state = {
-            session: Session.store.getSession()
+            session: Session.get()
         };
     }
     
     componentDidMount(){
         this.setState({
-            session: Session.store.getSession()
+            session: Session.get()
         });
     }
     
     render(){
-        if(!this.state.session.user) return (
+        if(!this.state.session.isValid) return (
             <ul className="nav flex-column">
                 <MenuItem icon="fas fa-tachometer-alt" label="Log In" slug="login" to="/login" />
             </ul>
         );
         
-        const role = this.state.session.user.type;
+        const role = this.state.session.payload.type;
         return(
             <ul className="nav flex-column">
                 <MenuItem icon="fas fa-tachometer-alt" label="Dashboard" slug="dashboard" to="/dashboard" />

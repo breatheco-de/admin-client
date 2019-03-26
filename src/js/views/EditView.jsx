@@ -15,27 +15,44 @@ export default class ManageView extends Flux.View {
             entitySlug: null,
             mode: null
         };
-        
+        this.storeUpdatedListener = null;
     }
     
+    storeUpdated(){
+        let entity = store.getSingle(this.props.match.params.entity_slug, this.props.match.params.entity_id);
+        this.setState({
+            entity,
+            mode: 'edit',
+            entitySlug: this.props.match.params.entity_slug,
+            entityComponent: require('./forms/'+this.getComponent()).default
+        });
+    }
+    getComponent(){
+        return this.props.match.params.entity_slug.charAt(0).toUpperCase() + this.props.match.params.entity_slug.substr(1)+'Form';
+    }
     componentDidMount(){
-        let slug = this.props.match.params.entity_slug;
-        const ComponentName = slug.charAt(0).toUpperCase() + slug.substr(1)+'Form';
         if(this.props.match.params.entity_id){
+            let entity = store.getSingle(this.props.match.params.entity_slug, this.props.match.params.entity_id);
+            if(!entity) AdminActions.getSingle(this.props.match.params.entity_slug, this.props.match.params.entity_id);
             this.setState({
+                entity,
                 mode: 'edit',
-                entity: store.getSingle(slug, this.props.match.params.entity_id),
-                entitySlug: slug,
-                entityComponent: require('./forms/'+ComponentName).default
+                entitySlug: this.props.match.params.entity_slug,
+                entityComponent: require('./forms/'+this.getComponent()).default
             });
+            this.storeUpdatedListener = store.subscribe(`manage_${this.props.match.params.entity_slug}`, this.storeUpdated.bind(this));
         }
         else{
             this.setState({
                 mode: 'add',
-                entitySlug: slug,
-                entityComponent: require('./forms/'+ComponentName).default
+                entitySlug: this.props.match.params.entity_slug,
+                entityComponent: require('./forms/'+this.getComponent()).default
             });
         }
+    }
+    
+    componentWillUnmount(){
+        if(this.storeUpdatedListener) this.storeUpdatedListener.unsubscribe();
     }
     
     onSave(data){

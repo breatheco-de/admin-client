@@ -48,6 +48,7 @@ export default class _BaseForm extends React.Component{
     sanitizeData(data){
         return data;
     }
+    entityListUpdated(newEntities){}
     componentDidMount(){
         for(let entity in this.state.dependencies){
             this._dependencyTransformers[entity] = (state) => {
@@ -59,6 +60,7 @@ export default class _BaseForm extends React.Component{
             };
             this._dependencyListeners.push(store.subscribe('manage_'+entity, this._dependencyTransformers[entity].bind(this)));
         }
+        
         if(this.props.mode=='add'){
             this.setState({
                 data: this.setDefaultState(),

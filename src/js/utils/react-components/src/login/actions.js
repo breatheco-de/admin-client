@@ -4,10 +4,10 @@ import BC from '../api.js';
 
 BC.setOptions({
     getToken: (type='api')=> {
-        const session = Session.store.getSession();
+        const payload = Session.getPayload();
         if(type=='assets') 
-            return (session.user) ? 'JWT '+session.user.assets_token:'';
-        else return 'Bearer '+session.access_token;
+            return (payload) ? 'JWT '+payload.assets_token:'';
+        else return 'Bearer '+payload.access_token;
     },
     onLogout: () => logoutUser()
 });
@@ -24,6 +24,7 @@ export const loginUser = (username, password, history) =>{
             wp_id: data.wp_id,
             bio: data.bio,
             cohorts: data.cohorts,
+            parent_location_id: data.parent_location_id,
             currently_active: data.currently_active,
             total_points: data.total_points,
             financial_status: data.financial_status,
@@ -36,14 +37,13 @@ export const loginUser = (username, password, history) =>{
             type: data.type || 'student',
             currentCohort: (data.cohorts) ? (data.cohorts.length === 1) ? data.cohorts[0] : data.cohorts : null
         };
-        console.log("Token: ",access_token);
-        Session.actions.login({ user , access_token });
+        Session.start({ payload: user });
         history.push('/');
     });
 };
     
 export const logoutUser = (history) => {
-    Session.actions.logout();
+    Session.destroy();
     window.location.href = '/login';
 };
     

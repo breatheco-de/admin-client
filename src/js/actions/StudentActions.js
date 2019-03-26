@@ -7,10 +7,10 @@ import {logout} from '../utils/react-components/src/index';
 
 BC.setOptions({
     getToken: (type='api')=> {
-        const session = Session.store.getSession();
+        const payload = Session.getPayload();
         if(type=='assets') 
-            return (session.user) ? 'JWT '+session.user.assets_token:'';
-        else return 'Bearer '+session.access_token;
+            return (payload) ? 'JWT '+payload.assets_token:'';
+        else return 'Bearer '+payload.access_token;
     },
     onLogout: () => logout()
 });

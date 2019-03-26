@@ -8,15 +8,15 @@ import {logout} from '../utils/react-components/src/index';
 
 BC.setOptions({
     getToken: (type='api')=> {
-        const session = Session.store.getSession();
+        const payload = Session.getPayload();
         if(type=='assets') 
-            return (session.user) ? 'JWT '+session.user.assets_token:'';
-        else return 'Bearer '+session.access_token;
+            return (payload) ? 'JWT '+payload.assets_token:'';
+        else return 'Bearer '+payload.access_token;
     },
     onLogout: () => logout()
 });
 
-export const get = (types) => {
+export const get = (types, args={}) => {
     if(!Array.isArray(types)) types = [].concat([types]);
     types.forEach(function(type){
         switch(type){
@@ -26,13 +26,23 @@ export const get = (types) => {
                 });
             break;
             default:
-                if(typeof BC[type] === 'function') BC[type]().all().then((result) => {
+                const { parent_location_id } = Session.getPayload();
+                let _args = {};
+                if(typeof parent_location_id !== 'undefined' && parent_location_id) _args.location_id = parent_location_id;
+                if(typeof BC[type] === 'function') BC[type]().all(Object.assign(_args,args)).then((result) => {
                     Flux.dispatchEvent(`manage_${type}`, result.data || result);
                 });
                 else throw new Error('Invalid fetch type: '+type);
             break;
         }
     });
+};
+
+export const getSingle = (type, id) => {
+    if(typeof BC[type] === 'function') BC[type]().get(id).then((result) => {
+        Flux.dispatchEvent(`manage_${type}`, store.add(`manage_${type}`, result.data || result));
+    });
+    else throw new Error('Invalid fetch type: '+type);
 };
 
 export const fetchCatalogs = (types=null) => {

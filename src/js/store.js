@@ -24,7 +24,15 @@ class Store extends Flux.DashStore{
         if(!Array.isArray(users)) return users;
         return users.filter(user => user.type !== 'student'); 
     }
-    _transformStudents(results){ return Array.isArray(results) ? results : []; }
+    _transformStudents(results){ 
+        if(typeof results == 'undefined' || !results) return [];
+        if(Array.isArray(results)) return results;
+        else{
+            let students = [];
+            for(let key in results) students.push(results[key]);
+            return students;
+        }
+    }
     _transformLocation(results){ return Array.isArray(results) ? results : []; }
     _transformCohorts(results){ return Array.isArray(results) ? results : []; }
     _transformProfile(results){ return Array.isArray(results) ? results : []; }

@@ -32,6 +32,8 @@ class Form extends _BaseForm{
             event_date: '',
             type: '',
             address: '',
+            longitude: '',
+            latitude: '',
             location_slug: '',
             lang: '',
             city_slug: '',
