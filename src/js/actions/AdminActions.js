@@ -66,10 +66,8 @@ export const add = (type, data) => new Promise((resolve, reject) => {
             .then((result) => {
                 Notify.success(`The ${type} was successfully added`);
                 
-                let state = store.getState();
                 const data = (typeof result.data !== 'undefined') ? result.data : result;
-                let entities = state[`manage_${type}`].concat([data]);
-                Flux.dispatchEvent(`manage_${type}`, entities);
+                Flux.dispatchEvent(`manage_${type}`, store.add(type, data));
                 resolve();
             })
             .catch((error) => {
@@ -90,14 +88,8 @@ export const update = (type, data) => new Promise((resolve, reject) => {
             .then((result) => {
                 Notify.success(`The ${type} was successfully updated`);
                 
-                let state = store.getState();
                 const data = (typeof result.data !== 'undefined') ? result.data : result;
-                let entities = state[`manage_${type}`].map(ent => {
-                    if(ent.id !== data.id) return ent;
-                    else return data;
-                });
-                
-                Flux.dispatchEvent(`manage_${type}`, entities);
+                Flux.dispatchEvent(`manage_${type}`, store.replace(type, data));
                 resolve();
             })
             .catch((error) => {
@@ -122,7 +114,6 @@ export const remove = (type, data) => new Promise((resolve, reject) => {
                         
                         let state = store.getState();
                         let entities = state[`manage_${type}`].filter(ent => ent.id !== data.id);
-                        
                         Flux.dispatchEvent(`manage_${type}`, entities);
                         resolve();
                     })

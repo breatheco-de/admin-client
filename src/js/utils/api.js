@@ -164,6 +164,9 @@ class Wrapper{
     user(){
         let url = this.options.apiPath;
         return {
+            get: (id) => {
+                return this.get(url+'/user/'+id);
+            },
             all: (args={}) => {
                 return this.get(url+'/user/', args);
             },

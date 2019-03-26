@@ -15,18 +15,24 @@ class UserForm extends _BaseForm{
     setDefaultState(){
         return {
             username: '',
-            full_name: '',
+            last_name:'',
+            first_name:'',
             type: ''
         };
     }
     
     validate(){
         const d = this.state.data;
-        if(validator.isEmpty(d.full_name)) return this.throwError('Missing the Full Name');
-        if(!validator.isEmail(d.username)) return this.throwError('Missing the Full Name');
+        if(validator.isEmpty(d.first_name)) return this.throwError('Missing the First Name');
+        if(validator.isEmpty(d.last_name)) return this.throwError('Missing the Last Name');
+        if(!validator.isEmail(d.username)) return this.throwError('Missing the email');
         if(validator.isEmpty(d.type) || d.type=='select') return this.throwError('Missing the type of user');
         
         return true;
+    }
+    
+    sanitizeData(data){
+        return data;
     }
     
     render(){
@@ -41,11 +47,19 @@ class UserForm extends _BaseForm{
                         />
                         <small id="emailHelp" className="form-text text-muted">The email cannot be changed</small>
                     </div>
-                    <div className="form-group">
-                        <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Full Name"
-                            value={this.state.data.full_name} 
-                            onChange={(e) => this.formUpdated({ full_name: e.target.value})}
-                        />
+                    <div className="row mb-3">
+                        <div className="col-6">
+                            <input type="text" className="form-control" placeholder="First Name"
+                                value={this.state.data.first_name !== '' ? this.state.data.first_name : this.state.data.full_name} 
+                                onChange={(e) => this.formUpdated({ first_name: e.target.value})}
+                            />
+                        </div>
+                        <div className="col-6">
+                            <input type="text" className="form-control" placeholder="Last Name"
+                                value={this.state.data.last_name} 
+                                onChange={(e) => this.formUpdated({ last_name: e.target.value})}
+                            />
+                        </div>
                     </div>
                     <div className="form-group">
                         <select className="form-control" value={this.state.data.type} 
