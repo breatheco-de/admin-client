@@ -26,38 +26,39 @@ class MainMenu extends React.Component{
             </ul>
         );
         
+        
         const role = this.state.session.payload.type;
         return(
             <ul className="nav flex-column">
                 <MenuItem icon="fas fa-tachometer-alt" label="Dashboard" slug="dashboard" to="/dashboard" />
                 <p className="m-0 mt-3">Manage:</p>
-                { (role == 'admin' || role == 'admission' || role == 'career-support') ? 
-                    <MenuItem icon="fas fa-user-graduate" label="Students" slug="student" to="/manage/student/" />:''
+                { (['admin','admission','career-support','location-admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-user-graduate" label="Students" slug="student" to="/manage/student/" />
                 }
-                { (role == 'admin' || role == 'admission' || role == 'career-support') ? 
-                    <MenuItem icon="fas fa-graduation-cap" label="Cohorts" slug="student" to="/manage/cohort/" />:''
+                { (['admin','admission','career-support','location-admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-graduation-cap" label="Cohorts" slug="student" to="/manage/cohort/" />
                 }
-                { (role == 'admin') ? 
-                    <MenuItem icon="fas fa-book-reader" label="Courses" slug="profile" to="/manage/profile/" /> :''
+                { (['admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-book-reader" label="Courses" slug="profile" to="/manage/profile/" />
                 }
-                { (role == 'admin' || role == 'admission') ? 
-                    <MenuItem icon="fas fa-calendar-plus" label="Events" slug="event" to="/manage/event/?date_status=upcoming" />:''
+                { (['admin','admission','location-admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-calendar-plus" label="Events" slug="event" to="/manage/event/?date_status=upcoming" />
                 }
-                { (role == 'admin') ? 
-                    <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" /> :''
+                { (['admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" />
                 }
                 <p className="m-0 mt-3">Apps:</p>
-                { (role == 'admin') ?
-                    <MenuItem icon="fas fa-calendar-check" label="Event Checkin" slug="replit" to="/manage/i/checkin/" /> :''
+                { (['admin','location-admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-calendar-check" label="Event Checkin" slug="replit" to="/manage/i/checkin/" />
                 }
-                { (role == 'admin') ?
-                    <MenuItem icon="fas fa-dumbbell" label="Replits" slug="replit" to="/manage/i/replit/" /> :''
+                { (['admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-dumbbell" label="Replits" slug="replit" to="/manage/i/replit/" />
                 }
-                { (role == 'admin') ? 
-                    <MenuItem icon="fas fa-question-circle" label="Quizzes" slug="quiz" to="/manage/i/quiz/" /> :''
+                { (['admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-question-circle" label="Quizzes" slug="quiz" to="/manage/i/quiz/" />
                 }
-                { (role == 'admin') ? 
-                    <MenuItem icon="fas fa-book" label="Syllabus" slug="syllabus" to="/manage/i/syllabus/" /> :''
+                { (['admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-book" label="Syllabus" slug="syllabus" to="/manage/i/syllabus/" />
                 }
                 <p>-</p>
                 <MenuItem icon="fas fa-sign-out-alt" label="Logout" slug="close_session"
