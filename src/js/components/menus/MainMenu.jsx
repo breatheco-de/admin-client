@@ -31,16 +31,16 @@ class MainMenu extends React.Component{
             <ul className="nav flex-column">
                 <MenuItem icon="fas fa-tachometer-alt" label="Dashboard" slug="dashboard" to="/dashboard" />
                 <p className="m-0 mt-3">Manage:</p>
-                { (role == 'admin' || role == 'admissions' || role == 'career-support') ? 
+                { (role == 'admin' || role == 'admission' || role == 'career-support') ? 
                     <MenuItem icon="fas fa-user-graduate" label="Students" slug="student" to="/manage/student/" />:''
                 }
-                { (role == 'admin' || role == 'admissions' || role == 'career-support') ? 
+                { (role == 'admin' || role == 'admission' || role == 'career-support') ? 
                     <MenuItem icon="fas fa-graduation-cap" label="Cohorts" slug="student" to="/manage/cohort/" />:''
                 }
                 { (role == 'admin') ? 
                     <MenuItem icon="fas fa-book-reader" label="Courses" slug="profile" to="/manage/profile/" /> :''
                 }
-                { (role == 'admin' || role == 'admissions') ? 
+                { (role == 'admin' || role == 'admission') ? 
                     <MenuItem icon="fas fa-calendar-plus" label="Events" slug="event" to="/manage/event/?date_status=upcoming" />:''
                 }
                 { (role == 'admin') ? 
