@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import _BaseForm from './_BaseForm';
 import validator from 'validator';
 import store from '../../store';
+
 class UserForm extends _BaseForm{
     
     constructor(){
@@ -25,13 +26,14 @@ class UserForm extends _BaseForm{
         const d = this.state.data;
         if(validator.isEmpty(d.first_name)) return this.throwError('Missing the First Name');
         if(validator.isEmpty(d.last_name)) return this.throwError('Missing the Last Name');
-        if(!validator.isEmail(d.username)) return this.throwError('Missing the email');
+        if(!validator.isEmail(d.username)) return this.throwError('Missing the Email');
         if(validator.isEmpty(d.type) || d.type=='select') return this.throwError('Missing the type of user');
         
         return true;
     }
     
     sanitizeData(data){
+        data.full_name = data.first_name + ' ' + data.last_name;
         return data;
     }
     
