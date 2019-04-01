@@ -12,7 +12,7 @@ class Layout extends Flux.View{
     
     constructor(){
         super();
-        AdminActions.get(["cohort","location",'profile']);
+        AdminActions.get(["cohort","location",'profile','user']);
         AdminActions.fetchCatalogs();
     }
     

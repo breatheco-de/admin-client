@@ -269,16 +269,24 @@ class Wrapper{
                 return this.delete(url+'/cohort/'+id);
             },
             addStudents: (cohortId, studentsArray) => {
-                studentsArray = studentsArray.map(id => {
+                return this.post(url+'/student/cohort/'+cohortId, studentsArray.map(id => {
                     return { student_id: id };
-                });
-                return this.post(url+'/student/cohort/'+cohortId, studentsArray);
+                }));
             },
             removeStudents: (cohortId, studentsArray) => {
-                studentsArray = studentsArray.map(id => {
+                return this.delete(url+'/student/cohort/'+cohortId, studentsArray.map(id => {
                     return { student_id: id };
-                });
-                return this.delete(url+'/student/cohort/'+cohortId, studentsArray);
+                }));
+            },
+            addTeachers: (cohortId, teachersArray) => {
+                return this.post(url+'/teacher/cohort/'+cohortId, teachersArray.map(data => {
+                    return { teacher_id: data.id, is_instructor: data.is_instructor };
+                }));
+            },
+            removeTeachers: (cohortId, teachersArray) => {
+                return this.delete(url+'/teacher/cohort/'+cohortId, teachersArray.map(data => {
+                    return { teacher_id: data.id };
+                }));
             }
         };
     }

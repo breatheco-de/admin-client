@@ -4,6 +4,7 @@ import _BaseForm from './_BaseForm';
 import validator from 'validator';
 import store from '../../store';
 import moment from 'moment';
+import {cohortActions} from '../../actions/CustomActions.js';
 class Form extends _BaseForm{
     
     constructor(){
@@ -12,6 +13,7 @@ class Form extends _BaseForm{
             data: this.setDefaultState(),
             dependencies: {
                 location: store.getAll('location'),
+                user: store.getAll('user', (user) => user.type == 'teacher'),
                 profile: store.getAll('profile')
             },
         };
@@ -19,12 +21,14 @@ class Form extends _BaseForm{
     
     setDefaultState(){
         return {
+            id: null,
             slug: '',
             profile_slug: '',
             slack_url: 'https://4geeksacademy.slack.com',
             kickoff_date: '',
             ending_date: '',
-            language: ''
+            language: '',
+            teachers: []
         };
     }
     
@@ -51,6 +55,11 @@ class Form extends _BaseForm{
     render(){
         const profiles = this.state.dependencies.profile.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
         const locations = this.state.dependencies.location.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
+        const cohortTeachers = this.state.data.teachers.map((t,i) => (
+            <li key={i} className="nav-item mr-3">
+                {t.full_name} {t.pivot && t.pivot.is_instructor ? '(main)' : '(assistant)'} <a href="#" onClick={(data) => cohortActions.delete_teacher(this.state.data, t)}><i className="fas fa-trash-alt fa-xs"></i></a>
+            </li>
+        ));
         return (
             <form onSubmit={this.onSubmit.bind(this)}>
                 <div className="form-group">
@@ -122,6 +131,19 @@ class Form extends _BaseForm{
                         <option value={null}>select a profile</option>
                         {profiles}
                     </select>
+                </div>
+                <div className="form-group">
+                    <ul className="nav">
+                        Teachers: {cohortTeachers}
+                        <li className="nav-item">
+                            <button type="button" className="btn btn-light"
+                                onClick={() => cohortActions.add_teacher(this.state.data)}
+                            >
+                                <i className="fas fa-plus-circle"></i> Add teacher
+                            </button>
+                        </li>
+                    </ul>
+                    <small id="emailHelp" className="form-text text-muted">Student cohorts can be managed thru the cohort itself</small>
                 </div>
                 <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
                 <button type="submit" className="btn btn-primary">Save</button>

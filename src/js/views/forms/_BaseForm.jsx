@@ -49,6 +49,16 @@ export default class _BaseForm extends React.Component{
         return data;
     }
     entityListUpdated(newEntities){}
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (prevState.data !== nextProps.data) {
+            return {
+                data: nextProps.data
+            };
+        }
+    
+        // Return null to indicate no change to state.
+        return null;
+    }
     componentDidMount(){
         for(let entity in this.state.dependencies){
             this._dependencyTransformers[entity] = (state) => {

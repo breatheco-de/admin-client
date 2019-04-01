@@ -4,7 +4,7 @@ import Flux from '@4geeksacademy/react-flux-dash';
 import store from '../store';
 import { Notify } from 'bc-react-notifier';
 import {Session} from 'bc-react-session';
-import {logout} from '../utils/react-components/src/index';
+import { logout, Modal } from '../utils/react-components/src/index';
 import { ZapManager } from '../utils/zaps';
 
 BC.setOptions({
@@ -75,6 +75,35 @@ class _PickCohortStage extends React.Component{
         </div>);
     }
 }
+class _AddTeacherToCohort extends React.Component{
+    constructor(){
+        super();
+        this.state = {
+            teacher_id: null,
+            is_instructor: false,
+            teachers: store.getAll('user', (user) => user.type == 'teacher')
+        };
+    }
+    render(){
+        return (<Modal show={true} title="Add teacher to cohort"
+            onSave={() => this.props.onConfirm({
+                id: this.state.teacher_id,
+                is_instructor: this.state.is_instructor
+            })}
+            onCancel={() => this.props.onConfirm(null)}
+        >
+            <select className="form-control" onChange={(e) => {
+                this.setState({ teacher_id: e.target.value });
+            }}>
+                <option value={null}>Select a teacher</option>
+                {this.state.teachers.map((t,i) => (<option key={i} value={t.id}>{t.full_name}</option>))}
+            </select>
+            <input type="checkbox" value={this.state.is_instructor} onChange={(e) => this.setState({ is_instructor: e.target.checked })} />
+            Make this the main instructor
+        </Modal>
+        );
+    }
+}
 export const cohortActions = {
     _type: 'cohort',
     change_stage: function(data){ 
@@ -90,6 +119,43 @@ export const cohortActions = {
                 return false;
             })
         ,99999999);
+    },
+    add_teacher: function(cohort){ 
+        let noti = Notify.add('info',_AddTeacherToCohort, (teacher) => {
+            noti.remove();
+            BC.cohort().addTeachers(cohort.id, [teacher])
+                .then((result) => {
+                    const type = 'cohort';
+                    Notify.success(`The ${type} was successfully updated`);
+                    
+                    const data = (typeof result.data !== 'undefined') ? result.data : result;
+                    cohort.teachers = data;
+                    Flux.dispatchEvent(`manage_${type}`, store.replace(type, cohort));
+                })
+                .catch((error) => {
+                    Notify.error(`${error.msg || error}`);
+                });
+        }
+        ,99999999);
+    },
+    delete_teacher: function(cohort, teacher){ 
+        let noti = Notify.info('Are you sure you want to delete this teacher?', (yes) => {
+            if(yes){
+                noti.remove();
+                BC.cohort().removeTeachers(cohort.id, [teacher])
+                    .then((result) => {
+                        const type = 'cohort';
+                        Notify.success(`The ${type} was successfully updated`);
+                        
+                        Flux.dispatchEvent(`manage_${type}`, store.replace(type, Object.assign(cohort,{
+                            teachers: cohort.teachers.filter(t => t.id !== teacher.id)
+                        })));
+                    })
+                    .catch((error) => {
+                        Notify.error(`${error.msg || error}`);
+                    });
+            } 
+        });
     }
 };
 

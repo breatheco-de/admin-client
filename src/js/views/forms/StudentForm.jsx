@@ -99,8 +99,6 @@ class Form extends _BaseForm{
                         <option value={null}>Select a cohort</option>
                         {cohorts}
                     </select>
-                    <input type="checkbox" value={this.state.notifyStudent} onChange={(e) => this.setState({ notifyStudent: e.target.checked })} />
-                    Run automation and notify student about his new cohort
                 </Modal>
                 {
                     (this.state.mode === 'add') ?

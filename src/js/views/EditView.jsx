@@ -30,10 +30,17 @@ export default class ManageView extends Flux.View {
     getComponent(){
         return this.props.match.params.entity_slug.charAt(0).toUpperCase() + this.props.match.params.entity_slug.substr(1)+'Form';
     }
+    fullEntityLoaded(){
+    }
     componentDidMount(){
         if(this.props.match.params.entity_id){
             let entity = store.getSingle(this.props.match.params.entity_slug, this.props.match.params.entity_id);
-            if(!entity) AdminActions.getSingle(this.props.match.params.entity_slug, this.props.match.params.entity_id);
+            if(!entity){
+                setTimeout(() => {
+                    AdminActions.getSingle(this.props.match.params.entity_slug, this.props.match.params.entity_id);
+                }, 500);
+            }
+            
             this.setState({
                 entity,
                 mode: 'edit',

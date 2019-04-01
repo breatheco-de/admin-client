@@ -34,7 +34,20 @@ class Store extends Flux.DashStore{
         }
     }
     _transformLocation(results){ return Array.isArray(results) ? results : []; }
-    _transformCohorts(results){ return Array.isArray(results) ? results : []; }
+    _transformCohorts(results){ 
+        if(!Array.isArray(results)) return []; 
+        else{
+            return results.map(cohort => {
+                if(cohort.full_teachers) cohort.teachers = cohort.full_teachers;
+                delete cohort.full_teachers;
+                cohort.isMissingFields = function(){
+                    if(cohort.teachers.length > 0 && typeof cohort.teachers[0].full_teachers == 'undefined') return true;
+                    return false;
+                };
+               return cohort; 
+            });
+        }
+    }
     _transformProfile(results){ return Array.isArray(results) ? results : []; }
     _transformEvent(results){ 
         if(!Array.isArray(results)) return results;
@@ -91,10 +104,11 @@ class Store extends Flux.DashStore{
         else if(results.length === 0) return null;
         else if(results.length >1) throw new Error(`There seems to be more than one ${type} with the ${key}: ${value}`);
     }
-    getAll(type){ 
+    getAll(type, filterFunction=null){ 
         let result = this.getState();
         if(typeof result[`manage_${type}`] === 'undefined' || !result[`manage_${type}`]) return [];
-        else return result[`manage_${type}`];
+        else if(!filterFunction) return result[`manage_${type}`];
+        else return result[`manage_${type}`].filter(filterFunction);
     }
     getCatalog(type){ 
         let catalogs = this.getState('catalog');
