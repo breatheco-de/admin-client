@@ -1,5 +1,6 @@
 import React from "react";
 import { DropLink } from '..//utils/react-components/src/index';
+import moment from 'moment';
 
 const dropdownOptions = [
     { label: 'Edit', slug: 'edit', icon: 'fas fa-pencil-alt' },
@@ -97,7 +98,7 @@ let cards = {
                     <small className="ml-4 text-secondary">
                         Start: {data.kickoff_date}
                         { 
-                            ((new Date(data.kickoff_date).getTime()) <= (new Date()).getTime()) ?
+                            (moment(data.kickoff_date).isBefore(moment())) ?
                                 <small className="text-success"> (started)</small>
                                 :
                                 <small className="text-primary"> (upcoming)</small>
@@ -110,7 +111,7 @@ let cards = {
                     <small className="ml-4 text-secondary">
                         to: {data.ending_date}
                         { 
-                            ((new Date(data.ending_date).getTime()) <= (new Date()).getTime()) ?
+                            ((moment(data.ending_date).isAfter(moment()))) ?
                                 <small className="text-success"> (ongoing)</small>
                                 :
                                 <small className="text-primary"> (finished)</small>

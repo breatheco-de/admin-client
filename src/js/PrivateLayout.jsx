@@ -11,6 +11,7 @@ import IFrameManageView from './views/IFrameManageView';
 import EditView from './views/EditView';
 import {menuModes}  from './utils/menu';
 import { ZapActionRenderer, fetchZaps } from './utils/zaps';
+import * as AdminActions from './actions/AdminActions';
 
 class Layout extends Flux.View{
     
@@ -20,6 +21,8 @@ class Layout extends Flux.View{
             menuItems: menuModes.home,
             currentMenuOption: menuModes.home[0],
         };
+        AdminActions.get(["cohort","location",'profile']);
+        AdminActions.fetchCatalogs();
     }
     
     componentDidMount(){
