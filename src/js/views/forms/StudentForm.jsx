@@ -11,8 +11,9 @@ class Form extends _BaseForm{
     
     constructor(){
         super();
+        const data = this.setDefaultState();
         this.state = {
-            data: this.setDefaultState(),
+            data,
             addCohort: null,
             newCohort: null,
             notifyStudent: false,
@@ -101,7 +102,7 @@ class Form extends _BaseForm{
                     </select>
                 </Modal>
                 {
-                    (this.state.mode === 'add') ?
+                    (!this.state.mode || typeof this.state.mode == 'undefined' ||  this.state.mode === 'add') ?
                         <Add data={this.state.data} studentCohorts={this.state.dependencies.cohort || []} 
                             formUpdated={this.formUpdated.bind(this)}
                         />
@@ -142,7 +143,7 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
                 />
             </div>
             <div className="form-group">
-                <input type="url" className="form-control" placeholder="Github URL (optional)"
+                <input type="url" className="form-control" placeholder="Github Username (optional)"
                     value={data.github} 
                     onChange={(e) => formUpdated({ github: e.target.value})}
                 />
@@ -200,7 +201,7 @@ const Add = ({data, studentCohorts, formUpdated}) => {
                 />
             </div>
             <div className="form-group">
-                <input type="url" className="form-control" placeholder="Github URL (optional)"
+                <input type="url" className="form-control" placeholder="Github username (optional)"
                     value={data.github} 
                     onChange={(e) => formUpdated({ github: e.target.value})}
                 />

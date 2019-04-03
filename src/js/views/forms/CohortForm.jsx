@@ -62,6 +62,18 @@ class Form extends _BaseForm{
         ));
         return (
             <form onSubmit={this.onSubmit.bind(this)}>
+                <div className="form-group bg-light p-2">
+                    <ul className="nav">
+                        <strong>Teachers:</strong>{cohortTeachers.length ? cohortTeachers : 'No assigned teachers'}
+                        <li className="nav-item">
+                            <button type="button" className="btn btn-light btn-sm"
+                                onClick={() => cohortActions.add_teacher(this.state.data)}
+                            >
+                                <i className="fas fa-plus-circle"></i> Add teacher
+                            </button>
+                        </li>
+                    </ul>
+                </div>
                 <div className="form-group">
                     <input type="text" className="form-control" placeholder="Cohort Name"
                         value={this.state.data.name}
@@ -131,19 +143,6 @@ class Form extends _BaseForm{
                         <option value={null}>select a profile</option>
                         {profiles}
                     </select>
-                </div>
-                <div className="form-group">
-                    <ul className="nav">
-                        Teachers: {cohortTeachers}
-                        <li className="nav-item">
-                            <button type="button" className="btn btn-light"
-                                onClick={() => cohortActions.add_teacher(this.state.data)}
-                            >
-                                <i className="fas fa-plus-circle"></i> Add teacher
-                            </button>
-                        </li>
-                    </ul>
-                    <small id="emailHelp" className="form-text text-muted">Student cohorts can be managed thru the cohort itself</small>
                 </div>
                 <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
                 <button type="submit" className="btn btn-primary">Save</button>

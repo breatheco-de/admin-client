@@ -35,7 +35,7 @@ export default class ManageView extends Flux.View {
     componentDidMount(){
         if(this.props.match.params.entity_id){
             let entity = store.getSingle(this.props.match.params.entity_slug, this.props.match.params.entity_id);
-            if(!entity){
+            if(!entity || (typeof entity.isMissingFields != 'undefined' && entity.isMissingFields())){
                 setTimeout(() => {
                     AdminActions.getSingle(this.props.match.params.entity_slug, this.props.match.params.entity_id);
                 }, 500);
@@ -63,14 +63,11 @@ export default class ManageView extends Flux.View {
     }
     
     onSave(data){
-        if(this.state.mode==='add') 
+        if(this.state.mode==='add')
             AdminActions.add(this.state.entitySlug, data)
                 .then(resp => this.props.history.push(`/manage/${this.state.entitySlug}/`));
-        
-        else if(this.state.mode==='edit') 
-            AdminActions.update(this.state.entitySlug, data)
-                .then(resp => this.props.history.push(`/manage/${this.state.entitySlug}/`));
-        
+                
+        else if(this.state.mode==='edit') AdminActions.update(this.state.entitySlug, data);
         else console.error('Uknown method '+this.state.mode);
     }
     

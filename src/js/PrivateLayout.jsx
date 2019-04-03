@@ -21,7 +21,7 @@ class Layout extends Flux.View{
             menuItems: menuModes.home,
             currentMenuOption: menuModes.home[0],
         };
-        AdminActions.get(["cohort","location",'profile']);
+        AdminActions.get(["cohort","location",'profile','user']);
         AdminActions.fetchCatalogs();
     }
     

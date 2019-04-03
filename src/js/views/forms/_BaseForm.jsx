@@ -9,7 +9,8 @@ export default class _BaseForm extends React.Component{
         this._dependencyListeners = [];
         this._dependencyTransformers = [];
         this.state = {
-            _hasUserErrors: false
+            _hasUserErrors: false,
+            mode: null
         };
         
         if(typeof this.setDefaultState !== 'function') 
@@ -50,7 +51,7 @@ export default class _BaseForm extends React.Component{
     }
     entityListUpdated(newEntities){}
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (prevState.data !== nextProps.data) {
+        if (prevState.data !== nextProps.data && nextProps.data) {
             return {
                 data: nextProps.data
             };

@@ -80,18 +80,20 @@ class _AddTeacherToCohort extends React.Component{
         super();
         this.state = {
             teacher_id: null,
+            error: false,
             is_instructor: false,
             teachers: store.getAll('user', (user) => user.type == 'teacher')
         };
     }
     render(){
         return (<Modal show={true} title="Add teacher to cohort"
-            onSave={() => this.props.onConfirm({
+            onSave={() => !this.state.teacher_id ? this.setState({ error: 'Please choose a teacher' }) : this.props.onConfirm({
                 id: this.state.teacher_id,
                 is_instructor: this.state.is_instructor
             })}
             onCancel={() => this.props.onConfirm(null)}
         >
+            {this.state.error && <div className="alert alert-danger">{this.state.error}</div>}
             <select className="form-control" onChange={(e) => {
                 this.setState({ teacher_id: e.target.value });
             }}>
@@ -146,7 +148,7 @@ export const cohortActions = {
                     .then((result) => {
                         const type = 'cohort';
                         Notify.success(`The ${type} was successfully updated`);
-                        
+                        //console.log("Cohort to save", cohort);
                         Flux.dispatchEvent(`manage_${type}`, store.replace(type, Object.assign(cohort,{
                             teachers: cohort.teachers.filter(t => t.id !== teacher.id)
                         })));
