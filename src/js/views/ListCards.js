@@ -49,6 +49,12 @@ let cards = {
                         icon: 'fas fa-dollar-sign', 
                         slug: 'change_finantial_status',
                         data: { student: data }
+                    },
+                    { 
+                        label: 'Convert to teacher', 
+                        icon: 'fas fa-exchange-alt',
+                        slug: 'convert_to_teacher',
+                        data: { student: data }
                     }
                 ].concat(dropdownOptions)}
                 onSelect={(opt) => onEntitySelect(opt, data)}>

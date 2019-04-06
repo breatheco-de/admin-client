@@ -215,6 +215,17 @@ export const studentActions = {
                 }
             })
         );
+    },
+    convert_to_teacher: function(data){ 
+        Notify.info("Are you sure you want to convert to teacher", (answer) => {
+            Notify.clean();
+            if(answer){
+                BC.user().update(data.student.id, { type: 'teacher' }).then((result) => {
+                    sync(this._type, 'delete')(result);
+                    sync('user', 'add')(result);
+                });
+            }
+        });
     }
 };
 

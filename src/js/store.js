@@ -120,6 +120,11 @@ class Store extends Flux.DashStore{
         let entities = this.getAll(type);
         return entities.map((ent) => (ent.id !== newEntity.id) ? ent : newEntity); 
     }
+    delete(type, newEntity){
+        if(!newEntity || typeof newEntity.id == 'undefined') throw new Error(`Invalid ${type} to replate`);
+        let entities = this.getAll(type);
+        return entities.filter((ent) => (ent.id !== newEntity.id)); 
+    }
     add(type, newEntity){
         if(!newEntity || typeof newEntity.id == 'undefined') throw new Error(`Invalid ${type} to replate`);
         let entities = this.getAll(type);
