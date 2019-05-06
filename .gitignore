@@ -64,3 +64,5 @@ server.js
 
 !.gitkeep
 !.htaccess
+!.env.prod
+!.env.dev
