@@ -66,3 +66,4 @@ server.js
 !.htaccess
 !.env.prod
 !.env.dev
+!.gitpod.yml
