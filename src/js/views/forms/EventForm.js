@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import store from '../../store';
-import _BaseForm from './_BaseForm';
+import _BaseForm from './_BaseForm.js';
 import validator from 'validator';
 import DateTime from 'react-datetime';
 import ReactQuill from 'react-quill'; // ES6
@@ -10,7 +10,7 @@ export const eventTypes = ['workshop','coding_weekend','hackathon','intro_to_cod
 const recurrencyTypes = ['every_week', 'one_time'];
 
 class Form extends _BaseForm{
-    
+
     constructor(){
         super();
         this.state = {
@@ -44,31 +44,31 @@ class Form extends _BaseForm{
             recurrent_type: ''
         };
     }
-    
+
     sanitizeData(data){
         if(data.event_date && typeof data.event_date !== 'string')
             data.event_date = data.event_date.format("YYYY-MM-DD hh:mm:ss");
-            
+
         if(data.recurrent_type == 'one_time') data.recurrent = false;
         else data.recurrent = true;
-            
+
         return data;
     }
-    
+
     validate(){
         const d = this.state.data;
         if(validator.isEmpty(d.title)) return this.throwError('Missing title');
         if(validator.isEmpty(d.description)) return this.throwError('Missing description');
-        
+
         return true;
     }
-    
+
     render(){
         return (
             <form onSubmit={this.onSubmit.bind(this)}>
-                <EditForm 
-                    data={this.state.data} 
-                    dependencies={this.state.dependencies} 
+                <EditForm
+                    data={this.state.data}
+                    dependencies={this.state.dependencies}
                     formUpdated={this.formUpdated.bind(this)} />
                 <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
                 <button type="submit" className="btn btn-primary">Save</button>
@@ -84,7 +84,7 @@ const EditForm = ({data, dependencies, formUpdated}) => {
         <div>
             <div className="form-group">
                 <input type="text" className="form-control"  placeholder="Title"
-                    value={data.title} 
+                    value={data.title}
                     onChange={(e) => formUpdated({ title: e.target.value})}
                 />
             </div>
@@ -102,27 +102,27 @@ const EditForm = ({data, dependencies, formUpdated}) => {
             </div>
             <div className="form-group">
                 <input type="text" className="form-control"  placeholder="Event Address"
-                    value={data.address} 
+                    value={data.address}
                     onChange={(e) => formUpdated({ address: e.target.value})}
                 />
             </div>
             <div className="form-group">
                 <small className="form-text text-muted">Image Banner URL:</small>
                 <input type="text" className="form-control"  placeholder="Banner URL"
-                    value={data.banner_url} 
+                    value={data.banner_url}
                     onChange={(e) => formUpdated({ banner_url: e.target.value})}
                 />
             </div>
             <div className="form-group">
                 <small className="form-text text-muted">Event Capacity:</small>
                 <input type="number" className="form-control" placeholder="Capacity"
-                    value={data.capacity} 
+                    value={data.capacity}
                     onChange={(e) => formUpdated({ capacity: e.target.value})}
                 />
             </div>
             <div className="form-group">
                 <input type="url" className="form-control" placeholder="Eventbrite url (or alternatives)"
-                    value={data.url} 
+                    value={data.url}
                     onChange={(e) => formUpdated({ url: e.target.value})}
                 />
             </div>

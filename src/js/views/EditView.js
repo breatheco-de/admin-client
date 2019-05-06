@@ -7,7 +7,7 @@ import store from '../store';
 import * as AdminActions from '../actions/AdminActions';
 
 export default class ManageView extends Flux.View {
-  
+
     constructor(){
         super();
         this.state ={
@@ -17,18 +17,20 @@ export default class ManageView extends Flux.View {
         };
         this.storeUpdatedListener = null;
     }
-    
+
     storeUpdated(){
         let entity = store.getSingle(this.props.match.params.entity_slug, this.props.match.params.entity_id);
+        const formName = this.getFormName();
+
         this.setState({
             entity,
             mode: 'edit',
             entitySlug: this.props.match.params.entity_slug,
-            entityComponent: require('./forms/'+this.getComponent()).default
+            entityComponent: require('./forms/'+formName).default
         });
     }
-    getComponent(){
-        return this.props.match.params.entity_slug.charAt(0).toUpperCase() + this.props.match.params.entity_slug.substr(1)+'Form';
+    getFormName(){
+        return this.props.match.params.entity_slug.charAt(0).toUpperCase() + this.props.match.params.entity_slug.substr(1)+'Form.js';
     }
     fullEntityLoaded(){
     }
@@ -40,12 +42,12 @@ export default class ManageView extends Flux.View {
                     AdminActions.getSingle(this.props.match.params.entity_slug, this.props.match.params.entity_id);
                 }, 500);
             }
-            
+
             this.setState({
                 entity,
                 mode: 'edit',
                 entitySlug: this.props.match.params.entity_slug,
-                entityComponent: require('./forms/'+this.getComponent()).default
+                entityComponent: require('./forms/'+this.getFormName()).default
             });
             this.storeUpdatedListener = store.subscribe(`manage_${this.props.match.params.entity_slug}`, this.storeUpdated.bind(this));
         }
@@ -53,45 +55,45 @@ export default class ManageView extends Flux.View {
             this.setState({
                 mode: 'add',
                 entitySlug: this.props.match.params.entity_slug,
-                entityComponent: require('./forms/'+this.getComponent()).default
+                entityComponent: require('./forms/'+this.getFormName()).default
             });
         }
     }
-    
+
     componentWillUnmount(){
         if(this.storeUpdatedListener) this.storeUpdatedListener.unsubscribe();
     }
-    
+
     onSave(data){
         if(this.state.mode==='add')
             AdminActions.add(this.state.entitySlug, data)
                 .then(resp => this.props.history.push(`/manage/${this.state.entitySlug}/`));
-                
+
         else if(this.state.mode==='edit') AdminActions.update(this.state.entitySlug, data);
         else console.error('Uknown method '+this.state.mode);
     }
-    
+
     onError(errors){
         Notify.error(errors);
     }
-  
+
   render() {
-      
+
     if(!this.state.entityComponent || (this.state.mode=="edit" && !this.state.entity)) return (<p>Loading...</p>);
     return (
         <div className="with-padding">
             <Panel style={{padding: "10px"}} zDepth={1}>
-                { 
+                {
                     (this.state.mode == 'edit') ?
                         <h2>Edit {this.state.entitySlug} {this.state.entity.id}</h2>
                         :
                         <h2>Add new {this.state.entitySlug}</h2>
                 }
                 <div>
-                    <this.state.entityComponent 
+                    <this.state.entityComponent
                         data={this.state.entity}
-                        onSave={this.onSave.bind(this)} 
-                        onError={this.onError.bind(this)} 
+                        onSave={this.onSave.bind(this)}
+                        onError={this.onError.bind(this)}
                         mode={this.state.mode}
                     />
                 </div>

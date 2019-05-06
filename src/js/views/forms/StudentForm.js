@@ -4,11 +4,11 @@ import store from '../../store';
 import { Modal } from '../../utils/react-components/src/index';
 import { Notify } from 'bc-react-notifier';
 import * as StudentActions from '../../actions/StudentActions';
-import _BaseForm from './_BaseForm';
+import _BaseForm from './_BaseForm.js';
 import validator from 'validator';
 
 class Form extends _BaseForm{
-    
+
     constructor(){
         super();
         const data = this.setDefaultState();
@@ -22,7 +22,7 @@ class Form extends _BaseForm{
             }
         };
     }
-    
+
     setDefaultState(){
         return {
             username: '',
@@ -36,7 +36,7 @@ class Form extends _BaseForm{
             cohort_slug: ''
         };
     }
-    
+
     formUpdated(newFormData){
         if(typeof newFormData.addCohort !== 'undefined'){
             this.setState({ addCohort: newFormData.addCohort });
@@ -46,24 +46,21 @@ class Form extends _BaseForm{
             this.setState({ data });
         }
     }
-    
+
     validate(){
         const d = this.state.data;
         if(!validator.isEmail(d.email)) return this.throwError('Missing the Email');
         if(validator.isEmpty(d.phone)) return this.throwError('Missing phone number');
         if(!validator.isMobilePhone(d.phone,'any')) return this.throwError('Invalid phone number');
-        if(this.props.mode !== 'add'){
-            if(validator.isEmpty(d.full_name)) return this.throwError('Missing the Full Name');
-        } 
-        else{
+        if(validator.isEmpty(d.first_name)) return this.throwError('Missing the First Name');
+        if(validator.isEmpty(d.last_name)) return this.throwError('Missing the Last Name');
+        if(this.props.mode === 'add'){
             if(!d.cohort_slug || d.cohort_slug=='') return this.throwError('Please select a cohort');
-            if(validator.isEmpty(d.first_name)) return this.throwError('Missing the First Name');
-            if(validator.isEmpty(d.last_name)) return this.throwError('Missing the Last Name');
         }
-        
+
         return true;
     }
-    
+
     sanitizeData(data){
         if(this.state.mode === 'add'){
             const cohort = store.getSingleBy('cohort', 'slug', this.state.data.cohort_slug);
@@ -71,7 +68,7 @@ class Form extends _BaseForm{
         }
         return data;
     }
-    
+
     addToCohort(){
         if(!this.state.newCohort) Notify.error("Invalid cohort");
         else{
@@ -82,7 +79,7 @@ class Form extends _BaseForm{
             });
         }
     }
-    
+
     render(){
         const cohorts = this.state.dependencies.cohort.map((c,i) => (<option key={i} value={c.slug}>{c.name}</option>));
         return (
@@ -103,11 +100,11 @@ class Form extends _BaseForm{
                 </Modal>
                 {
                     (!this.state.mode || typeof this.state.mode == 'undefined' ||  this.state.mode === 'add') ?
-                        <Add data={this.state.data} studentCohorts={this.state.dependencies.cohort || []} 
+                        <Add data={this.state.data} studentCohorts={this.state.dependencies.cohort || []}
                             formUpdated={this.formUpdated.bind(this)}
                         />
                     :
-                        <Edit data={this.state.data} studentCohorts={this.state.data.cohorts || []} 
+                        <Edit data={this.state.data} studentCohorts={this.state.data.cohorts || []}
                             formUpdated={this.formUpdated.bind(this)}
                         />
                 }
@@ -131,20 +128,26 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
         <div>
             <div className="form-group">
                 <input type="email" className="form-control" placeholder="Email"
-                    value={data.email} 
+                    value={data.email}
                     readOnly={true}
                 />
                 <small className="form-text text-muted">The email cannot be changed</small>
             </div>
             <div className="form-group">
-                <input type="text" className="form-control" placeholder="Full Name"
-                    value={data.full_name} 
-                    onChange={(e) => formUpdated({ full_name: e.target.value})}
+                <input type="text" className="form-control" placeholder="First Name"
+                    value={data.first_name || data.full_name}
+                    onChange={(e) => formUpdated({ first_name: e.target.value})}
+                />
+            </div>
+            <div className="form-group">
+                <input type="text" className="form-control" placeholder="Last Name"
+                    value={data.last_name}
+                    onChange={(e) => formUpdated({ last_name: e.target.value})}
                 />
             </div>
             <div className="form-group">
                 <input type="url" className="form-control" placeholder="Github Username (optional)"
-                    value={data.github} 
+                    value={data.github}
                     onChange={(e) => formUpdated({ github: e.target.value})}
                 />
             </div>
@@ -158,7 +161,7 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
             </div>
             <div className="form-group">
                 <input type="text" className="form-control" placeholder="Phone Number"
-                    value={data.phone} 
+                    value={data.phone}
                     onChange={(e) => formUpdated({ phone: e.target.value})}
                 />
             </div>
@@ -184,31 +187,31 @@ const Add = ({data, studentCohorts, formUpdated}) => {
         <div>
             <div className="form-group">
                 <input type="email" className="form-control"  placeholder="Email"
-                    value={data.email} 
+                    value={data.email}
                     onChange={(e) => formUpdated({ email: e.target.value})}
                 />
             </div>
             <div className="form-group">
                 <input type="text" className="form-control" placeholder="First Name"
-                    value={data.first_name} 
+                    value={data.first_name}
                     onChange={(e) => formUpdated({ first_name: e.target.value})}
                 />
             </div>
             <div className="form-group">
                 <input type="text" className="form-control" placeholder="Last Name"
-                    value={data.last_name} 
+                    value={data.last_name}
                     onChange={(e) => formUpdated({ last_name: e.target.value})}
                 />
             </div>
             <div className="form-group">
                 <input type="url" className="form-control" placeholder="Github username (optional)"
-                    value={data.github} 
+                    value={data.github}
                     onChange={(e) => formUpdated({ github: e.target.value})}
                 />
             </div>
             <div className="form-group">
                 <input type="text" className="form-control" placeholder="Phone Number"
-                    value={data.phone} 
+                    value={data.phone}
                     onChange={(e) => formUpdated({ phone: e.target.value})}
                 />
             </div>

@@ -1,12 +1,12 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import _BaseForm from './_BaseForm';
+import _BaseForm from './_BaseForm.js';
 import validator from 'validator';
 import store from '../../store';
 import moment from 'moment';
 import {cohortActions} from '../../actions/CustomActions.js';
 class Form extends _BaseForm{
-    
+
     constructor(){
         super();
         this.state = {
@@ -18,7 +18,7 @@ class Form extends _BaseForm{
             },
         };
     }
-    
+
     setDefaultState(){
         return {
             id: null,
@@ -31,7 +31,7 @@ class Form extends _BaseForm{
             teachers: []
         };
     }
-    
+
     validate(data){
         if(validator.isEmpty(data.kickoff_date)) return this.throwError('Empty kickoff date');
         if(validator.isEmpty(data.ending_date)) return this.throwError('Empty kickoff date');
@@ -39,19 +39,19 @@ class Form extends _BaseForm{
         if(validator.isEmpty(data.language)) return this.throwError('Empty slug language');
         if(validator.isEmpty(data.slack_url)) return this.throwError('Empty slack_url');
         if(validator.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug');
-        
+
         if(moment(data.ending_date).isBefore(moment(data.kickoff_date))) return this.throwError('The ending date needs to be after the starting date');
-        
+
         return true;
     }
-    
+
     sanitizeData(data){
         if(typeof data.slug !== 'undefined' && (!data.slug || data.slug=='')){
             data.slug = data.name.replace(/\s+/g, '-').toLowerCase();
         }
         return data;
     }
-    
+
     render(){
         const profiles = this.state.dependencies.profile.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
         const locations = this.state.dependencies.location.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
@@ -82,7 +82,7 @@ class Form extends _BaseForm{
                 </div>
                 <div className="form-group">
                     <input type="text" className="form-control" placeholder="slug"
-                        value={this.state.data.slug} 
+                        value={this.state.data.slug}
                         onChange={(e) => this.formUpdated({ slug: this.slugify(e.target.value)})}
                         readOnly={(this.props.mode !== 'add')}
                     />
@@ -95,7 +95,7 @@ class Form extends _BaseForm{
                 </div>
                 <div className="form-group">
                     <input type="url" className="form-control" placeholder="slack url"
-                        value={this.state.data.slack_url} 
+                        value={this.state.data.slack_url}
                         onChange={(e) => this.formUpdated({ slack_url: e.target.value})}
                     />
                 </div>
@@ -104,7 +104,7 @@ class Form extends _BaseForm{
                         <div className="form-group">
                             <small className="form-text text-info">Starting</small>
                             <input type="date" className="form-control" placeholder="kickoff_date"
-                                value={this.state.data.kickoff_date} 
+                                value={this.state.data.kickoff_date}
                                 onChange={(e) => this.formUpdated({ kickoff_date: e.target.value})}
                             />
                         </div>
@@ -113,7 +113,7 @@ class Form extends _BaseForm{
                         <div className="form-group">
                             <small className="form-text text-info">Ending</small>
                             <input type="date" className="form-control" placeholder="ending_date"
-                                value={this.state.data.ending_date} 
+                                value={this.state.data.ending_date}
                                 onChange={(e) => this.formUpdated({ ending_date: e.target.value})}
                             />
                         </div>

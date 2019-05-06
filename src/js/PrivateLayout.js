@@ -8,13 +8,13 @@ import HomeView from './views/HomeView';
 import ManageView from './views/ManageView';
 import IFrameView from './views/IFrameView';
 import IFrameManageView from './views/IFrameManageView';
-import EditView from './views/EditView';
+import EditView from './views/EditView.js';
 import {menuModes}  from './utils/menu';
 import { ZapActionRenderer, fetchZaps } from './utils/zaps';
 import * as AdminActions from './actions/AdminActions';
 
 class Layout extends Flux.View{
-    
+
     constructor(){
         super();
         this.state = {
@@ -24,17 +24,17 @@ class Layout extends Flux.View{
         AdminActions.get(["cohort","location",'profile','user']);
         AdminActions.fetchCatalogs();
     }
-    
+
     componentDidMount(){
         fetchZaps();
     }
-    
+
     render() {
 
         return (
             <div className="row">
                 <div className="left-side">
-                    <Sidebar 
+                    <Sidebar
                         onSelect={() => this.menuClicked()}
                         breadcrumb={[{ label: "BreatheCode", path: '/home' }]}
                         menuItems={this.state.menuItems}
@@ -58,7 +58,7 @@ class Layout extends Flux.View{
             </div>
         );
     }
-    
+
 }
 export default Layout;
 //export default withShortcuts(Layout, keymap)

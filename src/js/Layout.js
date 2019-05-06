@@ -2,18 +2,18 @@ import React from 'react';
 import Flux from '@4geeksacademy/react-flux-dash';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import PrivateLayout from './PrivateLayout';
+import PrivateLayout from './PrivateLayout.js';
 import * as AdminActions from './actions/AdminActions';
 import { PrivateRoute } from 'bc-react-session';
 import { Notifier } from 'bc-react-notifier';
 import { Forgot, Login } from './utils/react-components/src/index';
 
 class Layout extends Flux.View{
-    
+
     constructor(){
         super();
     }
-    
+
     render() {
         return (
             <div className="layout">
@@ -35,7 +35,7 @@ class Layout extends Flux.View{
             </div>
         );
     }
-    
+
 }
 export default Layout;
 //export default withShortcuts(Layout, keymap)

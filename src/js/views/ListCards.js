@@ -28,30 +28,30 @@ let cards = {
                 className='list_card'
                 dropdown={[
                     {
-                        label: 'Recent Activity', 
-                        icon: 'fas fa-calendar-check', 
+                        label: 'Recent Activity',
+                        icon: 'fas fa-calendar-check',
                         to: '/student/i/activity/?user='+data.id
                     },
                     {
-                        label: 'Change BreatheCode Status', 
-                        icon: 'fas fa-graduation-cap', 
+                        label: 'Change BreatheCode Status',
+                        icon: 'fas fa-graduation-cap',
                         slug: 'change_breathecode_status',
                         data: { student: data }
                     },
                     {
-                        label: 'Change Job Status', 
-                        icon: 'fas fa-suitcase', 
+                        label: 'Change Job Status',
+                        icon: 'fas fa-suitcase',
                         slug: 'change_hired_status',
                         data: { student: data }
                     },
-                    { 
-                        label: 'Change Finantial Status', 
-                        icon: 'fas fa-dollar-sign', 
+                    {
+                        label: 'Change Finantial Status',
+                        icon: 'fas fa-dollar-sign',
                         slug: 'change_finantial_status',
                         data: { student: data }
                     },
-                    { 
-                        label: 'Convert to teacher', 
+                    {
+                        label: 'Convert to teacher',
                         icon: 'fas fa-exchange-alt',
                         slug: 'convert_to_teacher',
                         data: { student: data }
@@ -59,8 +59,8 @@ let cards = {
                 ].concat(dropdownOptions)}
                 onSelect={(opt) => onEntitySelect(opt, data)}>
                     <h5 className="m-0">
-                        {data.full_name}
-                        { (data.status === 'studies_finished' && data.seeking_job == 1 && data.found_job == 0) ? 
+                        {data.first_name + " " + data.last_name}
+                        { (data.status === 'studies_finished' && data.seeking_job == 1 && data.found_job == 0) ?
                             <span className="ml-2 text-danger"><i className="fas fa-ban"></i> NOT HIRED YET</span>
                             : (data.status === 'studies_finished' && data.seeking_job == 1 && data.found_job == 1) ?
                                 <span className="ml-2 text-success"><i className="fas fa-suitcase"></i> HIRED</span>
@@ -81,13 +81,13 @@ let cards = {
             <DropLink
             className='list_card'
             dropdown={dropdownOptions.concat([
-                { 
-                    label: 'review students', 
-                    slug: 'cohort_students', 
+                {
+                    label: 'review students',
+                    slug: 'cohort_students',
                     to: '/manage/student/?cohort='+data.slug
                 },
-                { 
-                    label: 'change cohort stage', 
+                {
+                    label: 'change cohort stage',
                     slug: 'change_stage',
                     data: { cohort: data } //
                 }
@@ -97,13 +97,13 @@ let cards = {
             <h5 className="m-0">{data.full_name}</h5>
             <p className='subrow'>
                 <small className="mr-1 text-info">{data.profile_slug}</small>
-                { 
+                {
                     <small className={(data.stage === 'not-started') ? 'text-success' : 'text-secondary'}> {data.stage}</small>
                 }
-                { (data.kickoff_date && data.kickoff_date !== '' && data.kickoff_date !== '0000-00-00') ? 
+                { (data.kickoff_date && data.kickoff_date !== '' && data.kickoff_date !== '0000-00-00') ?
                     <small className="ml-4 text-secondary">
                         Start: {data.kickoff_date}
-                        { 
+                        {
                             (moment(data.kickoff_date).isBefore(moment())) ?
                                 <small className="text-success"> (started)</small>
                                 :
@@ -113,10 +113,10 @@ let cards = {
                     :
                     <small className="ml-4 text-danger">missing kickoff date</small>
                 }
-                { (data.ending_date && data.ending_date !== '' && data.ending_date !== '0000-00-00') ? 
+                { (data.ending_date && data.ending_date !== '' && data.ending_date !== '0000-00-00') ?
                     <small className="ml-4 text-secondary">
                         to: {data.ending_date}
-                        { 
+                        {
                             ((moment(data.ending_date).isAfter(moment()))) ?
                                 <small className="text-success"> (ongoing)</small>
                                 :
@@ -149,26 +149,26 @@ let cards = {
             <DropLink
                 className='list_card'
                 dropdown={[
-                    { 
-                        label: 'Got To Landing', 
-                        slug: 'open_in_new_window', 
+                    {
+                        label: 'Got To Landing',
+                        slug: 'open_in_new_window',
                         url: data.url
                     },
-                    { 
-                        label: 'Duplicate Event', 
-                        slug: 'duplicate_event', 
+                    {
+                        label: 'Duplicate Event',
+                        slug: 'duplicate_event',
                         data: { event: data }
                     }
                 ].concat((() => {
                     let statusActions = [];
                     if(data.status !== 'published') statusActions.push({
-                        label: 'Publish Event', 
+                        label: 'Publish Event',
                         slug: 'change_event_status',
                         event_id: data.id,
                         new_status: 'published'
                     });
                     if(data.status === 'published') statusActions.push({
-                        label: 'Unpublish the event (make it a draft again)', 
+                        label: 'Unpublish the event (make it a draft again)',
                         slug: 'change_event_status',
                         event_id: data.id,
                         new_status: 'draft'
@@ -191,13 +191,13 @@ let cards = {
                     }
                     <small className="ml-4">
                         On: {(typeof data.event_date == 'string') ? data.event_date.substr(0,10) : 'no upcoming date'}
-                        { (data.recurrent_type && data.recurrent_type != "one_time") ? 
+                        { (data.recurrent_type && data.recurrent_type != "one_time") ?
                             <span className="text-primary"> ({data.recurrent_type})</span>
                             :
-                            (data.hasPassed) ? 
-                                <span className="text-dark"> (already passed)</span> 
-                            : 
-                                <span className="text-success"> (upcoming)</span> 
+                            (data.hasPassed) ?
+                                <span className="text-dark"> (already passed)</span>
+                            :
+                                <span className="text-success"> (upcoming)</span>
                         }
                     </small>
                 </p>
