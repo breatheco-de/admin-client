@@ -5,9 +5,9 @@ import { Route, Switch } from 'react-router-dom';
 import { Sidebar } from './utils/react-components/src/index';
 import HomeView from './views/HomeView';
 
-import ManageView from './views/ManageView';
-import IFrameView from './views/IFrameView';
-import IFrameManageView from './views/IFrameManageView';
+import ManageView from './views/ManageView.js';
+import IFrameView from './views/IFrameView.js';
+import IFrameManageView from './views/IFrameManageView.js';
 import EditView from './views/EditView.js';
 import {menuModes}  from './utils/menu';
 import { ZapActionRenderer, fetchZaps } from './utils/zaps';
