@@ -15,13 +15,13 @@ export const functions =  {
             else if(key=='name') valid = (entity.first_name.toLowerCase().search(token) !== -1 || entity.last_name.toLowerCase().search(token) !== -1);
             else if(key=='email') valid = entity.email.toLowerCase().search(token) !== -1;
 
-            if(key=='status' && entity.status && entity.status!= 'null' && entity.status != token) return false;
+            if(key=='status' && entity.status !== null && entity.status!= 'null' && entity.status != token) return false;
 
-            if(key=='seeking_job' && entity.seeking_job && entity.seeking_job!= 'null' && entity.seeking_job != token) return false;
+            if(key=='seeking_job' && entity.seeking_job !== null && entity.seeking_job!= 'null' && entity.seeking_job != token) return false;
 
-            if(key=='financial_status' && entity.financial_status && entity.financial_status!= 'null' && entity.financial_status != token) return false;
+            if(key=='financial_status' && entity.financial_status !== null && entity.financial_status!= 'null' && entity.financial_status != token) return false;
 
-            if(key=='found_job' && entity.found_job && entity.found_job!= 'null' && entity.found_job != token) return false;
+            if(key=='found_job' && entity.found_job !== null && entity.found_job!= 'null' && entity.found_job != token) return false;
 
         }
         if(valid &&  typeof extraSearch.query == 'string'){
@@ -42,7 +42,7 @@ export const functions =  {
             if(key=='name') valid = (entity.full_name.toLowerCase().search(token) !== -1 );
             else if(key=='email') valid = (entity.username.toLowerCase().search(token) !== -1 );
 
-            else if(key=='type' && token && token!='null' && entity.type && entity.type != token ) return false;
+            else if(key=='type' && token && token!='null' && entity.type !== null && entity.type != token ) return false;
         }
         if(valid && typeof extraSearch.query == 'string'){
             let nameMatches = (entity.full_name.toLowerCase().search(extraSearch.query) !== -1 );
@@ -62,9 +62,9 @@ export const functions =  {
             if(key=='name') valid = (entity.name.toLowerCase().search(token) !== -1 );
             else if(key=='profile') valid = (entity.profile_slug.toLowerCase().search(token) !== -1 );
 
-            if(key=='stage' && entity.stage && entity.stage!= 'null' && entity.stage != token) return false;
+            if(key=='stage' && entity.stage !== null && entity.stage!= 'null' && entity.stage != token) return false;
 
-            if(key=='location' && entity.location_id && entity.location_id!= 'null' && entity.location_id != token) return false;
+            if(key=='location' && entity.location_id !== null && entity.location_id!= 'null' && entity.location_id != token) return false;
 
             if(key=='kickoff_date' && entity.kickoff_date){
                 if(token=='before-today' && moment(entity.kickoff_date).isAfter(moment())) return false;
@@ -87,7 +87,7 @@ export const functions =  {
             if(token == 'null') continue;
             if(key=='name') valid = (entity.title.toLowerCase().search(token) !== -1 );
 
-            if(key=='status' && token && token!='null' && entity.status.toLowerCase().search(token) == -1 ) return false;
+            if(key=='status' && token && token!='null' && entity.status !== null && entity.status.toLowerCase().search(token) == -1 ) return false;
 
             if(key=='date_status' && token && token!='null' ){
                 const eventDate = moment(entity.event_date);
