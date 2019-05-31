@@ -1,6 +1,6 @@
-# BreatheCo.de Desktop Client
+# BreatheCo.de Admin Client
 
-This is the application use to deliver the courses.
+This is the application use to manage breatheco.de users, teachers, students and the content.
 
 ## Instalation
 
