@@ -9,7 +9,7 @@ import {logout} from '../utils/react-components/src/index';
 BC.setOptions({
     getToken: (type='api')=> {
         const payload = Session.getPayload();
-        if(type=='assets') 
+        if(type=='assets')
             return (payload) ? 'JWT '+payload.assets_token:'';
         else return 'Bearer '+payload.access_token;
     },
@@ -49,7 +49,7 @@ export const fetchCatalogs = (types=null) => {
     if(!types){
         BC.catalog().all().then((result) => Flux.dispatchEvent(`catalog`, result.data || result));
         return;
-    } 
+    }
     if(!Array.isArray(types)) types = [].concat([types]);
     types.forEach(function(slug){
             BC.catalog().get(slug).then((result) => {
@@ -65,7 +65,7 @@ export const add = (type, data) => new Promise((resolve, reject) => {
         BC[type]().add(data)
             .then((result) => {
                 Notify.success(`The ${type} was successfully added`);
-                
+
                 const data = (typeof result.data !== 'undefined') ? result.data : result;
                 Flux.dispatchEvent(`manage_${type}`, store.add(type, data));
                 resolve();
@@ -78,16 +78,16 @@ export const add = (type, data) => new Promise((resolve, reject) => {
     else{
         reject();
         throw new Error('Invalid fetch type: '+type);
-    } 
+    }
 });
-    
+
 export const update = (type, data) => new Promise((resolve, reject) => {
     if(typeof BC[type] === 'function') {
         delete data.email;
         BC[type]().update(data.id, data)
             .then((result) => {
                 Notify.success(`The ${type} was successfully updated`);
-                
+
                 const data = (typeof result.data !== 'undefined') ? result.data : result;
                 Flux.dispatchEvent(`manage_${type}`, store.replace(type, data));
                 resolve();
@@ -100,18 +100,18 @@ export const update = (type, data) => new Promise((resolve, reject) => {
     else{
         reject();
         throw Error(`There is no type ${type} on the BC api wrapper`);
-    } 
+    }
 });
-    
+
 export const remove = (type, data) => new Promise((resolve, reject) => {
-    
+
     Notify.info("Are you sure?", (answer) => {
         if(answer){
             if(typeof BC[type] === 'function') {
                 BC[type]().delete(data.id)
                     .then((result) => {
                         Notify.success(`The ${type} was successfully deleted`);
-                        
+
                         let state = store.getState();
                         let entities = state[`manage_${type}`].filter(ent => ent.id !== data.id);
                         Flux.dispatchEvent(`manage_${type}`, entities);
@@ -125,10 +125,10 @@ export const remove = (type, data) => new Promise((resolve, reject) => {
             else{
                 reject();
                 throw new Error('Invalid fetch type: '+type);
-            } 
+            }
         }
     });
-    
+
 });
 
 export const firstUpperCase = (input) => { return input[0].toUpperCase()+input.substr(1); };

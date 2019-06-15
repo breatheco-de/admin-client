@@ -83,13 +83,13 @@ export default class ManageView extends Flux.View {
     return (
         <div className="with-padding">
             <Panel style={{padding: "10px"}} zDepth={1}>
+                <div className="container">
                 {
                     (this.state.mode == 'edit') ?
-                        <h2>Edit {this.state.entitySlug} {this.state.entity.id}</h2>
+                        <h2 className="mb-3">Edit {this.state.entitySlug.charAt(0).toUpperCase() + this.state.entitySlug.slice(1)} (id:{this.state.entity.id})</h2>
                         :
-                        <h2>Add new {this.state.entitySlug}</h2>
+                        <h2 className="mb-3">Add New {this.state.entitySlug.charAt(0).toUpperCase() + this.state.entitySlug.slice(1)}</h2>
                 }
-                <div>
                     <this.state.entityComponent
                         data={this.state.entity}
                         onSave={this.onSave.bind(this)}

@@ -14,7 +14,7 @@ let cards = {
                 dropdown={dropdownOptions}
                 onSelect={(opt) => onEntitySelect(opt, data)}
             >
-                {data.full_name}
+                {data.full_name ? data.full_name : data.first_name + ' ' + data.last_name}
                 <p className='subrow'>
                     <small className="text-info">{data.type}</small>
                     <small className="ml-4 text-secondary">{data.username}</small>
@@ -125,6 +125,28 @@ let cards = {
                     </small>
                     :
                     <small className="ml-4 text-danger">missing ending_date</small>
+                }
+            </p>
+            </DropLink>
+        </li>
+    ),
+    locationCard: (data, key, onEntitySelect) => (
+        <li key={key}>
+            <DropLink
+            className='list_card'
+            dropdown={dropdownOptions.concat([
+                {
+                    label: 'review cohorts',
+                    slug: 'cohort_students',
+                    to: '/manage/cohort/?location='+data.slug
+                }
+            ])}
+            onSelect={(opt) => onEntitySelect(opt, data)}>
+            {data.name}
+            <p className='subrow'>
+                <small className="mr-1 text-info">{data.country}</small>
+                {
+                    <small className={(data.stage === 'not-started') ? 'text-success' : 'text-secondary'}> {data.lang}</small>
                 }
             </p>
             </DropLink>

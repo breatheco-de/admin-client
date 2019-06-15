@@ -2,7 +2,7 @@ import React from 'react';
 import store from '../../store';
 
 export default class _BaseForm extends React.Component{
-    
+
     constructor(){
         super();
         this._errors = [];
@@ -10,10 +10,11 @@ export default class _BaseForm extends React.Component{
         this._dependencyTransformers = [];
         this.state = {
             _hasUserErrors: false,
+            catalogs: null,
             mode: null
         };
-        
-        if(typeof this.setDefaultState !== 'function') 
+
+        if(typeof this.setDefaultState !== 'function')
             throw new Error('You need to specify the setDefaultState function');
     }
     throwError(msg){
@@ -23,7 +24,7 @@ export default class _BaseForm extends React.Component{
             throw new Error('there is no prop onError');
         else{
             if(this._errors.length > 0) this.props.onError(msg);
-        } 
+        }
         return false;
     }
     submit(){
@@ -33,8 +34,8 @@ export default class _BaseForm extends React.Component{
             if(this._errors.length === 0) this.props.onSave(this.sanitizeData(this.state.data));
             else{
                 this.props.onError(this._errors);
-            } 
-        } 
+            }
+        }
     }
     onSubmit(e){
         e.preventDefault();
@@ -56,7 +57,7 @@ export default class _BaseForm extends React.Component{
                 data: nextProps.data
             };
         }
-    
+
         // Return null to indicate no change to state.
         return null;
     }
@@ -71,7 +72,8 @@ export default class _BaseForm extends React.Component{
             };
             this._dependencyListeners.push(store.subscribe('manage_'+entity, this._dependencyTransformers[entity].bind(this)));
         }
-        
+        this.catalogSubscription = store.subscribe('catalog', this.updateUpdateCatalogs.bind(this));
+
         if(this.props.mode=='add'){
             this.setState({
                 data: this.setDefaultState(),
@@ -85,9 +87,17 @@ export default class _BaseForm extends React.Component{
             });
         }
     }
+
+    updateUpdateCatalogs(state){
+        this.setState({
+            catalogs: Object.assign(this.state.catalogs, state)
+        });
+    }
+
     componentWillUnmount(){
         this._dependencyListeners.forEach(listener => listener.unsubscribe());
         this._dependencyListeners = [];
+        this.catalogSubscription.unsubscribe();
     }
     formUpdated(newFormData){
         let data = Object.assign(this.state.data, newFormData);
@@ -97,7 +107,7 @@ export default class _BaseForm extends React.Component{
         for(let key in data) if(!data[key]) data[key] = '';
         return data;
     }
-    
+
     slugify(text)
     {
       return text.toString().toLowerCase()

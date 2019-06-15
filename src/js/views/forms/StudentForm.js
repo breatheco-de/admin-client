@@ -108,8 +108,14 @@ class Form extends _BaseForm{
                             formUpdated={this.formUpdated.bind(this)}
                         />
                 }
-                <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
-                <button type="submit" className="btn btn-primary">Save</button>
+                <div class="row mt-3">
+                    <div class="col">
+                        <button type="button" className="btn btn-dark btn-lg w-100" onClick={() => this.props.history.goBack()}>Back</button>
+                    </div>
+                    <div class="col">
+                        <button type="submit" className="btn btn-primary  btn-lg w-100">Save</button>
+                    </div>
+                </div>
             </form>
         );
     }
@@ -146,13 +152,24 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
                 />
             </div>
             <div className="form-group">
-                <input type="url" className="form-control" placeholder="Github Username (optional)"
+                <input type="text" className="form-control" placeholder="Github Username (optional)"
                     value={data.github}
                     onChange={(e) => formUpdated({ github: e.target.value})}
                 />
             </div>
+            <h5>Job Related Information</h5>
+            <div className="bg-light p-2">
+                <div className="form-group">
+                    <small className="text-danger mr-2">Actively looking for a job?</small>
+                    <input
+                        type="checkbox"
+                        checked={data.seeking_job}
+                        onChange={(e) => formUpdated({ seeking_job: e.target.checked})}
+                    />
+                </div>
+            </div>
             <div className="form-group">
-                <small className="text-danger mr-2">Actively looking for a job?</small>
+                <small className="text-danger mr-2">Include into Active Campaign?</small>
                 <input
                     type="checkbox"
                     checked={data.seeking_job}
@@ -176,7 +193,6 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
                         </button>
                     </li>
                 </ul>
-                <small id="emailHelp" className="form-text text-muted">Student cohorts can be managed thru the cohort itself</small>
             </div>
         </div>
     );
@@ -219,18 +235,21 @@ const Add = ({data, studentCohorts, formUpdated}) => {
                 <select className="form-control"
                     onChange={(e) => formUpdated({ cohort_slug: e.target.value})}
                 >
-                    <option value={null}>Select a cohort</option>
+                    <option value={null}>What will be his initial cohort?</option>
                     {cohorts}
                 </select>
-                <small className="form-text text-muted">Initial cohort for the student</small>
             </div>
-            <div className="form-group">
-                <small className="text-danger mr-2">Will it be looking for a job?</small>
-                <input
-                    type="checkbox"
-                    checked={data.seeking_job}
-                    onChange={(e) => formUpdated({ seeking_job: e.target.checked})}
-                />
+
+            <h5>Job Related Information</h5>
+            <div className="bg-light p-2">
+                <div className="form-group">
+                    <small className="text-danger mr-2">Will it be looking for a job?</small>
+                    <input
+                        type="checkbox"
+                        checked={data.seeking_job}
+                        onChange={(e) => formUpdated({ seeking_job: e.target.checked})}
+                    />
+                </div>
             </div>
         </div>
     );

@@ -6,6 +6,8 @@ import { eventTypes } from '../views/forms/EventForm.js';
 
 export const functions =  {
     student: (entity, extraSearch={}) => {
+        if(typeof entity == 'undefined') return false;
+
         const searchParams = queryString.parse(window.location.search);
         let valid = true;
         for(let key in searchParams){
@@ -34,18 +36,22 @@ export const functions =  {
         return valid;
     },
     user: (entity, extraSearch={}) => {
+        if(typeof entity == 'undefined') return false;
         const searchParams = queryString.parse(window.location.search);
         let valid = true;
         for(let key in searchParams){
             const token = searchParams[key].toLowerCase();
             if(token == 'null') continue;
-            if(key=='name') valid = (entity.full_name.toLowerCase().search(token) !== -1 );
+
+            const full_name = entity.full_name ? entity.full_name : entity.first_name + ' ' + entity.last_name;
+            if(key=='name') valid = (full_name.toLowerCase().search(token) !== -1 );
             else if(key=='email') valid = (entity.username.toLowerCase().search(token) !== -1 );
 
             else if(key=='type' && token && token!='null' && entity.type !== null && entity.type != token ) return false;
         }
         if(valid && typeof extraSearch.query == 'string'){
-            let nameMatches = (entity.full_name.toLowerCase().search(extraSearch.query) !== -1 );
+            const full_name = entity.full_name ? entity.full_name : entity.first_name + ' ' + entity.last_name;
+            let nameMatches = (full_name.toLowerCase().search(extraSearch.query) !== -1 );
             let emailMatches = (entity.username.toLowerCase().search(extraSearch.query) !== -1 );
             if(nameMatches || emailMatches) valid = true;
             else valid = false;
@@ -54,6 +60,7 @@ export const functions =  {
         return valid;
     },
     cohort: (entity, extraSearch={}) => {
+        if(typeof entity == 'undefined') return false;
         const searchParams = queryString.parse(window.location.search);
         let valid = true;
         for(let key in searchParams){
@@ -80,6 +87,7 @@ export const functions =  {
         return valid;
     },
     event: (entity, extraSearch={}) => {
+        if(typeof entity == 'undefined') return false;
         const searchParams = queryString.parse(window.location.search);
         let valid = true;
         for(let key in searchParams){

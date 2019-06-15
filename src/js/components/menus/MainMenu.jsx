@@ -5,28 +5,28 @@ import { MenuItem, logout } from '../../utils/react-components/src/index';
 import { Session } from 'bc-react-session';
 
 class MainMenu extends React.Component{
-    
+
     constructor(){
         super();
         this.state = {
             session: Session.get()
         };
     }
-    
+
     componentDidMount(){
         this.setState({
             session: Session.get()
         });
     }
-    
+
     render(){
         if(!this.state.session.isValid) return (
             <ul className="nav flex-column">
                 <MenuItem icon="fas fa-tachometer-alt" label="Log In" slug="login" to="/login" />
             </ul>
         );
-        
-        
+
+
         const role = this.state.session.payload.type;
         return(
             <ul className="nav flex-column">
@@ -44,8 +44,10 @@ class MainMenu extends React.Component{
                 { (['admin','admission','location-admin'].includes(role)) &&
                     <MenuItem icon="fas fa-calendar-plus" label="Events" slug="event" to="/manage/event/?date_status=upcoming" />
                 }
-                { (['admin'].includes(role)) &&
+                { (['admin'].includes(role)) && <span>
                     <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" />
+                    <MenuItem icon="fas fa-map-marked-alt" label="Locations" slug="location" to="/manage/location/" />
+                    </span>
                 }
                 <p className="m-0 mt-3">Apps:</p>
                 { (['admin','location-admin'].includes(role)) &&
