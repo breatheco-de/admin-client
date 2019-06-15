@@ -70,8 +70,14 @@ class Form extends _BaseForm{
                     data={this.state.data}
                     dependencies={this.state.dependencies}
                     formUpdated={this.formUpdated.bind(this)} />
-                <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
-                <button type="submit" className="btn btn-primary">Save</button>
+                <div class="row my-3">
+                    <div class="col">
+                        <button type="button" className="btn btn-dark btn-lg w-100" onClick={() => this.props.history.goBack()}>Back</button>
+                    </div>
+                    <div class="col">
+                        <button type="submit" className="btn btn-primary  btn-lg w-100">Save</button>
+                    </div>
+                </div>
             </form>
         );
     }

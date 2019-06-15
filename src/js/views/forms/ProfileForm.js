@@ -16,7 +16,9 @@ class ProfileForm extends _BaseForm{
         return {
             name: '',
             description: '',
-            slug: ''
+            slug: '',
+            week_hours: '',
+            duration_in_hours: ''
         };
     }
 
@@ -25,6 +27,8 @@ class ProfileForm extends _BaseForm{
         if(validator.isEmpty(d.name)) return this.throwError('Missing name');
         if(validator.isEmpty(d.description)) return this.throwError('Missing description');
         if(validator.isEmpty(d.slug)) return this.throwError('Missing the type of user');
+        if(validator.isEmpty(d.duration_in_hours)) return this.throwError('Missing the duration in hours');
+        if(validator.isEmpty(d.week_hours)) return this.throwError('Missing the number of hours per week');
 
         return true;
     }
@@ -53,8 +57,26 @@ class ProfileForm extends _BaseForm{
                             onChange={(e) => this.formUpdated({ description: e.target.value})}
                         />
                     </div>
-                    <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
-                    <button type="submit" className="btn btn-primary">Save</button>
+                    <div className="form-group">
+                        <input type="number" className="form-control" placeholder="Duration in hours"
+                            value={this.state.data.duration_in_hours}
+                            onChange={(e) => this.formUpdated({ duration_in_hours: e.target.value})}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <input type="number" className="form-control" placeholder="Hours a week"
+                            value={this.state.data.week_hours}
+                            onChange={(e) => this.formUpdated({ week_hours: e.target.value})}
+                        />
+                    </div>
+                    <div class="row my-3">
+                        <div class="col">
+                            <button type="button" className="btn btn-dark btn-lg w-100" onClick={() => this.props.history.goBack()}>Back</button>
+                        </div>
+                        <div class="col">
+                            <button type="submit" className="btn btn-primary  btn-lg w-100">Save</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         )

@@ -108,7 +108,7 @@ class Form extends _BaseForm{
                             formUpdated={this.formUpdated.bind(this)}
                         />
                 }
-                <div class="row mt-3">
+                <div class="row my-3">
                     <div class="col">
                         <button type="button" className="btn btn-dark btn-lg w-100" onClick={() => this.props.history.goBack()}>Back</button>
                     </div>
@@ -157,30 +157,22 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
                     onChange={(e) => formUpdated({ github: e.target.value})}
                 />
             </div>
+            <div className="form-group">
+                <input type="text" className="form-control" placeholder="Phone Number"
+                    value={data.phone}
+                    onChange={(e) => formUpdated({ phone: e.target.value})}
+                />
+            </div>
             <h5>Job Related Information</h5>
             <div className="bg-light p-2">
                 <div className="form-group">
-                    <small className="text-danger mr-2">Actively looking for a job?</small>
+                    <small className="mr-2">Actively looking for a job?</small>
                     <input
                         type="checkbox"
                         checked={data.seeking_job}
                         onChange={(e) => formUpdated({ seeking_job: e.target.checked})}
                     />
                 </div>
-            </div>
-            <div className="form-group">
-                <small className="text-danger mr-2">Include into Active Campaign?</small>
-                <input
-                    type="checkbox"
-                    checked={data.seeking_job}
-                    onChange={(e) => formUpdated({ seeking_job: e.target.checked})}
-                />
-            </div>
-            <div className="form-group">
-                <input type="text" className="form-control" placeholder="Phone Number"
-                    value={data.phone}
-                    onChange={(e) => formUpdated({ phone: e.target.value})}
-                />
             </div>
             <div className="form-group">
                 <ul className="nav">
@@ -243,7 +235,7 @@ const Add = ({data, studentCohorts, formUpdated}) => {
             <h5>Job Related Information</h5>
             <div className="bg-light p-2">
                 <div className="form-group">
-                    <small className="text-danger mr-2">Will it be looking for a job?</small>
+                    <small className="mr-2">Will it be looking for a job?</small>
                     <input
                         type="checkbox"
                         checked={data.seeking_job}

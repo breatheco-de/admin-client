@@ -62,18 +62,21 @@ class Form extends _BaseForm{
         ));
         return (
             <form onSubmit={this.onSubmit.bind(this)}>
-                <div className="form-group bg-light p-2">
-                    <ul className="nav">
-                        <strong>Teachers:</strong>{cohortTeachers.length ? cohortTeachers : 'No assigned teachers'}
-                        <li className="nav-item">
-                            <button type="button" className="btn btn-light btn-sm"
-                                onClick={() => cohortActions.add_teacher(this.state.data)}
-                            >
-                                <i className="fas fa-plus-circle"></i> Add teacher
-                            </button>
-                        </li>
-                    </ul>
-                </div>
+                {
+                    (this.props.mode !== 'add') &&
+                        <div className="form-group bg-light p-2">
+                            <ul className="nav">
+                                <strong>Teachers:</strong>{cohortTeachers.length ? cohortTeachers : 'No assigned teachers'}
+                                <li className="nav-item">
+                                    <button type="button" className="btn btn-light btn-sm"
+                                        onClick={() => cohortActions.add_teacher(this.state.data)}
+                                    >
+                                        <i className="fas fa-plus-circle"></i> Add teacher
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                }
                 <div className="form-group">
                     <input type="text" className="form-control" placeholder="Cohort Name"
                         value={this.state.data.name}
@@ -144,8 +147,26 @@ class Form extends _BaseForm{
                         {profiles}
                     </select>
                 </div>
-                <button type="button" className="btn btn-light" onClick={() => this.props.history.goBack()}>Back</button>
-                <button type="submit" className="btn btn-primary">Save</button>
+
+                <h5>Additional Details</h5>
+                <div className="bg-light p-2">
+                    <div className="form-group">
+                        <small className="mr-2">Syllabus version</small>
+                        <select className="form-control"
+                            value={this.state.data.language}
+                            onChange={(e) => this.formUpdated({ language: e.target.value})}>
+                            <option value="1">1</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col">
+                        <button type="button" className="btn btn-dark btn-lg w-100" onClick={() => this.props.history.goBack()}>Back</button>
+                    </div>
+                    <div class="col">
+                        <button type="submit" className="btn btn-primary  btn-lg w-100">Save</button>
+                    </div>
+                </div>
             </form>
         )
     }
