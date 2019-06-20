@@ -1,3 +1,4 @@
+import React from 'react';
 import BC from '../utils/api.js';
 import Flux from '@4geeksacademy/react-flux-dash';
 import store from '../store';
@@ -5,6 +6,7 @@ import {Notify} from 'bc-react-notifier';
 import {Session} from 'bc-react-session';
 import { cohortActions, studentActions, eventActions } from '../actions/CustomActions';
 import {logout} from '../utils/react-components/src/index';
+import { ZapManager, ModalZapPicker } from '../utils/zaps';
 
 BC.setOptions({
     getToken: (type='api')=> {
@@ -62,18 +64,32 @@ export const fetchCatalogs = (types=null) => {
 
 export const add = (type, data) => new Promise((resolve, reject) => {
     if(typeof BC[type] === 'function') {
-        BC[type]().add(data)
-            .then((result) => {
-                Notify.success(`The ${type} was successfully added`);
 
-                const data = (typeof result.data !== 'undefined') ? result.data : result;
-                Flux.dispatchEvent(`manage_${type}`, store.add(type, data));
-                resolve();
+        const additionalActions = ZapManager.getZapActions(`add_${type}`);
+        Notify.info(({ onConfirm }) => <ModalZapPicker actions={additionalActions} onConfirm={(e) => onConfirm(e)} />, (conf) => conf === null ? Notify.clean() :
+            Notify.add("Are you sure? The new stage is: "+conf.stage, (answer) => {
+                Notify.clean();
+                if(answer){
+                    BC[type]().add(data)
+                        .then((result) => {
+                            Notify.success(`The ${type} was successfully added`);
+
+                            const data = (typeof result.data !== 'undefined') ? result.data : result;
+                            Flux.dispatchEvent(`manage_${type}`, store.add(type, data));
+                            resolve();
+
+                            conf.actions.forEach(a => ZapManager.execute(a, data));
+                        })
+                        .catch((error) => {
+                            Notify.error(`${error.msg || error}`);
+                            reject();
+                        });
+
+                    return true;
+                }
+                return false;
             })
-            .catch((error) => {
-                Notify.error(`${error.msg || error}`);
-                reject();
-            });
+        ,99999999);
     }
     else{
         reject();

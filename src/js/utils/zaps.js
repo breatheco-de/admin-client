@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import EventEmitter from 'events';
 import PropTypes from 'prop-types';
 import { Dispatcher } from 'flux';
 import BC from '../utils/api.js';
 
-const ACTIONS_UPDATED = 'audted';
+const ACTIONS_UPDATED = 'actions_updated';
+const ZAPS_UPDATE = 'zaps_update';
 const dispatcher = new Dispatcher();
 
 //retrieve all zaps from API
@@ -27,15 +28,15 @@ class ZapStore extends EventEmitter{
                 for( let zap_slug in this.zaps){
                     this.zaps[zap_slug] = this.zaps[zap_slug].map(a => Object.assign(a, { checked: a.run_by_default || false }));
                 }
-                this.emit('zaps_updated', this.zaps);
-            } 
+                this.emit(ZAPS_UPDATE, this.zaps);
+            }
             else if(event.type == 'zap_actions'){
                 this.actions = event.data;
                 this.emit(ACTIONS_UPDATED, event.data);
-            } 
+            }
         });
     }
-    
+
     getZaps(){
         return this.zaps || [];
     }
@@ -50,12 +51,12 @@ class ZapStore extends EventEmitter{
 const _store = new ZapStore();
 
 const execute = (action, payload=null, onFinish=null) =>{
-    
+
     if(typeof action.slug === 'undefined') throw new Error('Missing zap slug');
-    
+
     let actions = _store.getActions();
     if(!actions) actions = [];
-    
+
     const actionId = Math.floor(Math.random() * 100000000000);
     let _action = {
         id: actionId,
@@ -74,39 +75,39 @@ const execute = (action, payload=null, onFinish=null) =>{
         },
         remove: () => remove(actionId)
     };
-    
+
     dispatcher.dispatch({ type: 'zap_actions', data: actions.concat([_action]) });
-    
+
     BC.zap().execute(action.slug, payload)
         .then((data) => {
             let actions = _store.getActions();
-            dispatcher.dispatch({ 
-                type: 'zap_actions', 
+            dispatcher.dispatch({
+                type: 'zap_actions',
                 data: actions.map(a => {
                     if(a.id == actionId){
                         a.status = 'success';
                         a.ended_at = new Date();
                         a.details = data.msg || data;
-                    } 
+                    }
                     return a;
                 })
             });
         })
         .catch((e) => {
             let actions = _store.getActions();
-            dispatcher.dispatch({ 
-                type: 'zap_actions', 
+            dispatcher.dispatch({
+                type: 'zap_actions',
                 data: actions.map(a => {
                     if(a.id == actionId){
                         a.status = 'error';
                         a.ended_at = new Date();
                         a.details = e.msg || e;
-                    } 
+                    }
                     return a;
                 })
             });
         });
-    
+
     return action;
 };
 
@@ -120,21 +121,21 @@ const remove = (id) =>{
  *      Components
  **/
 
-let ActionCard = (props) => { 
+let ActionCard = (props) => {
     return (
         <div className={'zapAction '+props.typeClass} onClick={() => props.onClick ? props.onClick() : null}>
             <span>
                 {props.action.title || "No title for the action"}
             </span>
             <span className="ml-2">
-                { (props.action.status === null) ? 
-                    <i className="fas fa-sync fa-spin"></i> 
-                    : (props.action.status === 'success') ? 
+                { (props.action.status === null) ?
+                    <i className="fas fa-sync fa-spin"></i>
+                    : (props.action.status === 'success') ?
                         <span>
                             <i className="fas fa-check text-success mr-2"></i>
                             <Tooltip content={props.action.details}>({props.action.getDelta()} seconds)</Tooltip>
                         </span>
-                        : (props.action.status === 'error') ? 
+                        : (props.action.status === 'error') ?
                             <span>
                                 <i className="fas fa-times text-danger mr-2"></i>
                                 <Tooltip content={props.action.details}>({props.action.getDelta()} seconds)</Tooltip>
@@ -158,33 +159,39 @@ export class ZapActionRenderer extends React.Component{
       super();
       this.state = {
         actions: [],
+        zaps: [],
         collapsed: true
       };
       this.zapActionsUpdated = (actions) => {
           const isPending = actions.find(a => !a.status) !== 'undefined';
           this.setState({ actions, collapsed: !isPending });
       };
+      this.zapsUpdated = (zaps) => {
+          this.setState({ zaps });
+      };
     }
-    
+
     componentDidMount(){
         this.setState({ actions: _store.getActions() });
         _store.on(ACTIONS_UPDATED, this.zapActionsUpdated);
+        _store.on(ZAPS_UPDATE, this.zapsUpdated);
     }
-    
+
     componentWillUnmount(){
         _store.removeListener(ACTIONS_UPDATED, this.zapActionsUpdated);
+        _store.removeListener(ZAPS_UPDATE, this.zapsUpdated);
     }
-    
+
     render(){
         return(<div className={"bc_zaps "+(this.state.collapsed ? "collapsed" : "")+this.props.className}>
             <button onClick={() => this.setState({ collapsed: !this.state.collapsed})}><i className="fas fa-minus-square"></i></button>
-            {(_store.getZaps().length===0) ?
+            {(_store.getZaps().length===0 && this.state.zaps.length == 0) ?
                 <div className="alert alert-danger p-1">The zap engine does not seem to be loading correctly</div>
                 :
-                (this.state.actions.length == 0 || this.state.collapsed) ?  
-                    <p>No actions to show.</p>
+                (this.state.actions.length == 0 || this.state.collapsed) ?
+                    <p>No actions to show from [{this.state.zaps.length}] zaps loaded.</p>
                     :
-                    this.state.actions.map((a, i) => (<ActionCard key={i} action={a} onClick={() => 
+                    this.state.actions.map((a, i) => (<ActionCard key={i} action={a} onClick={() =>
                         dispatcher.dispatch({ type: 'zap_actions', data: this.state.actions.filter(act => a.id !== act.id ) })
                     } />))
             }
@@ -302,7 +309,7 @@ export default class Tooltip extends React.Component {
           state.visible &&
           <div ref="tooltip" style={styles.tooltip}>
             <div ref="content" style={styles.content}>{props.content}</div>
-            <div ref="arrow" style={styles.arrow} />  
+            <div ref="arrow" style={styles.arrow} />
             <div ref="gap" style={styles.gap} />
           </div>
         }
@@ -318,3 +325,35 @@ Tooltip.propTypes = {
     ]),
     styles: PropTypes.object,
 };
+
+export const ModalZapPicker = ({ actions, onConfirm }) => {
+
+    const [ checkedActions, setCheckedActions ] = useState(actions);
+    return <div className="row">
+        <div className="col-12">
+            <p>What else should happen after this?</p>
+        { (typeof checkedActions == 'undefined' || checkedActions.length == 0) ?
+            <ul><li>No additional consequences.</li></ul>
+            :
+            <ul>
+                { checkedActions.map((action,i) => (
+                    <li key={i}>
+                        <input type="checkbox" className="mr-1" checked={action.checked}
+                            onChange={() => {
+                                const newActions = actions.map(a => a.slug !== action.slug ? a : Object.assign(a, {checked: !a.checked}));
+                                setCheckedActions(newActions);
+                            }}
+                        />{action.title}
+                    </li>))
+                }
+            </ul>
+        }
+        </div>
+        <div className="col-12">
+            <button className="btn btn-secondary mr-2" onClick={() => onConfirm(null)}>Cancel</button>
+            <button className="btn btn-success" onClick={() => onConfirm({
+                actions: checkedActions.filter(a => a.checked)
+            })}>Continue</button>
+        </div>
+    </div>;
+}

@@ -7,8 +7,8 @@ class Wrapper{
             assetsPath: (typeof process != 'undefined') ? process.env.ASSETS_URL+'/apis' : null,
             apiPath: (typeof process != 'undefined') ? process.env.API_URL : null,
             _debug: (typeof process != 'undefined') ? process.env.DEBUG : false,
-            getToken: (type='api') => {
-                return null;
+            getToken: function(type='api'){
+                return type == api ? this.apiPath : this.assetsPath;
             },
             onLogout: null
         };
@@ -23,7 +23,7 @@ class Wrapper{
     fetch(...args){ return fetch(...args); }
     req(method, path, args){
 
-        const token = this.options.getToken((path.indexOf('//assets') == -1) ? 'api':'assets');
+        const token = this.options.getToken((path.indexOf('assets.') !== -1 || path.indexOf('f0d8e861') !== -1) ? 'assets':'api');
         let opts = {
             method,
             cache: "no-cache",
@@ -340,6 +340,14 @@ class Wrapper{
             get: (id) => {
                 return this.get(url+'/lessons/'+id);
             }
+        };
+    }
+    streaming(){
+        let url = this.options.assetsPath;
+        return {
+            all: (args={}) => {
+                return this.get(url+'/streaming/cohort/all', args);
+            },
         };
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "workspace",
-  "version": "1.0.74",
+  "version": "1.0.75",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -57,10 +57,10 @@
     "popper.js": "^1.12.9",
     "prop-types": "^15.6.1",
     "query-string": "^5.1.1",
-    "react": "^16.0.0",
+    "react": "^16.8.6",
     "react-ace": "^5.9.0",
     "react-datetime": "^2.14.0",
-    "react-dom": "^16.0.0",
+    "react-dom": "^16.8.6",
     "react-flux-dash": "^1.1.6",
     "react-gtm-module": "^2.0.4",
     "react-marked": "^0.3.1",

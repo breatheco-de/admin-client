@@ -14,7 +14,8 @@ class Form extends _BaseForm{
             dependencies: {
                 location: store.getAll('location'),
                 user: store.getAll('user', (user) => user.type == 'teacher'),
-                profile: store.getAll('profile')
+                profile: store.getAll('profile'),
+                streaming: store.getAll('streaming')
             },
         };
     }
@@ -27,7 +28,9 @@ class Form extends _BaseForm{
             slack_url: 'https://4geeksacademy.slack.com',
             kickoff_date: '',
             ending_date: '',
-            language: '',
+            streaming_slug: '',
+            current_day: 0,
+            language: 'en',
             teachers: []
         };
     }
@@ -39,6 +42,8 @@ class Form extends _BaseForm{
         if(validator.isEmpty(data.language)) return this.throwError('Empty slug language');
         if(validator.isEmpty(data.slack_url)) return this.throwError('Empty slack_url');
         if(validator.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug');
+        if(data.current_day == 0) return this.throwError('Empty or 0 current_day');
+        if(validator.isEmpty(data.streaming_slug)) return this.throwError('Empty streaming slug');
 
         if(moment(data.ending_date).isBefore(moment(data.kickoff_date))) return this.throwError('The ending date needs to be after the starting date');
 
@@ -55,6 +60,7 @@ class Form extends _BaseForm{
     render(){
         const profiles = this.state.dependencies.profile.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
         const locations = this.state.dependencies.location.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
+        const streamingCohortsHTML = this.state.dependencies.streaming.map((p,i) => (<option key={i} value={p.slug}>{p.slug}</option>));
         const cohortTeachers = this.state.data.teachers.map((t,i) => (
             <li key={i} className="nav-item mr-3">
                 {t.full_name} {t.pivot && t.pivot.is_instructor ? '(main)' : '(assistant)'} <a href="#" onClick={(data) => cohortActions.delete_teacher(this.state.data, t)}><i className="fas fa-trash-alt fa-xs"></i></a>
@@ -156,6 +162,23 @@ class Form extends _BaseForm{
                             value={this.state.data.language}
                             onChange={(e) => this.formUpdated({ language: e.target.value})}>
                             <option value="1">1</option>
+                        </select>
+                    </div>
+                    <div className="input-group mb-3">
+                        <div className="input-group-prepend">
+                            <span className="input-group-text">Cohort day: </span>
+                        </div>
+                        <input type="number" className="form-control" placeholder="day number" value={this.state.data.current_day} onChange={(e) => this.formUpdated({ current_day: e.target.value})} />
+                    </div>
+                </div>
+                <div className="bg-light p-2">
+                    <div className="form-group">
+                        <small className="mr-2">Streaming information</small>
+                        <select className="form-control"
+                            value={this.state.data.streaming_slug}
+                            onChange={(e) => this.formUpdated({ streaming_slug: e.target.value})}>
+                            <option value={''}>Select the cohort name</option>
+                            {streamingCohortsHTML}
                         </select>
                     </div>
                 </div>

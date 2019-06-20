@@ -89,7 +89,7 @@ export default class _BaseForm extends React.Component{
     }
 
     updateUpdateCatalogs(state){
-        this.setState({
+        if(typeof this.state.catalogs != 'undefined') this.setState({
             catalogs: Object.assign(this.state.catalogs, state)
         });
     }

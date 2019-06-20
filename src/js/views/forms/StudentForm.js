@@ -211,11 +211,11 @@ const Add = ({data, studentCohorts, formUpdated}) => {
                     onChange={(e) => formUpdated({ last_name: e.target.value})}
                 />
             </div>
-            <div className="form-group">
-                <input type="url" className="form-control" placeholder="Github username (optional)"
-                    value={data.github}
-                    onChange={(e) => formUpdated({ github: e.target.value})}
-                />
+            <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                    <span className="input-group-text">https://github.com/</span>
+                </div>
+                <input type="text" className="form-control" placeholder="username (option)" value={data.github} onChange={(e) => formUpdated({ github: e.target.value})} />
             </div>
             <div className="form-group">
                 <input type="text" className="form-control" placeholder="Phone Number"
