@@ -14,3 +14,9 @@
         }
     }
 }
+.droplink-float-right{
+    .dropdown-menu{
+        right: 0;
+        left: inherit;
+    }
+}

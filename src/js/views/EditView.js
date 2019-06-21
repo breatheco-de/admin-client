@@ -87,7 +87,7 @@ export default class ManageView extends Flux.View {
                 {
                     (this.state.mode == 'edit') ?
                         <div className="mb-3 view-title">
-                            <div className="float-right">
+                            <div className="float-right droplink-float-right">
                                 {cards[this.state.entitySlug+'Card'](this.state.entity, cardActions.bind(this), <span className="btn btn-primary">actions</span>)}
                             </div>
                             <h2>Edit {this.state.entitySlug.charAt(0).toUpperCase() + this.state.entitySlug.slice(1)} (id:{this.state.entity.id})</h2>

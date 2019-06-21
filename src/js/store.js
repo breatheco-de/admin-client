@@ -80,7 +80,7 @@ class Store extends Flux.DashStore{
     _transformCatalog(catalogs){
 
         const makeTitle = (slug) => {
-            var words = slug.split('-');
+            var words = slug.split(/[-_]+/);
 
             for(var i = 0; i < words.length; i++) {
               var word = words[i];

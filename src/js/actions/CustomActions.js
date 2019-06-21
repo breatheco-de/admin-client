@@ -10,7 +10,7 @@ import { ZapManager } from '../utils/zaps';
 BC.setOptions({
     getToken: (type='api')=> {
         const payload = Session.getPayload();
-        if(type=='assets') 
+        if(type=='assets')
             return (payload) ? 'JWT '+payload.assets_token:'';
         else return 'Bearer '+payload.access_token;
     },
@@ -39,7 +39,7 @@ class _PickCohortStage extends React.Component{
                 <div>
                     Choose your new stage:
                     { store.getCatalog('cohort_stages').map((c,i) => (
-                        <a key={i} className="btn btn-light" onClick={() => this.setState({ 
+                        <a key={i} className="btn btn-light" onClick={() => this.setState({
                             stage: c.value,
                             actions: ZapManager.getZapActions('change_cohort_status@'+c.value)
                         })}>{c.label}</a>
@@ -49,23 +49,23 @@ class _PickCohortStage extends React.Component{
                 <div className="row">
                     <div className="col-12">Choose what zaps do you want to execute after this action:</div>
                     <ul className="col-11 col-sm-8 col-md-6 mx-auto bg-light mb-3">
-                    { this.state.actions.length ? 
+                    { this.state.actions.length ?
                         this.state.actions.map((action,i) => (
                             <li key={i}>
                                 <input type="checkbox" className="mr-1" checked={action.checked}
-                                    onChange={() => this.setState({ 
+                                    onChange={() => this.setState({
                                         actions: this.state.actions.map(a => a.slug !== action.slug ? a : Object.assign(a, {checked: !a.checked}))
-                                    })} 
+                                    })}
                                 />{action.title}
                             </li>
                         ))
-                        : 
+                        :
                         <li>No additional consequences.</li>
                     }
                     </ul>
                     <div className="col-12">
                         <button className="btn btn-secondary mr-2" onClick={() => this.props.onConfirm(null)}>Cancel</button>
-                        <button className="btn btn-success" onClick={() => this.props.onConfirm({ 
+                        <button className="btn btn-success" onClick={() => this.props.onConfirm({
                             stage: this.state.stage,
                             actions: this.state.actions.filter(a => a.checked)
                         })}>Continue</button>
@@ -108,28 +108,31 @@ class _AddTeacherToCohort extends React.Component{
 }
 export const cohortActions = {
     _type: 'cohort',
-    change_stage: function(data){ 
+    change_stage: function(data){
         Notify.info(_PickCohortStage, (conf) => conf === null ? Notify.clean() :
             Notify.add("Are you sure? The new stage is: "+conf.stage, (answer) => {
                 Notify.clean();
                 if(answer){
                     // @TODO: Zaps should be executed after the cohort was successfully updated
-                    //BC.cohort().update(data.cohort.id, { stage: conf.stage }).then(sync(this._type));
-                    conf.actions.forEach(a => ZapManager.execute(a, { cohort_slug: data.cohort.slug }));
+                    BC.cohort().update(data.cohort.id, { stage: conf.stage })
+                        .then((cohort) => {
+                            sync(this._type)(cohort);
+                            conf.actions.forEach(a => ZapManager.execute(a, { cohort_slug: data.cohort.slug }));
+                        });
                     return true;
                 }
                 return false;
             })
         ,99999999);
     },
-    add_teacher: function(cohort){ 
+    add_teacher: function(cohort){
         let noti = Notify.add('info',_AddTeacherToCohort, (teacher) => {
             noti.remove();
             BC.cohort().addTeachers(cohort.id, [teacher])
                 .then((result) => {
                     const type = 'cohort';
                     Notify.success(`The ${type} was successfully updated`);
-                    
+
                     const data = (typeof result.data !== 'undefined') ? result.data : result;
                     cohort.teachers = data;
                     Flux.dispatchEvent(`manage_${type}`, store.replace(type, cohort));
@@ -140,7 +143,7 @@ export const cohortActions = {
         }
         ,99999999);
     },
-    delete_teacher: function(cohort, teacher){ 
+    delete_teacher: function(cohort, teacher){
         let noti = Notify.info('Are you sure you want to delete this teacher?', (yes) => {
             if(yes){
                 noti.remove();
@@ -156,7 +159,7 @@ export const cohortActions = {
                     .catch((error) => {
                         Notify.error(`${error.msg || error}`);
                     });
-            } 
+            }
         });
     }
 };
@@ -165,7 +168,7 @@ const _StudentStatusChooser = ({onConfirm}) => (
     <div>
         Choose the student new status:
         { store.getCatalog('student_status').map((c,i) => (
-            <a key={i} className="btn btn-light" onClick={() => onConfirm(c.slug)}>{c.label}</a>
+            <a key={i} className="btn btn-light" onClick={() => onConfirm(c.value)}>{c.label}</a>
         )) }
     </div>
 );
@@ -180,13 +183,13 @@ const _StudentFinantialStatusChooser = ({onConfirm}) => (
     <div>
         Choose the student finantial status:
         { store.getCatalog('finantial_status').map((c,i) => (
-            <a key={i} className="btn btn-light" onClick={() => onConfirm(c.slug)}>{c.label}</a>
+            <a key={i} className="btn btn-light" onClick={() => onConfirm(c.value)}>{c.label}</a>
         )) }
     </div>
 );
 export const studentActions = {
     _type: 'student',
-    change_breathecode_status: function(data){ 
+    change_breathecode_status: function(data){
         Notify.info(_StudentStatusChooser, (newStage) =>
             Notify.info("Are you sure you want to change to "+newStage+"? ", (answer) => {
                 Notify.clean();
@@ -196,7 +199,7 @@ export const studentActions = {
             })
         );
     },
-    change_hired_status: function(data){ 
+    change_hired_status: function(data){
         Notify.info(_StudentJobStatusChooser, (newStatus) =>
             Notify.info("Are you sure you want to change the status?", (answer) => {
                 Notify.clean();
@@ -206,7 +209,7 @@ export const studentActions = {
             })
         );
     },
-    change_finantial_status: function(data){ 
+    change_finantial_status: function(data){
         Notify.info(_StudentFinantialStatusChooser, (newStatus) =>
             Notify.info("Are you sure you want to change the status to "+newStatus+"?", (answer) => {
                 Notify.clean();
@@ -216,7 +219,7 @@ export const studentActions = {
             })
         );
     },
-    convert_to_teacher: function(data){ 
+    convert_to_teacher: function(data){
         Notify.info("Are you sure you want to convert to teacher", (answer) => {
             Notify.clean();
             if(answer){
@@ -231,10 +234,10 @@ export const studentActions = {
 
 export const eventActions = {
     _type: 'event',
-    duplicate_event: function(data){ 
+    duplicate_event: function(data){
         Notify.info("Are you sure you want to duplicate this event? ", () => {
             let newEvent = Object.assign({},data.event);
-            newEvent.id = null, 
+            newEvent.id = null,
             newEvent.title = data.event.title+' (Copy)',
             newEvent.status = 'draft';
             BC.event().add(newEvent).then(sync(this._type, 'add'));

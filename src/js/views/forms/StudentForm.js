@@ -133,6 +133,25 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
     return (
         <div>
             <div className="form-group">
+                <small className="mr-2">BreatheCode Status</small>
+                <small className="badge badge-secondary mr-2">{ data.status }</small>
+                <small className="mr-2">Finantial Status</small>
+                <small className="badge badge-secondary">{ data.financial_status }</small>
+            </div>
+            <div className="form-group">
+                <small className="mr-2">Cohorts: </small>
+                <ul className="nav">
+                    {cohorts}
+                    <li className="nav-item">
+                        <button type="button" className="btn btn-light"
+                            onClick={() => formUpdated({ addCohort: true })}
+                        >
+                            <i className="fas fa-plus-circle"></i> Add cohort
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div className="form-group">
                 <input type="email" className="form-control" placeholder="Email"
                     value={data.email}
                     readOnly={true}
@@ -173,18 +192,10 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
                         onChange={(e) => formUpdated({ seeking_job: e.target.checked})}
                     />
                 </div>
-            </div>
-            <div className="form-group">
-                <ul className="nav">
-                    {cohorts}
-                    <li className="nav-item">
-                        <button type="button" className="btn btn-light"
-                            onClick={() => formUpdated({ addCohort: true })}
-                        >
-                            <i className="fas fa-plus-circle"></i> Add cohort
-                        </button>
-                    </li>
-                </ul>
+                <div className="form-group">
+                    <small className="mr-2">Was he/she hired after completing the course?</small>
+                    <small className="badge badge-secondary">{ data.status != 'studies_finished' ? 'He/she has not completed the course yet' : data.found_job ? 'Yes' : 'No' }</small>
+                </div>
             </div>
         </div>
     );
