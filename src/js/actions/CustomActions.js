@@ -214,7 +214,7 @@ export const studentActions = {
             Notify.info("Are you sure you want to change the status to "+newStatus+"?", (answer) => {
                 Notify.clean();
                 if(answer){
-                    BC.student().update(data.student.id, { financial_status: newStatus }).then(sync(this._type));
+                    BC.student().setStatus(data.student.id, { financial_status: newStatus }).then(sync(this._type));
                 }
             })
         );
