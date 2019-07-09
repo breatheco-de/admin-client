@@ -6,7 +6,7 @@ import { Notify } from 'bc-react-notifier';
 import * as StudentActions from '../../actions/StudentActions';
 import _BaseForm from './_BaseForm.js';
 import validator from 'validator';
-
+import {Session} from 'bc-react-session';
 class Form extends _BaseForm{
 
     constructor(){
@@ -122,6 +122,7 @@ class Form extends _BaseForm{
 }
 
 const Edit = ({data, studentCohorts, formUpdated}) => {
+    const { access_token } = Session.getPayload();
     const cohorts = studentCohorts.map((c,i) => (
         <li key={i} className="nav-item mr-3">
             <Link to={`/manage/cohort/?slug=${c}`} className="mr-2">
@@ -133,10 +134,15 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
     return (
         <div>
             <div className="form-group">
+                <p className="my-0">
                 <small className="mr-2">BreatheCode Status</small>
-                <small className="badge badge-secondary mr-2">{ data.status }</small>
+                <small className="badge badge-secondary mr-2">{ data.status } </small>
+                {data.status == 'studies_finished' && <small><a target="_blank" href={`https://certificate.breatheco.de?cohort=${studentCohorts[0] || null}&access_token=${access_token}&student=${data.id}`}>certificate <i class="fas fa-award"></i></a></small>}
+                </p>
+                <p className="my-0">
                 <small className="mr-2">Finantial Status</small>
                 <small className="badge badge-secondary">{ data.financial_status }</small>
+                </p>
             </div>
             <div className="form-group">
                 <small className="mr-2">Cohorts: </small>
