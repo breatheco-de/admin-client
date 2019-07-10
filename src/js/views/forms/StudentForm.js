@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import store from '../../store';
-import { Modal } from '../../utils/react-components/src/index';
+import { Modal, DropLink } from '../../utils/react-components/src/index';
 import { Notify } from 'bc-react-notifier';
 import * as StudentActions from '../../actions/StudentActions';
 import _BaseForm from './_BaseForm.js';
@@ -131,13 +131,22 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
             <a href="#" onClick={() => StudentActions.removeStudentsFromCohort(c, [data.id])}><i className="fas fa-trash-alt fa-xs"></i></a>
         </li>
     ));
+
     return (
         <div>
             <div className="form-group">
                 <p className="my-0">
                 <small className="mr-2">BreatheCode Status</small>
                 <small className="badge badge-secondary mr-2">{ data.status } </small>
-                {data.status == 'studies_finished' && <small><a target="_blank" href={`https://certificate.breatheco.de?cohort=${studentCohorts[0] || null}&access_token=${access_token}&student=${data.id}`}>certificate <i class="fas fa-award"></i></a></small>}
+                {   data.status == 'studies_finished' &&
+                        <DropLink
+                            className='d-inline-block'
+                            dropdown={studentCohorts.map((c,i) => ({ label: c, slug: c }))}
+                            onSelect={(opt) => window.open(`https://certificate.breatheco.de/?cohort=${opt.slug}&access_token=${access_token}&student=${data.id}`)}
+                        >
+                            <small>certificates <i class="fas fa-award"></i></small>
+                        </DropLink>
+                }
                 </p>
                 <p className="my-0">
                 <small className="mr-2">Finantial Status</small>

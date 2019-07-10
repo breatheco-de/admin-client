@@ -4,7 +4,7 @@ import * as AdminActions from '../actions/AdminActions';
 import moment from 'moment';
 
 const dropdownOptions = [
-    { label: 'Edit', slug: 'edit', icon: 'fas fa-pencil-alt' },
+    { label: 'Details', slug: 'edit', icon: 'fas fa-pencil-alt' },
     { label: 'Delete (from breathecode only)', slug: 'delete', icon: 'fas fa-trash' }
 ];
 
