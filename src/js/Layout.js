@@ -26,6 +26,7 @@ class Layout extends Flux.View{
                             <PrivateRoute exact path='/' component={PrivateLayout} />
                             <PrivateRoute path='/student/:student_id' component={PrivateLayout} />
                             <PrivateRoute path='/manage' component={PrivateLayout} />
+                            <PrivateRoute path='/assignment' component={PrivateLayout} />
                             <PrivateRoute path='/dashboard' component={PrivateLayout} />
                             <PrivateRoute path='/:entity_slug/i/:view_slug' component={PrivateLayout} />
                             <Route render={() => (<p className="text-center mt-5">Not found</p>)} />

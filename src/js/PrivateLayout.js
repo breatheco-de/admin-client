@@ -1,6 +1,6 @@
 import React from 'react';
 import Flux from '@4geeksacademy/react-flux-dash';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 
 import { Sidebar } from './utils/react-components/src/index';
 import HomeView from './views/HomeView';
@@ -48,6 +48,8 @@ class Layout extends Flux.View{
                         <Route exact path='/dashboard' component={HomeView} />
                         <Route exact path='/manage/i/:entity_slug' component={IFrameManageView} />
                         <Route exact path='/manage/:entity_slug/:entity_id/edit' component={EditView} />
+                        <Route exact path='/manage/cohort/:entity_id/assignments' render={(props) => <IFrameView url={`https://assets.breatheco.de/apps/assignment/?cohort=${props.match.params.entity_id}`} />} />
+                        <Route exact path='/manage/student/:entity_id/assignments' render={(props) => <IFrameView url={`https://assets.breatheco.de/apps/assignment/?student=${props.match.params.entity_id}`} />} />
                         <Route exact path='/manage/:entity_slug/add' component={EditView} />
                         <Route exact path='/manage/:entity_slug' component={ManageView} />
                         <Route exact path='/:entity_slug/i/:view_slug' component={IFrameView} />

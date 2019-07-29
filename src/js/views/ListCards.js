@@ -86,6 +86,12 @@ export const cards = {
                         data: { student: data }
                     },
                     {
+                        label: 'review assignments',
+                        icon: 'fas fa-tasks',
+                        slug: 'student_assignments',
+                        to: '/manage/student/'+data.id+'/assignments'
+                    },
+                    {
                         label: 'Convert to teacher',
                         icon: 'fas fa-exchange-alt',
                         slug: 'convert_to_teacher',
@@ -123,13 +129,21 @@ export const cards = {
                 {
                     label: 'review students',
                     slug: 'cohort_students',
+                    icon: 'fas fa-user-graduate',
                     to: '/manage/student/?cohort='+data.slug
                 },
                 {
                     label: 'change cohort stage',
                     slug: 'change_stage',
+                    icon: 'fas fa-exchange-alt',
                     data: { cohort: data } //
-                }
+                },
+                {
+                    label: 'review assignments',
+                    icon: 'fas fa-tasks',
+                    slug: 'cohort_assignments',
+                    to: '/manage/cohort/'+data.id+'/assignments'
+                },
             ])}
             onSelect={(opt) => onEntitySelect(opt, data)}>
                 { children ? children :
