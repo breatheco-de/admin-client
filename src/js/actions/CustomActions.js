@@ -98,7 +98,13 @@ class _AddTeacherToCohort extends React.Component{
                 this.setState({ teacher_id: e.target.value });
             }}>
                 <option value={null}>Select a teacher</option>
-                {this.state.teachers.map((t,i) => (<option key={i} value={t.id}>{t.full_name}</option>))}
+                {this.state.teachers.sort((a, b) => {
+                    var firstA = a.first_name || a.full_name;
+                    var firstB = b.first_name || b.full_name;
+
+                    if (firstA < firstB) return -1;
+                    else return 1;
+                }).map((t,i) => (<option key={i} value={t.id}>{t.full_name ? t.full_name : t.first_name + " " + t.last_name} - {t.username}</option>))}
             </select>
             <input type="checkbox" value={this.state.is_instructor} onChange={(e) => this.setState({ is_instructor: e.target.checked })} />
             Make this the main instructor

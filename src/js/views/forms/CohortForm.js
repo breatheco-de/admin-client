@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import _BaseForm from './_BaseForm.js';
 import validator from 'validator';
 import store from '../../store';
+import { CheckBox } from '../../utils/react-components/src/index';
 import moment from 'moment';
 import {cohortActions} from '../../actions/CustomActions.js';
 class Form extends _BaseForm{
@@ -24,6 +25,7 @@ class Form extends _BaseForm{
         return {
             id: null,
             slug: '',
+            stage: "not-started",
             profile_slug: '',
             slack_url: 'https://4geeksacademy.slack.com',
             kickoff_date: '',
@@ -31,7 +33,8 @@ class Form extends _BaseForm{
             streaming_slug: '',
             current_day: 0,
             language: 'en',
-            teachers: []
+            teachers: [],
+            withStreaming: true
         };
     }
 
@@ -42,8 +45,8 @@ class Form extends _BaseForm{
         if(validator.isEmpty(data.language)) return this.throwError('Empty slug language');
         if(validator.isEmpty(data.slack_url)) return this.throwError('Empty slack_url');
         if(validator.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug');
-        if(data.current_day == 0) return this.throwError('Empty or 0 current_day');
-        if(validator.isEmpty(data.streaming_slug)) return this.throwError('Empty streaming slug');
+        if(data.stage !== "not-started" && data.current_day == 0) return this.throwError('Please specify the cohort current day information');
+        if(data.withStreaming && validator.isEmpty(data.streaming_slug)) return this.throwError('The streaming slug is null but the cohort is marked for streaming');
 
         if(moment(data.ending_date).isBefore(moment(data.kickoff_date))) return this.throwError('The ending date needs to be after the starting date');
 
@@ -54,16 +57,21 @@ class Form extends _BaseForm{
         if(typeof data.slug !== 'undefined' && (!data.slug || data.slug=='')){
             data.slug = data.name.replace(/\s+/g, '-').toLowerCase();
         }
+
+        if(!data.withStreaming) delete data.streaming_slug;
+        if(data.stage === "not-started") delete data.current_day;
+
         return data;
     }
 
     render(){
+        console.log("Teachers", this.state.data.teachers);
         const profiles = this.state.dependencies.profile.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
         const locations = this.state.dependencies.location.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
         const streamingCohortsHTML = this.state.dependencies.streaming.map((p,i) => (<option key={i} value={p.slug}>{p.slug}</option>));
         const cohortTeachers = this.state.data.teachers.map((t,i) => (
             <li key={i} className="nav-item mr-3">
-                {t.full_name} {t.pivot && t.pivot.is_instructor ? '(main)' : '(assistant)'} <a href="#" onClick={(data) => cohortActions.delete_teacher(this.state.data, t)}><i className="fas fa-trash-alt fa-xs"></i></a>
+                {t.full_name || `${t.first_name} ${t.last_name}`} {t.pivot && t.pivot.is_instructor ? '(main)' : '(assistant)'} <a href="#" onClick={(data) => cohortActions.delete_teacher(this.state.data, t)}><i className="fas fa-trash-alt fa-xs"></i></a>
             </li>
         ));
         return (
@@ -168,18 +176,30 @@ class Form extends _BaseForm{
                         <div className="input-group-prepend">
                             <span className="input-group-text">Cohort day: </span>
                         </div>
-                        <input type="number" className="form-control" placeholder="day number" value={this.state.data.current_day} onChange={(e) => this.formUpdated({ current_day: e.target.value})} />
+                        {
+                            this.state.data.stage !== "not-started" ?
+                                <input type="number" className="form-control" placeholder="day number" value={this.state.data.current_day} onChange={(e) => this.formUpdated({ current_day: e.target.value})} />
+                                :
+                                <input type="number" className="form-control" placeholder="This cohort has not started yet" disabled={true} />
+
+                        }
                     </div>
                 </div>
                 <div className="bg-light p-2">
+                    <small className="mr-2">Streaming information</small>
                     <div className="form-group">
-                        <small className="mr-2">Streaming information</small>
-                        <select className="form-control"
-                            value={this.state.data.streaming_slug}
-                            onChange={(e) => this.formUpdated({ streaming_slug: e.target.value})}>
-                            <option value={''}>Select the cohort name</option>
-                            {streamingCohortsHTML}
-                        </select>
+                        <CheckBox checked={this.state.data.withStreaming} onClick={(e) => this.formUpdated({ withStreaming: !this.state.data.withStreaming})}
+                            label={this.state.data.withStreaming ? "The cohort will be streamed" : "The cohort will NOT be streamed"}
+                        ></CheckBox>
+                        {
+                            this.state.data.withStreaming &&
+                                <select className="form-control"
+                                    value={this.state.data.streaming_slug}
+                                    onChange={(e) => this.formUpdated({ streaming_slug: e.target.value})}>
+                                    <option value={''}>Select the cohort name or leave it blank for no streaming</option>
+                                    {streamingCohortsHTML}
+                                </select>
+                        }
                     </div>
                 </div>
                 <div class="row my-3">
