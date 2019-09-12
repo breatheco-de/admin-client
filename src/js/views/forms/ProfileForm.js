@@ -15,6 +15,7 @@ class ProfileForm extends _BaseForm{
     setDefaultState(){
         return {
             name: '',
+            logo: '',
             description: '',
             slug: '',
             week_hours: '',
@@ -27,10 +28,17 @@ class ProfileForm extends _BaseForm{
         if(validator.isEmpty(d.name)) return this.throwError('Missing name');
         if(validator.isEmpty(d.description)) return this.throwError('Missing description');
         if(validator.isEmpty(d.slug)) return this.throwError('Missing the type of user');
-        if(validator.isEmpty(d.duration_in_hours)) return this.throwError('Missing the duration in hours');
-        if(validator.isEmpty(d.week_hours)) return this.throwError('Missing the number of hours per week');
+        if(validator.isEmpty(d.duration_in_hours.toString())) return this.throwError('Missing the duration in hours');
+        if(validator.isEmpty(d.duration_in_days.toString())) return this.throwError('Missing the duration in days');
+        if(validator.isEmpty(d.week_hours.toString())) return this.throwError('Missing the number of hours per week');
 
         return true;
+    }
+
+    sanitizeData(data){
+        if(data.logo === '') delete data.logo;
+
+        return data;
     }
 
     render(){
@@ -43,12 +51,18 @@ class ProfileForm extends _BaseForm{
                             onChange={(e) => this.formUpdated({ slug: this.slugify(e.target.value)})}
                             readOnly={(this.props.mode !== 'add')}
                         />
-                        <small id="emailHelp" className="form-text text-muted">The email cannot be changed</small>
+                        <small id="emailHelp" className="form-text text-muted">The slug cannot be changed</small>
                     </div>
                     <div className="form-group">
                         <input type="text" className="form-control" placeholder="Name"
                             value={this.state.data.name}
                             onChange={(e) => this.formUpdated({ name: e.target.value})}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <input type="text" className="form-control" placeholder="Profile logo"
+                            value={this.state.data.logo}
+                            onChange={(e) => this.formUpdated({ logo: e.target.value})}
                         />
                     </div>
                     <div className="form-group">
@@ -61,6 +75,12 @@ class ProfileForm extends _BaseForm{
                         <input type="number" className="form-control" placeholder="Duration in hours"
                             value={this.state.data.duration_in_hours}
                             onChange={(e) => this.formUpdated({ duration_in_hours: e.target.value})}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <input type="number" className="form-control" placeholder="Duration in days"
+                            value={this.state.data.duration_in_days}
+                            onChange={(e) => this.formUpdated({ duration_in_days: e.target.value})}
                         />
                     </div>
                     <div className="form-group">
