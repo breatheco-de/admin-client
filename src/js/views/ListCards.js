@@ -28,6 +28,9 @@ export function cardActions(opt, ent){
                         status: opt.new_status
                     });
                 break;
+                case "hook":
+                    AdminActions.hook(opt.data.slug, opt.data.data);
+                break;
                 default:
                     if(typeof AdminActions.custom[this.state.entitySlug][opt.slug] === 'undefined')
                         throw new Error(`Undefined custom action ${this.state.entitySlug}.${opt.slug}()`);
@@ -96,6 +99,12 @@ export const cards = {
                         icon: 'fas fa-exchange-alt',
                         slug: 'convert_to_teacher',
                         data: { student: data }
+                    },
+                    {
+                        label: 'Sync With Active Campaign',
+                        icon: 'fas fa-exchange-alt',
+                        slug: 'hook',
+                        data: { slug: '/sync/contact' , data }
                     }
                 ].concat(dropdownOptions)}
                 onSelect={(opt) => onEntitySelect(opt, data)}>

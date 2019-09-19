@@ -40,6 +40,18 @@ export const get = (types, args={}) => {
     });
 };
 
+export const hook = (slug, args={}) => {
+    BC.hook(slug).post(args)
+        .then((log) => {
+            console.log("Succress", log);
+            Notify.add('info', () => <ul>{['Response log from server: '].concat(log).map((m,i) => <li key={i}>{m}</li>)}</ul>, 3000);
+        })
+        .catch(err => {
+            console.log("Error",err);
+            Notify.error(err.msg || err.message);
+        });
+};
+
 export const getSingle = (type, id) => {
     if(typeof BC[type] === 'function') BC[type]().get(id).then((result) => {
         Flux.dispatchEvent(`manage_${type}`, store.add(`manage_${type}`, result.data || result));

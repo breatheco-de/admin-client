@@ -350,6 +350,14 @@ class Wrapper{
             },
         };
     }
+    hook(slug){
+        let url = this.options.assetsPath;
+        return {
+            post: (args={}) => {
+                return this.post(url+'/hook/'+slug, args);
+            },
+        };
+    }
 }
 if(typeof module != 'undefined') module.exports = new Wrapper();
 window.BC = new Wrapper();
