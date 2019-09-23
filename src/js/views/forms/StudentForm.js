@@ -142,7 +142,7 @@ const Edit = ({data, studentCohorts, formUpdated}) => {
                         <DropLink
                             className='d-inline-block'
                             dropdown={studentCohorts.map((c,i) => ({ label: c, slug: c }))}
-                            onSelect={(opt) => window.open(`https://certificate.breatheco.de/?cohort=${opt.slug}&access_token=${access_token}&student=${data.id}`)}
+                            onSelect={(opt) => window.open(`https://certificate.breatheco.de/?style=default&cohort=${opt.slug}&access_token=${access_token}&student=${data.id}`)}
                         >
                             <small>certificates <i class="fas fa-award"></i></small>
                         </DropLink>

@@ -102,7 +102,7 @@ export const cards = {
                     },
                     {
                         label: 'Sync With Active Campaign',
-                        icon: 'fas fa-exchange-alt',
+                        icon: 'fas fa-sync',
                         slug: 'hook',
                         data: { slug: '/sync/contact' , data }
                     }
