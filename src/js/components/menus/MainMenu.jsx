@@ -44,7 +44,7 @@ class MainMenu extends React.Component{
                 { (['admin','admission','location-admin'].includes(role)) &&
                     <MenuItem icon="fas fa-calendar-plus" label="Events" slug="event" to="/manage/event/?date_status=upcoming" />
                 }
-                { (['admin'].includes(role)) && <span>
+                { (['admin','location-admin'].includes(role)) && <span>
                     <MenuItem icon="fas fa-users" label="Users" slug="user" to="/manage/user/" />
                     <MenuItem icon="fas fa-map-marked-alt" label="Locations" slug="location" to="/manage/location/" />
                     </span>
@@ -53,10 +53,10 @@ class MainMenu extends React.Component{
                 { (['admin','location-admin'].includes(role)) &&
                     <MenuItem icon="fas fa-calendar-check" label="Event Checkin" slug="replit" to="/manage/i/checkin/" />
                 }
-                { (['admin'].includes(role)) &&
+                { (['admin','location-admin'].includes(role)) &&
                     <MenuItem icon="fas fa-dumbbell" label="Replits" slug="replit" to="/manage/i/replit/" />
                 }
-                { (['admin'].includes(role)) &&
+                { (['admin','location-admin'].includes(role)) &&
                     <MenuItem icon="fas fa-question-circle" label="Quizzes" slug="quiz" to="/manage/i/quiz/" />
                 }
                 { (['admin'].includes(role)) &&
