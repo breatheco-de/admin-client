@@ -64,6 +64,5 @@ server.js
 
 !.gitkeep
 !.htaccess
-!.env.prod
-!.env.dev
+!.env.example
 !.gitpod.yml
