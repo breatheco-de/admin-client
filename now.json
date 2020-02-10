@@ -9,7 +9,13 @@
       "config": { "distDir": "public" }
     }
   ],
-
+  "build": {
+    "env": {
+        "CMS_URL": "@content_url",
+        "API_URL": "@api_url",
+        "ASSETS_URL": "@assets_url"
+    }
+  },
   "routes": [
       {
         "src":"/(.*).png",

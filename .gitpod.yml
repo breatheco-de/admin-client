@@ -3,4 +3,6 @@ ports:
 
 tasks:
     - init: npm install;
-      command: npm run start;
+      command: >
+        cp .env.example .env;
+        npm run start;

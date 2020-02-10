@@ -51,7 +51,7 @@ export default class Forgot extends Flux.View {
     return (
       <div className="container">
         <div className="form-signin text-center">
-          <img src={process.env.STATIC_PATH+bcLogo} />
+          <img src={"http://assets.breatheco.de/apis/img/images.php?blob&random&cat=icon&tags=breathecode,64"} />
           <h2 className="form-signin-heading">What's your account email?</h2>
           <form action="#" onSubmit={(e) => this.formSubmit(e)}>
           { 
