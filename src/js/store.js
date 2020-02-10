@@ -14,11 +14,16 @@ class Store extends Flux.DashStore{
         this.addEvent("manage_student", this._transformStudents.bind(this));
         this.addEvent("manage_cohort", this._transformCohorts.bind(this));
         this.addEvent("manage_location", this._transformLocation.bind(this));
+        this.addEvent("manage_syllabus", this._transformSyllabus.bind(this));
         this.addEvent("manage_profile", this._transformProfile.bind(this));
         this.addEvent("manage_event", this._transformEvent.bind(this));
         this.addEvent("manage_streaming", this._transformStreaming.bind(this));
 
         this.addEvent("catalog", this._transformCatalog.bind(this));
+    }
+    _transformSyllabus(syllabus){
+        if(Array.isArray(syllabus)) return syllabus;
+        return [];
     }
     _transformStreaming(cohorts){
         if(Array.isArray(cohorts)) return cohorts;

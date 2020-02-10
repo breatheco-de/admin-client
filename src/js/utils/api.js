@@ -137,6 +137,9 @@ class Wrapper{
             get: (slug) => {
                 if(!slug) throw new Error('Missing slug');
                 else return this.get(url+'/'+slug);
+            },
+            all: () => {
+                return this.get(url+'/all');
             }
         };
     }

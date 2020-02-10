@@ -16,6 +16,7 @@ class Form extends _BaseForm{
                 location: store.getAll('location'),
                 user: store.getAll('user', (user) => user.type == 'teacher'),
                 profile: store.getAll('profile'),
+                syllabus: store.getAll('syllabus'),
                 streaming: store.getAll('streaming')
             },
         };
@@ -27,6 +28,7 @@ class Form extends _BaseForm{
             slug: '',
             stage: "not-started",
             profile_slug: '',
+            syllabus_slug: '',
             slack_url: 'https://4geeksacademy.slack.com',
             kickoff_date: '',
             ending_date: '',
@@ -44,6 +46,7 @@ class Form extends _BaseForm{
         if(validator.isEmpty(data.name)) return this.throwError('Empty slug');
         if(validator.isEmpty(data.language)) return this.throwError('Empty slug language');
         if(validator.isEmpty(data.slack_url)) return this.throwError('Empty slack_url');
+        if(validator.isEmpty(data.syllabus_slug)) return this.throwError('Please pick a syllabus for the cohort');
         if(validator.isEmpty(data.profile_slug)) return this.throwError('Empty profile_slug');
         if(data.stage !== "not-started" && data.current_day == 0) return this.throwError('Please specify the cohort current day information');
         if(data.withStreaming && validator.isEmpty(data.streaming_slug)) return this.throwError('The streaming slug is null but the cohort is marked for streaming');
@@ -67,6 +70,12 @@ class Form extends _BaseForm{
     render(){
         console.log("Teachers", this.state.data.teachers);
         const profiles = this.state.dependencies.profile.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
+        const syllabus = this.state.dependencies.syllabus.filter(s => {
+            if (!this.state.data.profile_slug || this.state.data.profile_slug === '') return false;
+            const profile = s.slug.split('.')[0];
+            if(profile !== this.state.data.profile_slug) return false;
+            return true;
+        }).map((p,i) => (<option key={i} value={p.slug}>{p.title} ({p.slug})</option>));
         const locations = this.state.dependencies.location.map((p,i) => (<option key={i} value={p.slug}>{p.name}</option>));
         const streamingCohortsHTML = this.state.dependencies.streaming.map((p,i) => (<option key={i} value={p.slug}>{p.slug}</option>));
         const cohortTeachers = this.state.data.teachers.map((t,i) => (
@@ -167,9 +176,14 @@ class Form extends _BaseForm{
                     <div className="form-group">
                         <small className="mr-2">Syllabus version</small>
                         <select className="form-control"
-                            value={this.state.data.language}
-                            onChange={(e) => this.formUpdated({ language: e.target.value})}>
-                            <option value="1">1</option>
+                            value={this.state.data.syllabus_slug}
+                            onChange={(e) => this.formUpdated({ syllabus_slug: e.target.value})}>
+                            { (!this.state.data.profile_slug || this.state.data.profile_slug === '') ? 
+                                <option value={null}>Select a profile first</option>
+                                :
+                                <option value={null}>Select a syllabus version</option>
+                            }
+                            {syllabus}
                         </select>
                     </div>
                     <div className="input-group mb-3">
