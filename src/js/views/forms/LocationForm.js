@@ -5,6 +5,8 @@ import validator from 'validator';
 import store from '../../store';
 import moment from 'moment';
 import {cohortActions} from '../../actions/CustomActions.js';
+import ReactQuill from 'react-quill';
+
 class Form extends _BaseForm{
 
     constructor(){
@@ -64,7 +66,9 @@ class Form extends _BaseForm{
             slug: '',
             name: '',
             country: '',
-            address: ''
+            address: '',
+            language: '',
+            logistical_information: '',
         };
     }
 
@@ -72,8 +76,9 @@ class Form extends _BaseForm{
         //if(validator.isEmpty(data.slug)) return this.throwError('Empty slug');
         if(validator.isEmpty(data.name)) return this.throwError('Empty name');
         if(validator.isEmpty(data.country)) return this.throwError('Empty country');
-        if(validator.isEmpty(data.language)) return this.throwError('Empty slug language');
-        if(validator.isEmpty(data.address)) return this.throwError('Empty address');
+        if(typeof(data.language) == 'undefined' || validator.isEmpty(data.language)) return this.throwError('Empty slug language');
+        if(data.address == 0 || validator.isEmpty(data.address)) return this.throwError('Please specify an address');
+        if(validator.isEmpty(data.logistical_information)) return this.throwError('Please add the logistical information for this cohort');
 
         return true;
     }
@@ -133,15 +138,24 @@ class Form extends _BaseForm{
                 </div>
                 <div className="form-group">
                     <input type="text" className="form-control" placeholder="Location Address"
-                        value={this.state.data.address}
+                        value={this.state.data.address != 0 ? this.state.data.address : ''}
                         onChange={(e) => this.formUpdated({ address: e.target.value })}
                     />
+                    <small className="form-text text-muted">E.g: 1801 SW 3rd Ave #100, Miami, FL 33129</small>
                 </div>
-                <div class="row my-3">
-                    <div class="col">
+                <div className="form-group">
+                    <label>Logistical Information:</label>
+                    <ReactQuill
+                        style={{ minHeight: "100px" }}
+                        value={this.state.data.logistical_information}
+                        onChange={(value) => this.formUpdated({ logistical_information: value})}
+                    />
+                </div>
+                <div className="row my-3">
+                    <div className="col">
                         <button type="button" className="btn btn-dark btn-lg w-100" onClick={() => this.props.history.goBack()}>Back</button>
                     </div>
-                    <div class="col">
+                    <div className="col">
                         <button type="submit" className="btn btn-primary  btn-lg w-100">Save</button>
                     </div>
                 </div>

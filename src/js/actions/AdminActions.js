@@ -133,7 +133,7 @@ export const update = (type, data) => new Promise((resolve, reject) => {
 
 export const remove = (type, data) => new Promise((resolve, reject) => {
 
-    Notify.info("Are you sure?", (answer) => {
+    const _modal = Notify.info("Are you sure?", (answer) => {
         if(answer){
             if(typeof BC[type] === 'function') {
                 BC[type]().delete(data.id)
@@ -155,6 +155,7 @@ export const remove = (type, data) => new Promise((resolve, reject) => {
                 throw new Error('Invalid fetch type: '+type);
             }
         }
+        _modal.remove();
     });
 
 });

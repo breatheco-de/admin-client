@@ -33,6 +33,7 @@ class Form extends _BaseForm{
             kickoff_date: '',
             ending_date: '',
             streaming_slug: '',
+            meeting_url: null,
             current_day: 0,
             language: 'en',
             teachers: [],
@@ -197,6 +198,15 @@ class Form extends _BaseForm{
                                 <input type="number" className="form-control" placeholder="This cohort has not started yet" disabled={true} />
 
                         }
+                    </div>
+                </div>
+                <div className="bg-light p-2">
+                    <small className="mr-2">Online Room Information</small>
+                    <div className="form-group">
+                        <input type="url" className="form-control" placeholder="bluejeans.com any other meeting platform url"
+                            value={this.state.data.meeting_url}
+                            onChange={(e) => this.formUpdated({ meeting_url: e.target.value})}
+                        />
                     </div>
                 </div>
                 <div className="bg-light p-2">

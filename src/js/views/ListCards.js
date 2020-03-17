@@ -64,7 +64,7 @@ export const cards = {
         <li key={data.id}>
             <DropLink
                 className='list_card'
-                dropdown={[
+                dropdown={dropdownOptions.concat([
                     {
                         label: 'Recent Activity',
                         icon: 'fas fa-calendar-check',
@@ -106,7 +106,7 @@ export const cards = {
                         slug: 'hook',
                         data: { slug: '/sync/contact' , data }
                     }
-                ].concat(dropdownOptions)}
+                ])}
                 onSelect={(opt) => onEntitySelect(opt, data)}>
                 { children ? children :
                     <div>
