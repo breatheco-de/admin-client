@@ -142,6 +142,12 @@ export const cards = {
                     to: '/manage/student/?cohort='+data.slug
                 },
                 {
+                    label: 'Review attendancy',
+                    slug: 'cohort_attendancy',
+                    icon: 'fas fa-clipboard-list',
+                    to: '/manage/cohort/'+data.slug+'/attendancy'
+                },
+                {
                     label: 'change cohort stage',
                     slug: 'change_stage',
                     icon: 'fas fa-exchange-alt',

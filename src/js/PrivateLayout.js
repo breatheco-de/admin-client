@@ -49,6 +49,7 @@ class Layout extends Flux.View{
                         <Route exact path='/manage/i/:entity_slug' component={IFrameManageView} />
                         <Route exact path='/manage/:entity_slug/:entity_id/edit' component={EditView} />
                         <Route exact path='/manage/cohort/:entity_id/assignments' render={(props) => <IFrameView url={`https://assets.breatheco.de/apps/assignment/?cohort=${props.match.params.entity_id}`} />} />
+                        <Route exact path='/manage/cohort/:entity_id/attendancy' render={(props) => <IFrameView url={`https://attendancy.breatheco.de/?cohort_slug=${props.match.params.entity_id}`} />} />
                         <Route exact path='/manage/student/:entity_id/assignments' render={(props) => <IFrameView url={`https://assets.breatheco.de/apps/assignment/?student=${props.match.params.entity_id}`} />} />
                         <Route exact path='/manage/:entity_slug/add' component={EditView} />
                         <Route exact path='/manage/:entity_slug' component={ManageView} />

@@ -22,7 +22,7 @@ class IFrameView extends Flux.View {
       if(this.props.url) return (this.props.url.indexOf("?") > -1) ? this.props.url+"&"+token : this.props.url+"?"+token;
 
       //let view = this.props.match.params.view_slug;
-      return process.env.ASSETS_URL+'/apps/view/'+type+'/'+view+window.location.search+"?"+token;
+      return process.env.ASSETS_URL+'/apps/view/'+type+'/'+view+window.location.search+"&"+token;
   }
 
   render() {
