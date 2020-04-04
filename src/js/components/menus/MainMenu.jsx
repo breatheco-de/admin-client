@@ -59,8 +59,14 @@ class MainMenu extends React.Component{
                 { (['admin','location-admin'].includes(role)) &&
                     <MenuItem icon="fas fa-question-circle" label="Quizzes" slug="quiz" to="/manage/i/quiz/" />
                 }
+                { (['admin','location-admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-tasks" label="Attendancy" slug="attendancy" to="/manage/i/attendancy/" />
+                }
                 { (['admin'].includes(role)) &&
                     <MenuItem icon="fas fa-book" label="Syllabus" slug="syllabus" to="/manage/i/syllabus/" />
+                }
+                { (['admin'].includes(role)) &&
+                    <MenuItem icon="fas fa-file-code" label="New Project" slug="project" to="/manage/i/project/" />
                 }
                 <p>-</p>
                 <MenuItem icon="fas fa-sign-out-alt" label="Logout" slug="close_session"

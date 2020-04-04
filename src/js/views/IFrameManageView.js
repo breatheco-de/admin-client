@@ -12,12 +12,15 @@ export default class IFrameManageView extends Flux.View {
   }
   
   getIframeURL(){
-      const { access_token, assets_token } = Session.getPayload();
-      const token = `?bc_token=${access_token}&assets_token=${assets_token}`;
+      const { access_token, assets_token, parent_location_id } = Session.getPayload();
+      let token = `?bc_token=${access_token}&assets_token=${assets_token}`;
+      if(parent_location_id) token += `&location=${parent_location_id}`;
       let type = this.props.match.params.entity_slug;
       if(type==="replit") return process.env.ASSETS_URL+'/apps/replit-maker'+token;
       else if(type==="quiz") return process.env.ASSETS_URL+'/apps/quiz-maker'+token;
-      else if(type==="syllabus") return process.env.ASSETS_URL+'/apps/syllabus-maker'+token;
+      else if(type==="syllabus") return 'https://build.breatheco.de/'+token;
+      else if(type==="project") return 'https://projects.breatheco.de/upload'+token;
+      else if(type==="attendancy") return 'https://attendancy.breatheco.de/'+token;
       else if(type==="checkin") return process.env.ASSETS_URL+'/apps/checkin'+token;
       else return process.env.ASSETS_URL+'/apps/'+type+token;
   }
