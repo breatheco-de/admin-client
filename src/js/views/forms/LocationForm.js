@@ -54,6 +54,9 @@ class Form extends _BaseForm{
                     "Caracas",
                     "Maracaibo",
                     "Valencia"
+                    ],
+                    "costa-rica": [
+                    "San Jose"
                     ]
                 }
             }
