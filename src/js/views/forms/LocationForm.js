@@ -45,6 +45,10 @@ class Form extends _BaseForm{
                     "Galicia",
                     "Valencia"
                     ],
+                    "uruguay": [
+                    "Monte Video",
+                    "San José"
+                    ],
                     "usa": [
                     "Miami",
                     "Orlando",
